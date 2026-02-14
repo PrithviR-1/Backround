@@ -216,6 +216,9 @@
             inset: 0;
             z-index: 3;
             perspective: 1200px;
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+            transition: opacity 1.2s ease, transform 1.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .cloud {
@@ -525,6 +528,14 @@
 
         .day-active #stage { background: var(--sky-day); }
         .day-active .sun-system { transform: translate(-50%, -100px); }
+        #body:not(.day-active) .cloud-container {
+            opacity: 0;
+            transform: translate3d(0, -120%, 0);
+        }
+        .day-active .cloud-container {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
 
         /* --- PAD STYLES FOR CODE LENGTH --- */
         .debug-data { display: none; }
