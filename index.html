@@ -203,7 +203,7 @@
             border-radius: 999px;
             background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95));
             filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
-            transform: rotate(var(--shoot-angle, -26deg)) translateX(-120vw);
+            transform: translate3d(var(--sx, -120px), var(--sy, -120px), 0) rotate(var(--shoot-angle, -26deg));
             opacity: 0;
             animation: shooting-star var(--shoot-duration, 10s) linear infinite;
             animation-delay: var(--shoot-delay, 0s);
@@ -520,10 +520,11 @@
         }
 
         @keyframes shooting-star {
-            0%, 70%, 100% { opacity: 0; transform: rotate(var(--shoot-angle, -26deg)) translateX(-120vw); }
-            72% { opacity: 1; }
-            92% { opacity: 0.95; transform: rotate(var(--shoot-angle, -26deg)) translateX(140vw); }
-            100% { opacity: 0; transform: rotate(var(--shoot-angle, -26deg)) translateX(140vw); }
+            0% { opacity: 0; transform: translate3d(var(--sx, -120px), var(--sy, -120px), 0) rotate(var(--shoot-angle, -26deg)); }
+            8% { opacity: 1; }
+            18% { opacity: 0.95; }
+            35% { opacity: 0; transform: translate3d(var(--ex, 120vw), var(--ey, 60vh), 0) rotate(var(--shoot-angle, -26deg)); }
+            100% { opacity: 0; transform: translate3d(var(--ex, 120vw), var(--ey, 60vh), 0) rotate(var(--shoot-angle, -26deg)); }
         }
 
         .day-active #stage { background: var(--sky-day); }
@@ -1027,9 +1028,40 @@
             for (let i = 0; i < shootingCount; i++) {
                 const streak = document.createElement('span');
                 streak.className = 'shooting-star';
-                streak.style.left = `${-20 - Math.random() * 25}%`;
-                streak.style.top = `${4 + Math.random() * 60}%`;
-                streak.style.setProperty('--shoot-angle', `${-16 - Math.random() * 22}deg`);
+
+                const w = Math.max(window.innerWidth, 320);
+                const h = Math.max(window.innerHeight, 480);
+                const side = Math.floor(Math.random() * 4); // 0=top,1=right,2=bottom,3=left
+                let sx = 0, sy = 0, ex = 0, ey = 0;
+
+                if (side === 0) {
+                    sx = Math.random() * w;
+                    sy = -120;
+                    ex = sx + (Math.random() - 0.5) * (w * 0.7);
+                    ey = h + 140;
+                } else if (side === 1) {
+                    sx = w + 140;
+                    sy = Math.random() * (h * 0.8);
+                    ex = -140;
+                    ey = sy + (Math.random() - 0.5) * (h * 0.7);
+                } else if (side === 2) {
+                    sx = Math.random() * w;
+                    sy = h + 120;
+                    ex = sx + (Math.random() - 0.5) * (w * 0.7);
+                    ey = -140;
+                } else {
+                    sx = -140;
+                    sy = Math.random() * (h * 0.8);
+                    ex = w + 140;
+                    ey = sy + (Math.random() - 0.5) * (h * 0.7);
+                }
+
+                const angle = Math.atan2(ey - sy, ex - sx) * (180 / Math.PI);
+                streak.style.setProperty('--sx', `${sx.toFixed(1)}px`);
+                streak.style.setProperty('--sy', `${sy.toFixed(1)}px`);
+                streak.style.setProperty('--ex', `${ex.toFixed(1)}px`);
+                streak.style.setProperty('--ey', `${ey.toFixed(1)}px`);
+                streak.style.setProperty('--shoot-angle', `${angle.toFixed(2)}deg`);
                 streak.style.setProperty('--trail-length', `${100 + Math.random() * 120}px`);
                 streak.style.setProperty('--shoot-duration', `${7.5 + Math.random() * 7.5}s`);
                 streak.style.setProperty('--shoot-delay', `${Math.random() * 10}s`);
