@@ -673,6 +673,9 @@
     <div id="app-ui">
         <div id="screen-wake" class="glass-card">
             <h2>Good Morning.</h2>
+            <div style="display:flex; justify-content:flex-end; margin: -8px 0 10px 0;">
+                <button onclick="forceStopRoutine()" style="background:var(--accent-blue); color:#fff; border:none; border-radius:12px; padding:8px 12px; font-size:11px; font-weight:900; letter-spacing:0.5px; cursor:pointer; box-shadow:0 6px 14px rgba(0,122,255,0.35);">Force Stop</button>
+            </div>
             
             <div id="cam-container">
                 <video id="video" autoplay playsinline muted></video>
@@ -1574,6 +1577,20 @@
                     wake.style.transform = 'translateY(0) scale(1)';
                 }, 150);
             }, 900);
+        }
+
+        function forceStopRoutine() {
+            try {
+                tasks.forEach(t => t.done = false);
+                if (typeof setTabsLocked === 'function') setTabsLocked(false);
+                switchTab('post');
+                setSunUp();
+                showTabs();
+                renderApplication();
+                renderAlarms();
+            } catch (e) {
+                console.warn('Failed to force-stop routine', e);
+            }
         }
 
         // helper: read CSS transition duration var (--transition-speed) and convert to ms
