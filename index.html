@@ -46,6 +46,8 @@
             /* Animation Timings */
             --transition-speed: 5s;
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --tab-slide-speed: 560ms;
+            --tab-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* --- GLOBAL RESET & BASE --- */
@@ -624,6 +626,19 @@
         }
         /* small content area adjustments for timer/stopwatch cards */
         .glass-card.aux { padding: 22px; max-width: 640px; }
+
+        .tab-animated {
+            will-change: transform, opacity;
+            transition:
+                transform var(--tab-slide-speed) var(--tab-slide-ease),
+                opacity var(--tab-slide-speed) var(--tab-slide-ease);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tab-animated {
+                transition-duration: 1ms;
+            }
+        }
     </style>
 </head>
 <body id="body">
@@ -2289,6 +2304,32 @@
             });
         }
 
+        const _tabSequence = ['post', 'timers', 'stopwatch', 'sounds'];
+        let _activeTabName = 'post';
+        let _tabSwitchToken = 0;
+
+        function _pinTabForSlide(el, topPx, widthPx, zIndexValue) {
+            if (!el) return;
+            el.style.position = 'absolute';
+            el.style.left = '0';
+            el.style.right = '0';
+            el.style.top = `${topPx}px`;
+            el.style.width = `${widthPx}px`;
+            el.style.margin = '0 auto';
+            el.style.zIndex = String(zIndexValue);
+        }
+
+        function _clearPinnedTabStyles(el) {
+            if (!el) return;
+            el.style.removeProperty('position');
+            el.style.removeProperty('left');
+            el.style.removeProperty('top');
+            el.style.removeProperty('right');
+            el.style.removeProperty('width');
+            el.style.removeProperty('margin');
+            el.style.removeProperty('z-index');
+        }
+
         function switchTab(name) {
             // name: 'post' | 'timers' | 'stopwatch' | 'sounds' | 'wake'
             const mappings = {
@@ -2299,17 +2340,114 @@
                 'sounds': 'screen-sounds'
             };
             const targetId = mappings[name] || 'screen-post';
-            ['screen-wake','screen-post','screen-timers','screen-stopwatch','screen-sounds'].forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                if (id === targetId) {
-                    el.classList.remove('hidden');
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0) scale(1)';
-                } else {
+
+            const allScreenIds = ['screen-wake','screen-post','screen-timers','screen-stopwatch','screen-sounds'];
+            const targetEl = document.getElementById(targetId);
+            const previousName = _activeTabName;
+            const previousId = mappings[previousName] || 'screen-post';
+            const previousEl = document.getElementById(previousId);
+            const isTabToTabTransition = _tabSequence.includes(name) && _tabSequence.includes(previousName) && targetId !== previousId;
+
+            _tabSwitchToken += 1;
+            const currentToken = _tabSwitchToken;
+
+            if (isTabToTabTransition && targetEl) {
+                const prevIndex = _tabSequence.indexOf(previousName);
+                const nextIndex = _tabSequence.indexOf(name);
+                const direction = nextIndex >= prevIndex ? 1 : -1;
+                const entryOffset = direction > 0 ? 78 : -78;
+                const exitOffset = direction > 0 ? -78 : 78;
+
+                allScreenIds.forEach(id => {
+                    if (id === previousId || id === targetId) return;
+                    const el = document.getElementById(id);
+                    if (!el) return;
                     el.classList.add('hidden');
+                    el.classList.remove('tab-animated');
+                    el.style.removeProperty('opacity');
+                    el.style.removeProperty('transform');
+                    el.style.removeProperty('pointer-events');
+                    _clearPinnedTabStyles(el);
+                });
+
+                const appUi = document.getElementById('app-ui');
+                const anchorTop = previousEl ? previousEl.offsetTop : targetEl.offsetTop;
+                const pinnedWidth = previousEl
+                    ? Math.round(previousEl.getBoundingClientRect().width)
+                    : Math.round(targetEl.getBoundingClientRect().width);
+
+                _pinTabForSlide(targetEl, anchorTop, pinnedWidth, 4);
+                targetEl.classList.add('tab-animated');
+                targetEl.classList.remove('hidden');
+                targetEl.style.transition = 'none';
+                targetEl.style.opacity = '0';
+                targetEl.style.transform = `translateX(${entryOffset}px) scale(0.985)`;
+
+                if (previousEl) {
+                    _pinTabForSlide(previousEl, anchorTop, pinnedWidth, 5);
+                    previousEl.classList.add('tab-animated');
+                    previousEl.classList.remove('hidden');
+                    previousEl.style.transition = 'none';
+                    previousEl.style.opacity = '1';
+                    previousEl.style.transform = 'translateX(0) scale(1)';
+                    previousEl.style.pointerEvents = 'none';
                 }
-            });
+
+                targetEl.offsetWidth;
+                targetEl.style.removeProperty('transition');
+                if (previousEl) previousEl.style.removeProperty('transition');
+                if (appUi) {
+                    const previousHeight = previousEl ? previousEl.offsetHeight : 0;
+                    appUi.style.minHeight = `${Math.max(targetEl.offsetHeight, previousHeight)}px`;
+                }
+
+                requestAnimationFrame(() => {
+                    if (currentToken !== _tabSwitchToken) return;
+                    targetEl.style.opacity = '1';
+                    targetEl.style.transform = 'translateX(0) scale(1)';
+                    if (previousEl) {
+                        previousEl.style.opacity = '0';
+                        previousEl.style.transform = `translateX(${exitOffset}px) scale(0.975)`;
+                    }
+                });
+
+                window.setTimeout(() => {
+                    if (currentToken !== _tabSwitchToken) return;
+                    if (previousEl) {
+                        previousEl.classList.add('hidden');
+                        previousEl.classList.remove('tab-animated');
+                        previousEl.style.removeProperty('opacity');
+                        previousEl.style.removeProperty('transform');
+                        previousEl.style.removeProperty('pointer-events');
+                        _clearPinnedTabStyles(previousEl);
+                    }
+
+                    targetEl.classList.remove('tab-animated');
+                    targetEl.style.removeProperty('opacity');
+                    targetEl.style.removeProperty('transform');
+                    _clearPinnedTabStyles(targetEl);
+                    if (appUi) appUi.style.removeProperty('min-height');
+                }, 580);
+            } else {
+                const appUi = document.getElementById('app-ui');
+                if (appUi) appUi.style.removeProperty('min-height');
+                allScreenIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.classList.remove('tab-animated');
+                    el.style.removeProperty('opacity');
+                    el.style.removeProperty('transform');
+                    el.style.removeProperty('pointer-events');
+                    _clearPinnedTabStyles(el);
+                    if (id === targetId) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                });
+            }
+
+            _activeTabName = name;
 
             // sun behavior: keep stage sunny for alarm/editor/timer/stopwatch/sounds; wake screen => sun down
             if (targetId === 'screen-wake') {
