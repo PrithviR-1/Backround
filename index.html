@@ -527,6 +527,21 @@
             100% { opacity: 0; transform: translate3d(var(--ex, 120vw), var(--ey, 60vh), 0) rotate(var(--shoot-angle, -26deg)); }
         }
 
+        @keyframes click-radar {
+            0% {
+                opacity: 0.95;
+                transform: translate(-50%, -50%) scale(0.2);
+            }
+            60% {
+                opacity: 0.45;
+                transform: translate(-50%, -50%) scale(4.6);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(6.8);
+            }
+        }
+
         .day-active #stage { background: var(--sky-day); }
         .day-active .sun-system { transform: translate(-50%, -100px); }
         #body:not(.day-active) .cloud-container {
@@ -593,6 +608,19 @@
             background: linear-gradient(90deg, rgba(0,122,255,0.18), rgba(48,209,88,0.08));
             color: #fff;
             box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+        .click-radar {
+            position: fixed;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(110, 187, 255, 0.85);
+            background: rgba(110, 187, 255, 0.1);
+            transform: translate(-50%, -50%) scale(0.2);
+            pointer-events: none;
+            z-index: 12000;
+            animation: click-radar 620ms cubic-bezier(0.22, 0.8, 0.3, 1) forwards;
+            box-shadow: 0 0 22px rgba(110, 187, 255, 0.55);
         }
         /* small content area adjustments for timer/stopwatch cards */
         .glass-card.aux { padding: 22px; max-width: 640px; }
@@ -823,6 +851,7 @@
             attachScrollSnapping();
             initNightSky();
             initCloudsMotion();
+            initClickRadar();
 
             // Show alarm / routine editor screen first (non-destructive)
             try {
@@ -974,6 +1003,24 @@
                 const w = document.getElementById(id);
                 if (w) w.scrollTop = 1; // Trigger initial calculation
             });
+        }
+
+        // 4.45 Global click feedback: subtle radar pulse from click/tap location.
+        function initClickRadar() {
+            const appRoot = document.getElementById('app-ui');
+            document.addEventListener('pointerdown', (evt) => {
+                if (evt.button !== 0 || !evt.isPrimary) return;
+                if (appRoot && !appRoot.contains(evt.target)) return;
+
+                const ring = document.createElement('span');
+                ring.className = 'click-radar';
+                ring.style.left = `${evt.clientX}px`;
+                ring.style.top = `${evt.clientY}px`;
+                document.body.appendChild(ring);
+                ring.addEventListener('animationend', () => {
+                    try { if (ring.parentNode) ring.parentNode.removeChild(ring); } catch (e) {}
+                }, { once: true });
+            }, { passive: true });
         }
 
 
@@ -1311,10 +1358,10 @@
                 </div>
             `}).join('');
             
-            // Attach hold-to-delete handlers to all alarm delete buttons
+            // Attach click-to-delete handlers to all alarm delete buttons
             document.querySelectorAll('.alarm-delete-btn').forEach(btn => {
                 const idx = parseInt(btn.dataset.alarmIdx);
-                initHoldToDelete(btn, () => deleteAlarm(idx));
+                btn.onclick = () => deleteAlarm(idx);
             });
         }
 
@@ -2322,13 +2369,11 @@
                 </div>`;
             }).join('');
             
-            // Only re-attach hold-to-delete handlers if no hold is in progress
-            if (!window._holdToDeleteInProgress) {
-                document.querySelectorAll('.timer-delete-btn').forEach(btn => {
-                    const timerId = btn.dataset.timerId;
-                    initHoldToDelete(btn, () => deleteTimer(timerId));
-                });
-            }
+            // Attach click-to-delete handlers to timer delete buttons
+            document.querySelectorAll('.timer-delete-btn').forEach(btn => {
+                const timerId = btn.dataset.timerId;
+                btn.onclick = () => deleteTimer(timerId);
+            });
         }
 
         function _updateTimerDisplay(timerId) {
