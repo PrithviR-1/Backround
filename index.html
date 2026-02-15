@@ -46,6 +46,8 @@
             /* Animation Timings */
             --transition-speed: 5s;
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --tab-slide-duration: 760ms;
+            --tab-slide-ease: cubic-bezier(0.22, 0.9, 0.24, 1);
         }
 
         /* --- GLOBAL RESET & BASE --- */
@@ -296,10 +298,11 @@
             box-shadow: var(--card-shadow);
             opacity: 1;
             transform: translateY(0);
-            transition: all 1.2s var(--ease-out-expo);
+            transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo);
             backdrop-filter: blur(45px saturate(160%));
             -webkit-backdrop-filter: blur(45px) saturate(160%);
             margin-bottom: 40px;
+            will-change: transform, opacity;
         }
 
         .glass-card.hidden {
@@ -624,6 +627,10 @@
         }
         /* small content area adjustments for timer/stopwatch cards */
         .glass-card.aux { padding: 22px; max-width: 640px; }
+
+        .tab-transitioning {
+            pointer-events: none;
+        }
     </style>
 </head>
 <body id="body">
@@ -821,6 +828,18 @@
          */
 
         // 1. STATE MANAGEMENT
+        const TAB_ORDER = ['wake', 'post', 'timers', 'stopwatch', 'sounds'];
+        const TAB_TO_SCREEN = {
+            'post': 'screen-post',
+            'wake': 'screen-wake',
+            'timers': 'screen-timers',
+            'stopwatch': 'screen-stopwatch',
+            'sounds': 'screen-sounds'
+        };
+        const ALL_SCREEN_IDS = Object.values(TAB_TO_SCREEN);
+        let _activeScreenId = 'screen-post';
+        let _tabTransitionLock = false;
+
         let tasks = [
             { id: 1, text: "Rehydrate (20oz Water)", done: false },
             { id: 2, text: "5 Min Mobility Stretch", done: false },
@@ -2281,32 +2300,153 @@
            Tab routing: switch between screens
            --------------------------- */
         function _hideAllMainScreens() {
-            const ids = ['screen-wake','screen-post','screen-timers','screen-stopwatch'];
-            ids.forEach(id => {
+            ALL_SCREEN_IDS.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
                 if (id !== 'screen-post') el.classList.add('hidden'); // default keep post visible on load
             });
         }
 
+        function _updateActiveTabButton(name) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (name === 'post') document.getElementById('tab-alarms')?.classList.add('active');
+            if (name === 'timers') document.getElementById('tab-timers')?.classList.add('active');
+            if (name === 'stopwatch') document.getElementById('tab-stopwatch')?.classList.add('active');
+            if (name === 'sounds') document.getElementById('tab-sounds')?.classList.add('active');
+        }
+
+        function _tabDirection(fromName, toName) {
+            const fromIndex = TAB_ORDER.indexOf(fromName);
+            const toIndex = TAB_ORDER.indexOf(toName);
+            if (fromIndex === -1 || toIndex === -1) return 1;
+            return toIndex >= fromIndex ? 1 : -1;
+        }
+
+        function _pinScreenForSlide(el, topPx, zIndex) {
+            if (!el) return;
+            el.dataset.prevPosition = el.style.position || '';
+            el.dataset.prevTop = el.style.top || '';
+            el.dataset.prevLeft = el.style.left || '';
+            el.dataset.prevRight = el.style.right || '';
+            el.dataset.prevMargin = el.style.margin || '';
+            el.dataset.prevZ = el.style.zIndex || '';
+            el.dataset.prevTransform = el.style.transform || '';
+            Object.assign(el.style, {
+                position: 'absolute',
+                top: `${topPx}px`,
+                left: '0',
+                right: '0',
+                margin: '0 auto',
+                zIndex: String(zIndex)
+            });
+        }
+
+        function _restorePinnedScreen(el) {
+            if (!el) return;
+            el.style.position = el.dataset.prevPosition || '';
+            el.style.top = el.dataset.prevTop || '';
+            el.style.left = el.dataset.prevLeft || '';
+            el.style.right = el.dataset.prevRight || '';
+            el.style.margin = el.dataset.prevMargin || '';
+            el.style.zIndex = el.dataset.prevZ || '';
+            el.style.transform = el.dataset.prevTransform || '';
+            delete el.dataset.prevPosition;
+            delete el.dataset.prevTop;
+            delete el.dataset.prevLeft;
+            delete el.dataset.prevRight;
+            delete el.dataset.prevMargin;
+            delete el.dataset.prevZ;
+            delete el.dataset.prevTransform;
+        }
+
         function switchTab(name) {
             // name: 'post' | 'timers' | 'stopwatch' | 'sounds' | 'wake'
-            const mappings = {
-                'post': 'screen-post',
-                'wake': 'screen-wake',
-                'timers': 'screen-timers',
-                'stopwatch': 'screen-stopwatch',
-                'sounds': 'screen-sounds'
-            };
-            const targetId = mappings[name] || 'screen-post';
-            ['screen-wake','screen-post','screen-timers','screen-stopwatch','screen-sounds'].forEach(id => {
+            if (_tabTransitionLock) return;
+            const targetName = TAB_TO_SCREEN[name] ? name : 'post';
+            const targetId = TAB_TO_SCREEN[targetName];
+            const currentId = _activeScreenId;
+            const currentName = Object.keys(TAB_TO_SCREEN).find(k => TAB_TO_SCREEN[k] === currentId) || 'post';
+
+            if (currentId === targetId) {
+                _updateActiveTabButton(targetName);
+                return;
+            }
+
+            const outgoing = document.getElementById(currentId);
+            const incoming = document.getElementById(targetId);
+            const appUI = document.getElementById('app-ui');
+
+            if (!outgoing || !incoming || !appUI || typeof outgoing.animate !== 'function') {
+                ALL_SCREEN_IDS.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    if (id === targetId) {
+                        el.classList.remove('hidden');
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0) scale(1)';
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                });
+                _activeScreenId = targetId;
+                _updateActiveTabButton(targetName);
+                return;
+            }
+
+            _tabTransitionLock = true;
+            appUI.classList.add('tab-transitioning');
+            incoming.classList.remove('hidden');
+            incoming.style.opacity = '1';
+            incoming.style.pointerEvents = 'none';
+
+            const topAnchor = outgoing.offsetTop;
+            _pinScreenForSlide(outgoing, topAnchor, 5);
+            _pinScreenForSlide(incoming, topAnchor, 6);
+
+            const direction = _tabDirection(currentName, targetName);
+            const rootStyles = getComputedStyle(document.documentElement);
+            const duration = parseFloat(rootStyles.getPropertyValue('--tab-slide-duration')) || 760;
+            const baseEase = rootStyles.getPropertyValue('--tab-slide-ease').trim() || 'cubic-bezier(0.22, 0.9, 0.24, 1)';
+
+            const outgoingAnim = outgoing.animate([
+                { transform: 'translate3d(0%, 0, 0) scaleX(1)', opacity: 1, offset: 0 },
+                { transform: `translate3d(${direction * 22}%, 0, 0) scaleX(0.988)`, opacity: 0.98, offset: 0.25 },
+                { transform: `translate3d(${direction * 118}%, 0, 0) scaleX(0.958)`, opacity: 0.86, offset: 1 }
+            ], {
+                duration,
+                easing: baseEase,
+                fill: 'forwards'
+            });
+
+            const incomingAnim = incoming.animate([
+                { transform: `translate3d(${direction * -108}%, 0, 0) scaleX(0.972)`, opacity: 0.88, offset: 0 },
+                { transform: `translate3d(${direction * 6}%, 0, 0) scaleX(1.012)`, opacity: 1, offset: 0.78 },
+                { transform: 'translate3d(0%, 0, 0) scaleX(1)', opacity: 1, offset: 1 }
+            ], {
+                duration,
+                easing: baseEase,
+                fill: 'forwards'
+            });
+
+            Promise.all([outgoingAnim.finished, incomingAnim.finished]).finally(() => {
+                outgoing.classList.add('hidden');
+                incoming.classList.remove('hidden');
+                incoming.style.pointerEvents = 'auto';
+                incoming.style.opacity = '1';
+                outgoing.style.opacity = '';
+
+                _restorePinnedScreen(outgoing);
+                _restorePinnedScreen(incoming);
+
+                _activeScreenId = targetId;
+                _tabTransitionLock = false;
+                appUI.classList.remove('tab-transitioning');
+            });
+
+            ALL_SCREEN_IDS.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
-                if (id === targetId) {
-                    el.classList.remove('hidden');
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0) scale(1)';
-                } else {
+                if (id !== targetId && id !== currentId) {
                     el.classList.add('hidden');
                 }
             });
@@ -2318,12 +2458,7 @@
                 setSunUp();
             }
 
-            // update tab button active state
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if (name === 'post') document.getElementById('tab-alarms')?.classList.add('active');
-            if (name === 'timers') document.getElementById('tab-timers')?.classList.add('active');
-            if (name === 'stopwatch') document.getElementById('tab-stopwatch')?.classList.add('active');
-            if (name === 'sounds') document.getElementById('tab-sounds')?.classList.add('active');
+            _updateActiveTabButton(targetName);
         }
 
         // initialize tabs on load (keep existing behavior: show post screen first)
