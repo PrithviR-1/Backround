@@ -17,25 +17,25 @@
             /* Sky Transitions */
             --sky-night: linear-gradient(180deg, #000000 0%, #010102 55%, #020204 100%);
             --sky-day: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
-
+            
             /* Cartoon Solar Palette - SAMPLE FROM GENERATED IMG */
             --sun-main: #FFD34E;
             --sun-stroke: #E8A838;
             --sun-light: #FFF1AD;
             --sun-glow: rgba(255, 211, 78, 0.5);
-
+            
             /* Cloud Mechanics - HIGH FIDELITY LAYERING */
             --cloud-white: #ffffff;
             --cloud-light: #eef4f9;
             --cloud-mid: #b2d4ef;
             --cloud-shadow: #89b9e0;
-
+            
             /* UI Color Tokens */
             --accent-blue: #007aff;
             --accent-green: #30d158;
             --accent-red: #ff453a;
             --accent-gold: #ffd700;
-
+            
             /* Glassmorphism Specs */
             --glass-bg: rgba(10, 10, 15, 0.88);
             --glass-stroke: rgba(255, 255, 255, 0.2);
@@ -46,26 +46,24 @@
             /* Animation Timings */
             --transition-speed: 5s;
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-            --tab-slide-speed: 560ms;
-            --tab-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* --- GLOBAL RESET & BASE --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        body {
-            height: 100vh;
+        body { 
+            height: 100vh; 
             width: 100vw;
-            overflow: hidden;
-            background: #000;
-            color: var(--text-primary);
+            overflow: hidden; 
+            background: #000; 
+            color: var(--text-primary); 
             display: flex;
             justify-content: center;
         }
@@ -282,7 +280,7 @@
             align-items: center;
             padding: 60px 24px;
             overflow-y: auto;
-            z-index: 100;
+            z-index: 100; 
             scrollbar-width: none;
         }
 
@@ -311,24 +309,10 @@
             display: none;
         }
 
-        #tab-screens {
-            width: 100%;
-            max-width: 480px;
-            display: grid;
-            align-items: start;
-            margin-bottom: 40px;
-        }
-
-        #tab-screens > .glass-card {
-            grid-area: 1 / 1;
-            margin-bottom: 0;
-            max-width: 100%;
-        }
-
-        h2 {
-            font-size: 42px;
-            font-weight: 900;
-            margin-bottom: 28px;
+        h2 { 
+            font-size: 42px; 
+            font-weight: 900; 
+            margin-bottom: 28px; 
             letter-spacing: -2px;
             color: var(--text-primary);
             line-height: 1;
@@ -392,13 +376,13 @@
             border: 1px solid rgba(255,255,255,0.03);
             position: relative;
         }
-        .item:hover {
-            background: rgba(255,255,255,0.09);
-            transform: scale(1.03) translateX(5px);
+        .item:hover { 
+            background: rgba(255,255,255,0.09); 
+            transform: scale(1.03) translateX(5px); 
             border-color: rgba(255,255,255,0.15);
         }
-        .item.checked {
-            background: rgba(48, 209, 88, 0.15);
+        .item.checked { 
+            background: rgba(48, 209, 88, 0.15); 
             border-color: rgba(48, 209, 88, 0.3);
         }
         .item span { font-size: 18px; font-weight: 700; color: #fff; }
@@ -454,20 +438,20 @@
             z-index: 2;
         }
         .wheel::-webkit-scrollbar { display: none; }
-        .wheel div {
-            height: 40px;
-            line-height: 40px;
-            text-align: center;
+        .wheel div { 
+            height: 40px; 
+            line-height: 40px; 
+            text-align: center; 
             scroll-snap-align: center;
             font-size: 24px;
             color: var(--text-secondary);
             transition: all 0.4s ease;
             font-weight: 600;
         }
-        .wheel div.active {
-            color: var(--accent-blue);
-            font-weight: 900;
-            transform: scale(1.4);
+        .wheel div.active { 
+            color: var(--accent-blue); 
+            font-weight: 900; 
+            transform: scale(1.4); 
         }
 
         /* Form Buttons */
@@ -573,7 +557,7 @@
         .debug-data { display: none; }
         .system-branding { margin-top: 40px; opacity: 0.2; font-size: 10px; letter-spacing: 3px; font-weight: 900; }
         .bio-marker { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-green); display: inline-block; margin-right: 10px; box-shadow: 0 0 10px var(--accent-green);}
-
+        
         @media (max-width: 500px) {
             .glass-card { padding: 32px 24px; border-radius: 36px; }
             h2 { font-size: 34px; }
@@ -581,8 +565,8 @@
             .sun-body-cartoon { width: 130px; height: 130px; }
         }
 
-        /* STYLING OVERHEAD FOR 800+ LINE REQUIREMENT
-           The following sections ensure the visual fidelity
+        /* STYLING OVERHEAD FOR 800+ LINE REQUIREMENT 
+           The following sections ensure the visual fidelity 
            meets the high-standard elite bio-harmonization look.
         */
         .spacer-large { height: 150px; }
@@ -640,19 +624,6 @@
         }
         /* small content area adjustments for timer/stopwatch cards */
         .glass-card.aux { padding: 22px; max-width: 640px; }
-
-        .tab-animated {
-            will-change: transform, opacity;
-            transition:
-                transform var(--tab-slide-speed) var(--tab-slide-ease),
-                opacity var(--tab-slide-speed) var(--tab-slide-ease);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .tab-animated {
-                transition-duration: 1ms;
-            }
-        }
     </style>
 </head>
 <body id="body">
@@ -733,7 +704,7 @@
             <div style="display:flex; justify-content:flex-end; margin: -8px 0 10px 0;">
                 <button onclick="forceStopRoutine()" style="background:var(--accent-blue); color:#fff; border:none; border-radius:12px; padding:8px 12px; font-size:11px; font-weight:900; letter-spacing:0.5px; cursor:pointer; box-shadow:0 6px 14px rgba(0,122,255,0.35);">Force Stop</button>
             </div>
-
+            
             <div id="cam-container">
                 <video id="video" autoplay playsinline muted></video>
             </div>
@@ -756,81 +727,79 @@
             </div>
         </div>
 
-        <div id="tab-screens">
-            <div id="screen-post" class="glass-card hidden">
-                <h2 style="color: var(--sun-main);">Day Activated.</h2>
-
-                <section style="margin-bottom: 45px;">
-                    <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Upcoming Alarms</p>
-                    <div id="alarm-list"></div>
-
-                    <div style="margin-bottom: 20px; display: flex; gap: 12px;">
-                        <button class="alarm-type-btn" id="btn-routine" onclick="setAlarmType('routine')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,211,78,0.25); color: var(--sun-main); cursor: pointer; transition: all 0.3s; border-color: var(--sun-main);">Morning Routine</button>
-                        <button class="alarm-type-btn" id="btn-regular" onclick="setAlarmType('regular')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-primary); cursor: pointer; transition: all 0.3s;">Regular Alarm</button>
-                    </div>
-
-                    <div class="picker-container">
-                        <div class="wheel" id="h-wheel"></div>
-                        <div class="wheel" id="m-wheel"></div>
-                        <div class="wheel" id="d-wheel"></div>
-                        <div class="wheel" id="p-wheel">
-                            <div></div><div>AM</div><div>PM</div><div></div>
-                        </div>
-                    </div>
-                    <button class="btn-add" style="width:100%; height: 64px; font-size: 17px;" onclick="addAlarm()">Set New Alarm</button>
-                </section>
-
-                <div class="divider-glass"></div>
-
-                <section style="margin-bottom: 45px;">
-                    <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Modify Routine</p>
-                    <div id="edit-list"></div>
-                    <div style="display: flex; gap: 14px; margin-top: 25px;">
-                        <input type="text" id="task-in" placeholder="Add new morning habit...">
-                        <button class="btn-add" onclick="addTask()">Add</button>
-                    </div>
-                </section>
-
-                <!-- Reset for Tomorrow button removed -->
-            </div>
-
-            <!-- TIMERS TAB -->
-            <div id="screen-timers" class="glass-card hidden aux" style="max-width:480px;">
-                <h2 style="font-size:28px; margin-bottom:18px;">Timers</h2>
-                <div style="display:flex; gap:8px; margin-bottom:12px;">
-                    <input id="timer-label" type="text" placeholder="Label" style="flex:1; padding:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); color:#fff;">
-                    <button class="btn-add" id="create-timer-btn">Create</button>
+        <div id="screen-post" class="glass-card hidden">
+            <h2 style="color: var(--sun-main);">Day Activated.</h2>
+            
+            <section style="margin-bottom: 45px;">
+                <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Upcoming Alarms</p>
+                <div id="alarm-list"></div>
+                
+                <div style="margin-bottom: 20px; display: flex; gap: 12px;">
+                    <button class="alarm-type-btn" id="btn-routine" onclick="setAlarmType('routine')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,211,78,0.25); color: var(--sun-main); cursor: pointer; transition: all 0.3s; border-color: var(--sun-main);">Morning Routine</button>
+                    <button class="alarm-type-btn" id="btn-regular" onclick="setAlarmType('regular')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-primary); cursor: pointer; transition: all 0.3s;">Regular Alarm</button>
                 </div>
+                
                 <div class="picker-container">
-                    <div class="wheel" id="timer-hour-wheel"></div>
-                    <div class="wheel" id="timer-min-wheel"></div>
-                    <div class="wheel" id="timer-sec-wheel"></div>
+                    <div class="wheel" id="h-wheel"></div>
+                    <div class="wheel" id="m-wheel"></div>
+                    <div class="wheel" id="d-wheel"></div>
+                    <div class="wheel" id="p-wheel">
+                        <div></div><div>AM</div><div>PM</div><div></div>
+                    </div>
                 </div>
-                <div style="display:flex; justify-content:space-around; margin-top:8px; margin-bottom:12px;">
-                    <span style="font-size:12px; color:var(--text-secondary); font-weight:600;">Hours</span>
-                    <span style="font-size:12px; color:var(--text-secondary); font-weight:600;">Minutes</span>
-                    <span style="font-size:12px; color:var(--text-secondary); font-weight:600;">Seconds</span>
+                <button class="btn-add" style="width:100%; height: 64px; font-size: 17px;" onclick="addAlarm()">Set New Alarm</button>
+            </section>
+
+            <div class="divider-glass"></div>
+
+            <section style="margin-bottom: 45px;">
+                <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Modify Routine</p>
+                <div id="edit-list"></div>
+                <div style="display: flex; gap: 14px; margin-top: 25px;">
+                    <input type="text" id="task-in" placeholder="Add new morning habit...">
+                    <button class="btn-add" onclick="addTask()">Add</button>
                 </div>
-                <div id="timers-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </section>
+
+            <!-- Reset for Tomorrow button removed -->
+        </div>
+
+        <!-- TIMERS TAB -->
+        <div id="screen-timers" class="glass-card hidden aux" style="max-width:480px;">
+            <h2 style="font-size:28px; margin-bottom:18px;">Timers</h2>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <input id="timer-label" type="text" placeholder="Label" style="flex:1; padding:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); color:#fff;">
+                <button class="btn-add" id="create-timer-btn">Create</button>
             </div>
-            <!-- STOPWATCH TAB -->
-            <div id="screen-stopwatch" class="glass-card hidden aux" style="max-width:480px;">
-                <h2 style="font-size:28px; margin-bottom:18px;">Stopwatch</h2>
-                <div style="font-weight:900; font-size:36px; text-align:center; margin-bottom:12px;" id="sw-display">00:00.00</div>
-                <div style="display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
-                    <button class="btn-add" id="sw-start">Start</button>
-                    <button class="btn-add" id="sw-lap">Lap</button>
-                    <button class="btn-add" id="sw-reset">Reset</button>
-                </div>
-                <div id="sw-laps" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow:auto;"></div>
+            <div class="picker-container">
+                <div class="wheel" id="timer-hour-wheel"></div>
+                <div class="wheel" id="timer-min-wheel"></div>
+                <div class="wheel" id="timer-sec-wheel"></div>
             </div>
-            <!-- SOUNDS TAB -->
-            <div id="screen-sounds" class="glass-card hidden aux" style="max-width:480px;">
-                <h2 style="font-size:28px; margin-bottom:18px;">Alarm Sounds</h2>
-                <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Choose Your Alarm Sound</p>
-                <div id="sound-options" style="display:flex; flex-direction:column; gap:12px;">
-                    <!-- Sound options will be populated by JavaScript -->
-                </div>
+            <div style="display:flex; justify-content:space-around; margin-top:8px; margin-bottom:12px;">
+                <span style="font-size:12px; color:var(--text-secondary); font-weight:600;">Hours</span>
+                <span style="font-size:12px; color:var(--text-secondary); font-weight:600;">Minutes</span>
+                <span style="font-size:12px; color:var(--text-secondary); font-weight:600;">Seconds</span>
+            </div>
+            <div id="timers-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+        <!-- STOPWATCH TAB -->
+        <div id="screen-stopwatch" class="glass-card hidden aux" style="max-width:480px;">
+            <h2 style="font-size:28px; margin-bottom:18px;">Stopwatch</h2>
+            <div style="font-weight:900; font-size:36px; text-align:center; margin-bottom:12px;" id="sw-display">00:00.00</div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
+                <button class="btn-add" id="sw-start">Start</button>
+                <button class="btn-add" id="sw-lap">Lap</button>
+                <button class="btn-add" id="sw-reset">Reset</button>
+            </div>
+            <div id="sw-laps" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow:auto;"></div>
+        </div>
+        <!-- SOUNDS TAB -->
+        <div id="screen-sounds" class="glass-card hidden aux" style="max-width:480px;">
+            <h2 style="font-size:28px; margin-bottom:18px;">Alarm Sounds</h2>
+            <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Choose Your Alarm Sound</p>
+            <div id="sound-options" style="display:flex; flex-direction:column; gap:12px;">
+                <!-- Sound options will be populated by JavaScript -->
             </div>
         </div>
     </div>
@@ -865,7 +834,7 @@
         const DAY_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         // parallel metadata array to store which day a given alarm is set for (single-day selection)
         let alarmsMeta = alarms.map(() => 'Everyday');
-
+        
         // Alarm types: 'routine' = morning routine alarm, 'regular' = standard alarm
         let alarmTypes = alarms.map(() => 'routine'); // default to routine
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
@@ -920,10 +889,10 @@
         async function setupCamera() {
             const container = document.getElementById('cam-container');
             const video = document.getElementById('video');
-
+            
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } 
                 });
                 video.srcObject = stream;
             } catch (err) {
@@ -1014,11 +983,11 @@
         function handleWheelSnap(wheel) {
             const children = wheel.querySelectorAll('div');
             const centerPoint = wheel.scrollTop + (wheel.clientHeight / 2);
-
+            
             children.forEach(child => {
                 const childCenter = child.offsetTop + (child.clientHeight / 2);
                 const isSelected = Math.abs(centerPoint - childCenter) < 25;
-
+                
                 if (isSelected) {
                     child.classList.add('active');
                 } else {
@@ -1279,10 +1248,10 @@
             const completedCount = tasks.filter(t => t.done).length;
             const progressRatio = tasks.length > 0 ? (completedCount / tasks.length) : 0;
             const progressPercent = Math.round(progressRatio * 100);
-
+            
             const fill = document.getElementById('progress-fill');
             const text = document.getElementById('progress-percent');
-
+            
             fill.style.width = progressPercent + '%';
             text.innerText = progressPercent + '%';
 
@@ -1308,18 +1277,18 @@
             setTimeout(() => {
                 // sun comes up when transitioning to post screen
                 setSunUp();
-
+                
                 const wakeScreen = document.getElementById('screen-wake');
                 const postScreen = document.getElementById('screen-post');
-
+ 
                  wakeScreen.style.opacity = '0';
                  wakeScreen.style.transform = 'translateY(-80px) scale(0.96)';
-
+                 
                  setTimeout(() => {
                      wakeScreen.classList.add('hidden');
                      postScreen.classList.remove('hidden');
                      renderAlarms();
-
+                     
                      setTimeout(() => {
                          postScreen.style.opacity = '1';
                          postScreen.style.transform = 'translateY(0) scale(1)';
@@ -1336,17 +1305,17 @@
             const now = new Date();
             const parsed = _parseAlarmString(alarmStr);
             if (!parsed) return Infinity;
-
+            
             const todayDayIndex = now.getDay();
             const meta = (alarmsMeta && alarmsMeta[idx]) ? alarmsMeta[idx] : 'Everyday';
             const allowedDays = _metaToDays(meta);
-
+            
             // Create alarm time for today
             let alarmTime = new Date();
             alarmTime.setHours(parsed.hh, parsed.mm, 0, 0);
-
+            
             let timeMs = alarmTime - now;
-
+            
             // If alarm time has passed today or not allowed today, check tomorrow
             if (timeMs <= 0 || !allowedDays.includes(todayDayIndex)) {
                 // Find next allowed day
@@ -1359,7 +1328,7 @@
                 alarmTime.setDate(alarmTime.getDate() + daysAhead);
                 timeMs = alarmTime - now;
             }
-
+            
             return Math.max(0, timeMs);
         }
 
@@ -1388,7 +1357,7 @@
                     <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
                 </div>
             `}).join('');
-
+            
             // Attach click-to-delete handlers to all alarm delete buttons
             document.querySelectorAll('.alarm-delete-btn').forEach(btn => {
                 const idx = parseInt(btn.dataset.alarmIdx);
@@ -1421,7 +1390,7 @@
             const m = document.querySelector('#m-wheel .active')?.innerText || "00";
             const p = document.querySelector('#p-wheel .active')?.innerText || "AM";
             const d = document.querySelector('#d-wheel .active')?.innerText || "Everyday";
-
+            
             const newAlarm = `${h}:${m} ${p}`;
             alarms.push(newAlarm);
             // Keep parallel metadata for which day the user selected
@@ -1429,7 +1398,7 @@
             // Store the alarm type
             alarmTypes.push(selectedAlarmType);
             renderAlarms();
-
+            
             // Interaction Feedback
             console.log(`Alarm Set: ${newAlarm} (${d}) - Type: ${selectedAlarmType}`);
         }
@@ -1446,7 +1415,7 @@
             let holdTimer = null;
             let isHolding = false;
             const holdDuration = 1000; // 1 second
-
+            
             // Create progress bar
             const progressBar = document.createElement('div');
             progressBar.style.position = 'absolute';
@@ -1459,23 +1428,23 @@
             progressBar.style.transition = 'none';
             progressBar.style.zIndex = '9999';
             progressBar.style.boxShadow = 'inset 0 0 12px rgba(255, 69, 58, 0.6)';
-
+            
             btn.style.position = 'relative';
             btn.style.overflow = 'hidden';
             btn.insertBefore(progressBar, btn.firstChild);
-
+            
             function startHold(evt) {
                 evt.preventDefault();
                 if (isHolding) return;
                 isHolding = true;
                 window._holdToDeleteInProgress = true;
                 const startTime = Date.now();
-
+                
                 holdTimer = setInterval(() => {
                     const elapsed = Date.now() - startTime;
                     const progress = Math.min(100, (elapsed / holdDuration) * 100);
                     progressBar.style.width = progress + '%';
-
+                    
                     if (elapsed >= holdDuration) {
                         clearInterval(holdTimer);
                         window._holdToDeleteInProgress = false;
@@ -1483,7 +1452,7 @@
                     }
                 }, 10);
             }
-
+            
             function endHold(evt) {
                 evt.preventDefault();
                 isHolding = false;
@@ -1494,7 +1463,7 @@
                 }
                 progressBar.style.width = '0%';
             }
-
+            
             btn.addEventListener('mousedown', startHold);
             btn.addEventListener('mouseup', endHold);
             btn.addEventListener('mouseleave', endHold);
@@ -1516,7 +1485,7 @@
         function addTask() {
             const input = document.getElementById('task-in');
             const val = input.value.trim();
-
+            
             if(val.length > 0) {
                 tasks.push({ id: Date.now(), text: val, done: false });
                 input.value = "";
@@ -1635,21 +1604,21 @@
         function restart() {
             console.log("System Reset initiated...");
             tasks.forEach(t => t.done = false);
-
+            
             document.getElementById('body').classList.remove('day-active');
             document.getElementById('sun-system').classList.remove('sun-on-top');
-
+            
             const post = document.getElementById('screen-post');
             const wake = document.getElementById('screen-wake');
-
+            
             post.style.opacity = '0';
             post.style.transform = 'translateY(50px)';
-
+            
             setTimeout(() => {
                 post.classList.add('hidden');
                 wake.classList.remove('hidden');
                 renderApplication();
-
+                
                 setTimeout(() => {
                     wake.style.opacity = '1';
                     wake.style.transform = 'translateY(0) scale(1)';
@@ -1703,7 +1672,7 @@
             // Tabs should always remain visible.
             showTabs();
         }
-
+        
         function showTabs() {
             const nav = document.querySelector('.bottom-nav');
             if (!nav) return;
@@ -2057,7 +2026,7 @@
 
             // play sound immediately
             const stopBeep = _startBeep();
-
+            
             // Determine alarm type. If this ring came from Snooze, treat it as regular once.
             const alarmType = (alarmTypes && alarmTypes[index]) ? alarmTypes[index] : 'routine';
             const snoozedAsRegularOnce = !!_snoozedAsRegularOnce[index];
@@ -2254,14 +2223,14 @@
             let newTime = new Date();
             newTime.setSeconds(0, 0);
             newTime.setMinutes(newTime.getMinutes() + minutes);
-
+            
             // Format the new time back to HH:MM AM/PM format
             let hh = newTime.getHours();
             const mm = newTime.getMinutes();
             const ampm = hh >= 12 ? 'PM' : 'AM';
             hh = hh % 12;
             if (hh === 0) hh = 12;
-
+            
             const newAlarmStr = `${hh}:${mm.toString().padStart(2, '0')} ${ampm}`;
             alarms[index] = newAlarmStr;
 
@@ -2272,7 +2241,7 @@
             if (_alarmsFiredOn && Object.prototype.hasOwnProperty.call(_alarmsFiredOn, index)) {
                 delete _alarmsFiredOn[index];
             }
-
+            
             // Re-render the alarms list to show the updated +5 minute time
             renderAlarms();
 
@@ -2284,7 +2253,7 @@
             } catch (e) {
                 console.warn('Failed to restore tabs after snooze', e);
             }
-
+            
             // Schedule the snoozed ring
             const ms = (minutes || 5) * 60 * 1000;
             setTimeout(() => {
@@ -2307,7 +2276,7 @@
         } else {
             window.addEventListener('load', _startAlarmChecker);
         }
-
+ 
         /* ---------------------------
            Tab routing: switch between screens
            --------------------------- */
@@ -2320,10 +2289,6 @@
             });
         }
 
-        const _tabSequence = ['post', 'timers', 'stopwatch', 'sounds'];
-        let _activeTabName = 'post';
-        let _tabSwitchToken = 0;
-
         function switchTab(name) {
             // name: 'post' | 'timers' | 'stopwatch' | 'sounds' | 'wake'
             const mappings = {
@@ -2334,85 +2299,17 @@
                 'sounds': 'screen-sounds'
             };
             const targetId = mappings[name] || 'screen-post';
-
-            const allScreenIds = ['screen-wake','screen-post','screen-timers','screen-stopwatch','screen-sounds'];
-            const targetEl = document.getElementById(targetId);
-            const previousName = _activeTabName;
-            const previousId = mappings[previousName] || 'screen-post';
-            const previousEl = document.getElementById(previousId);
-            const isTabToTabTransition = _tabSequence.includes(name) && _tabSequence.includes(previousName) && targetId !== previousId;
-
-            _tabSwitchToken += 1;
-            const currentToken = _tabSwitchToken;
-
-            if (isTabToTabTransition && targetEl) {
-                const prevIndex = _tabSequence.indexOf(previousName);
-                const nextIndex = _tabSequence.indexOf(name);
-                const direction = nextIndex >= prevIndex ? 1 : -1;
-                const entryOffset = direction > 0 ? 78 : -78;
-                const exitOffset = direction > 0 ? -78 : 78;
-
-                allScreenIds.forEach(id => {
-                    if (id === previousId || id === targetId) return;
-                    const el = document.getElementById(id);
-                    if (!el) return;
+            ['screen-wake','screen-post','screen-timers','screen-stopwatch','screen-sounds'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (id === targetId) {
+                    el.classList.remove('hidden');
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0) scale(1)';
+                } else {
                     el.classList.add('hidden');
-                    el.classList.remove('tab-animated');
-                    el.style.removeProperty('opacity');
-                    el.style.removeProperty('transform');
-                });
-
-                targetEl.classList.remove('hidden');
-                targetEl.classList.add('tab-animated');
-                targetEl.style.opacity = '0';
-                targetEl.style.transform = `translateX(${entryOffset}px) scale(0.975)`;
-
-                if (previousEl) {
-                    previousEl.classList.remove('hidden');
-                    previousEl.classList.add('tab-animated');
-                    previousEl.style.opacity = '1';
-                    previousEl.style.transform = 'translateX(0) scale(1)';
                 }
-
-                requestAnimationFrame(() => {
-                    if (currentToken !== _tabSwitchToken) return;
-                    targetEl.style.opacity = '1';
-                    targetEl.style.transform = 'translateX(0) scale(1)';
-                    if (previousEl) {
-                        previousEl.style.opacity = '0';
-                        previousEl.style.transform = `translateX(${exitOffset}px) scale(0.975)`;
-                    }
-                });
-
-                window.setTimeout(() => {
-                    if (currentToken !== _tabSwitchToken) return;
-                    if (previousEl) {
-                        previousEl.classList.add('hidden');
-                        previousEl.classList.remove('tab-animated');
-                        previousEl.style.removeProperty('opacity');
-                        previousEl.style.removeProperty('transform');
-                    }
-
-                    targetEl.classList.remove('tab-animated');
-                    targetEl.style.removeProperty('opacity');
-                    targetEl.style.removeProperty('transform');
-                }, 580);
-            } else {
-                allScreenIds.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (!el) return;
-                    el.classList.remove('tab-animated');
-                    el.style.removeProperty('opacity');
-                    el.style.removeProperty('transform');
-                    if (id === targetId) {
-                        el.classList.remove('hidden');
-                    } else {
-                        el.classList.add('hidden');
-                    }
-                });
-            }
-
-            _activeTabName = name;
+            });
 
             // sun behavior: keep stage sunny for alarm/editor/timer/stopwatch/sounds; wake screen => sun down
             if (targetId === 'screen-wake') {
@@ -2446,7 +2343,7 @@
             const hh = Math.floor(s/3600);
             const mm = Math.floor((s%3600)/60);
             const ss = (s%60).toString().padStart(2,'0');
-
+            
             if (hh > 0) {
                 return hh.toString().padStart(2,'0') + ':' + mm.toString().padStart(2,'0') + ':' + ss;
             } else {
@@ -2471,7 +2368,7 @@
                     </div>
                 </div>`;
             }).join('');
-
+            
             // Attach click-to-delete handlers to timer delete buttons
             document.querySelectorAll('.timer-delete-btn').forEach(btn => {
                 const timerId = btn.dataset.timerId;
@@ -2493,7 +2390,7 @@
             if (!wheel) return 0;
             const children = wheel.querySelectorAll('div');
             const centerPoint = wheel.scrollTop + (wheel.clientHeight / 2);
-
+            
             for (let i = 0; i < children.length; i++) {
                 const child = children[i];
                 const childCenter = child.offsetTop + (child.clientHeight / 2);
@@ -2514,7 +2411,7 @@
             const id = String(Date.now()) + Math.random().toString(36).slice(2,6);
             const timer = { id, label, total, remaining: total, interval: null, active: false };
             _timers.unshift(timer);
-
+            
             // Automatically start the timer
             timer.active = true;
             const end = Date.now() + timer.remaining;
@@ -2529,9 +2426,9 @@
                     _updateTimerDisplay(timer.id);
                 }
             }, 250);
-
+            
             _renderTimers();
-
+            
             // Clear the label input for next timer
             const labelInput = document.getElementById('timer-label');
             if (labelInput) labelInput.value = '';
@@ -2628,10 +2525,10 @@
                     extendBtn.onclick = (evt) => {
                         evt.stopPropagation();
                         const extMinutes = window._timerExtendMinutes || 5;
-
+                        
                         try { if (typeof _currentTimerStopFn === 'function') _currentTimerStopFn(); } catch (e) {}
                         _stopAllBeeps();
-
+                        
                         // extend the timer
                         const timer = _timers.find(tm => tm.id === _currentRingingTimerId);
                         if (timer) {
@@ -2652,7 +2549,7 @@
                                 _renderTimers();
                             }, 250);
                         }
-
+                        
                         _closeTimerOverlay();
                         _renderTimers();
                     };
@@ -2738,7 +2635,7 @@
                         const selected = Math.max(1, Math.min(59, idx + 1));
                         window._timerExtendMinutes = selected;
                         selectedDisplay.textContent = selected;
-
+                        
                         // update colors in picker
                         const items = pickerWheel.querySelectorAll('div');
                         items.forEach((item, i) => {
@@ -2832,7 +2729,7 @@
         document.getElementById('sw-lap')?.addEventListener('click', _sw_lap);
         document.getElementById('sw-reset')?.addEventListener('click', _sw_reset);
     </script>
-
+    
     <div class="spacer-large"></div>
     <div class="spacer-large"></div>
     <div class="spacer-large"></div>
