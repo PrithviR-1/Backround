@@ -118,36 +118,85 @@
             position: relative;
             width: 170px;
             height: 170px;
-            background: var(--sun-main);
-            border: 10px solid var(--sun-stroke);
             border-radius: 50%;
             z-index: 10;
-            box-shadow: 0 0 80px var(--sun-glow), 0 0 120px var(--sun-glow);
             overflow: hidden;
+            transform-style: preserve-3d;
+            background:
+                radial-gradient(circle at 34% 32%, rgba(255, 251, 211, 0.95) 0 16%, rgba(255, 219, 128, 0.88) 24%, rgba(255, 180, 70, 0.75) 42%, rgba(255, 126, 38, 0.62) 65%, rgba(194, 80, 16, 0.64) 100%);
+            border: 8px solid rgba(255, 198, 77, 0.8);
+            box-shadow:
+                inset -18px -20px 34px rgba(120, 33, 3, 0.34),
+                inset 22px 18px 30px rgba(255, 241, 170, 0.4),
+                0 0 70px rgba(255, 188, 65, 0.7),
+                0 0 150px rgba(255, 141, 40, 0.48);
+            animation: sun-breathe 5.8s ease-in-out infinite;
         }
 
-        /* Highlight Spot */
         .sun-body-cartoon::before {
             content: "";
             position: absolute;
-            top: 15%;
-            left: 15%;
-            width: 70px;
-            height: 70px;
-            background: var(--sun-light);
+            inset: 12px;
             border-radius: 50%;
-            opacity: 0.9;
+            background:
+                radial-gradient(circle at 30% 24%, rgba(255, 255, 236, 0.95), rgba(255, 207, 119, 0.4) 35%, rgba(255, 143, 43, 0.28) 60%, rgba(255, 95, 18, 0) 100%);
+            filter: blur(1px);
+            mix-blend-mode: screen;
+            animation: core-flicker 2.8s ease-in-out infinite alternate;
+        }
+
+        .sun-body-cartoon::after {
+            content: "";
+            position: absolute;
+            inset: -16px;
+            border-radius: 50%;
+            background: conic-gradient(from 20deg, rgba(255, 241, 188, 0.2), rgba(255, 139, 44, 0.55), rgba(255, 242, 205, 0.15), rgba(255, 103, 10, 0.42), rgba(255, 241, 188, 0.2));
+            filter: blur(8px);
+            opacity: 0.72;
+            animation: solar-currents 8s linear infinite;
+            z-index: -1;
+        }
+
+        .sun-core {
+            position: absolute;
+            inset: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 48% 45%, rgba(255, 255, 228, 0.9), rgba(255, 201, 98, 0.7) 45%, rgba(255, 149, 40, 0.35) 70%, rgba(255, 126, 40, 0) 100%);
+            mix-blend-mode: screen;
+            animation: core-flicker 1.9s ease-in-out infinite alternate;
+        }
+
+        .sun-plasma {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 18% 72%, rgba(255, 216, 142, 0.5), rgba(255, 170, 78, 0) 42%),
+                radial-gradient(circle at 82% 20%, rgba(255, 227, 163, 0.42), rgba(255, 142, 42, 0) 40%),
+                radial-gradient(circle at 55% 88%, rgba(255, 120, 48, 0.45), rgba(255, 99, 22, 0) 55%);
+            mix-blend-mode: overlay;
+            animation: plasma-shift 6.5s ease-in-out infinite alternate;
+        }
+
+        .sun-rim-light {
+            position: absolute;
+            inset: 5px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 246, 207, 0.5);
+            box-shadow: inset 0 0 22px rgba(255, 248, 204, 0.38);
+            opacity: 0.85;
+            animation: rim-shimmer 4.5s ease-in-out infinite;
         }
 
         /* Ambient Glow Pulse */
         .sun-aura {
             position: absolute;
-            width: 220px;
-            height: 220px;
-            background: var(--sun-glow);
+            width: 260px;
+            height: 260px;
             border-radius: 50%;
-            filter: blur(40px);
-            animation: sun-pulse 4s ease-in-out infinite alternate;
+            background: radial-gradient(circle, rgba(255, 229, 140, 0.65) 0%, rgba(255, 157, 46, 0.35) 45%, rgba(255, 120, 30, 0.05) 74%, rgba(255, 120, 30, 0) 100%);
+            filter: blur(34px);
+            animation: sun-pulse 3.8s ease-in-out infinite alternate;
         }
 
 
@@ -499,8 +548,34 @@
         @keyframes rotate-sun { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes rotate-sun-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
         @keyframes sun-pulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.4); opacity: 0.9; }
+            0% { transform: scale(0.95); opacity: 0.45; }
+            100% { transform: scale(1.35); opacity: 0.88; }
+        }
+
+        @keyframes sun-breathe {
+            0% { transform: scale(1) rotate(-1deg); }
+            50% { transform: scale(1.045) rotate(1deg); }
+            100% { transform: scale(1) rotate(-1deg); }
+        }
+
+        @keyframes core-flicker {
+            0% { opacity: 0.72; transform: translate3d(0, 0, 0) scale(0.98); }
+            100% { opacity: 1; transform: translate3d(2px, -1px, 0) scale(1.06); }
+        }
+
+        @keyframes solar-currents {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes plasma-shift {
+            0% { transform: translate3d(-2px, 2px, 0) scale(1); opacity: 0.7; }
+            100% { transform: translate3d(3px, -3px, 0) scale(1.07); opacity: 1; }
+        }
+
+        @keyframes rim-shimmer {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
         }
         @keyframes float {
             0% { transform: translate(0, 0) scale(1); }
@@ -644,7 +719,11 @@
             <div class="sun-aura"></div>
             <div class="sun-ray-layer back"></div>
             <div class="sun-ray-layer"></div>
-            <div class="sun-body-cartoon"></div>
+            <div class="sun-body-cartoon">
+                <div class="sun-core"></div>
+                <div class="sun-plasma"></div>
+                <div class="sun-rim-light"></div>
+            </div>
         </div>
 
         <div id="starfield" class="starfield" aria-hidden="true"></div>
