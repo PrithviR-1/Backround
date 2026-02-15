@@ -2308,6 +2308,28 @@
         let _activeTabName = 'post';
         let _tabSwitchToken = 0;
 
+        function _pinTabForSlide(el, topPx, widthPx, zIndexValue) {
+            if (!el) return;
+            el.style.position = 'absolute';
+            el.style.left = '0';
+            el.style.right = '0';
+            el.style.top = `${topPx}px`;
+            el.style.width = `${widthPx}px`;
+            el.style.margin = '0 auto';
+            el.style.zIndex = String(zIndexValue);
+        }
+
+        function _clearPinnedTabStyles(el) {
+            if (!el) return;
+            el.style.removeProperty('position');
+            el.style.removeProperty('left');
+            el.style.removeProperty('top');
+            el.style.removeProperty('right');
+            el.style.removeProperty('width');
+            el.style.removeProperty('margin');
+            el.style.removeProperty('z-index');
+        }
+
         function switchTab(name) {
             // name: 'post' | 'timers' | 'stopwatch' | 'sounds' | 'wake'
             const mappings = {
@@ -2344,18 +2366,39 @@
                     el.classList.remove('tab-animated');
                     el.style.removeProperty('opacity');
                     el.style.removeProperty('transform');
+                    el.style.removeProperty('pointer-events');
+                    _clearPinnedTabStyles(el);
                 });
 
-                targetEl.classList.remove('hidden');
+                const appUi = document.getElementById('app-ui');
+                const anchorTop = previousEl ? previousEl.offsetTop : targetEl.offsetTop;
+                const pinnedWidth = previousEl
+                    ? Math.round(previousEl.getBoundingClientRect().width)
+                    : Math.round(targetEl.getBoundingClientRect().width);
+
+                _pinTabForSlide(targetEl, anchorTop, pinnedWidth, 4);
                 targetEl.classList.add('tab-animated');
+                targetEl.classList.remove('hidden');
+                targetEl.style.transition = 'none';
                 targetEl.style.opacity = '0';
-                targetEl.style.transform = `translateX(${entryOffset}px) scale(0.975)`;
+                targetEl.style.transform = `translateX(${entryOffset}px) scale(0.985)`;
 
                 if (previousEl) {
-                    previousEl.classList.remove('hidden');
+                    _pinTabForSlide(previousEl, anchorTop, pinnedWidth, 5);
                     previousEl.classList.add('tab-animated');
+                    previousEl.classList.remove('hidden');
+                    previousEl.style.transition = 'none';
                     previousEl.style.opacity = '1';
                     previousEl.style.transform = 'translateX(0) scale(1)';
+                    previousEl.style.pointerEvents = 'none';
+                }
+
+                targetEl.offsetWidth;
+                targetEl.style.removeProperty('transition');
+                if (previousEl) previousEl.style.removeProperty('transition');
+                if (appUi) {
+                    const previousHeight = previousEl ? previousEl.offsetHeight : 0;
+                    appUi.style.minHeight = `${Math.max(targetEl.offsetHeight, previousHeight)}px`;
                 }
 
                 requestAnimationFrame(() => {
@@ -2375,19 +2418,27 @@
                         previousEl.classList.remove('tab-animated');
                         previousEl.style.removeProperty('opacity');
                         previousEl.style.removeProperty('transform');
+                        previousEl.style.removeProperty('pointer-events');
+                        _clearPinnedTabStyles(previousEl);
                     }
 
                     targetEl.classList.remove('tab-animated');
                     targetEl.style.removeProperty('opacity');
                     targetEl.style.removeProperty('transform');
+                    _clearPinnedTabStyles(targetEl);
+                    if (appUi) appUi.style.removeProperty('min-height');
                 }, 580);
             } else {
+                const appUi = document.getElementById('app-ui');
+                if (appUi) appUi.style.removeProperty('min-height');
                 allScreenIds.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el) return;
                     el.classList.remove('tab-animated');
                     el.style.removeProperty('opacity');
                     el.style.removeProperty('transform');
+                    el.style.removeProperty('pointer-events');
+                    _clearPinnedTabStyles(el);
                     if (id === targetId) {
                         el.classList.remove('hidden');
                     } else {
