@@ -646,6 +646,27 @@
         }
         /* small content area adjustments for timer/stopwatch cards */
         .glass-card.aux { padding: 22px; max-width: 640px; }
+
+
+        /* Press Physics Layer (non-layout, pointer-event driven) */
+        .btn-primary,
+        .btn-add,
+        .tab-btn,
+        button,
+        [role="button"],
+        [onclick] {
+            will-change: transform;
+            transform: translateZ(0);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary:active,
+        .btn-add:active,
+        .tab-btn:active {
+            transform: none;
+        }
+
     </style>
 </head>
 <body id="body">
@@ -874,6 +895,7 @@
             initNightSky();
             initCloudsMotion();
             initClickRadar();
+            initPressPhysics();
 
             // Show alarm / routine editor screen first (non-destructive)
             try {
@@ -1043,6 +1065,126 @@
                     try { if (ring.parentNode) ring.parentNode.removeChild(ring); } catch (e) {}
                 }, { once: true });
             }, { passive: true });
+        }
+
+
+        // 4.46 Button press physics: soft compression + spring release for pointer interactions.
+        function initPressPhysics() {
+            const activePresses = new Map();
+            const runningAnimations = new WeakMap();
+            const downEase = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
+            const springEase = 'cubic-bezier(0.22, 1.35, 0.36, 1)';
+
+            const getPressableTarget = (start) => {
+                if (!start || typeof start.closest !== 'function') return null;
+                const candidate = start.closest('.btn-add, .btn-primary, .tab-btn, button, [role="button"], [onclick], [data-pressable]');
+                if (candidate && getComputedStyle(candidate).cursor === 'pointer') return candidate;
+
+                let node = start;
+                while (node && node !== document.body) {
+                    if (node.nodeType === 1 && getComputedStyle(node).cursor === 'pointer') return node;
+                    node = node.parentElement;
+                }
+                return null;
+            };
+
+            const clearRunningAnimation = (el) => {
+                const running = runningAnimations.get(el);
+                if (running) {
+                    try { running.cancel(); } catch (e) {}
+                    runningAnimations.delete(el);
+                }
+            };
+
+            const resetInline = (el) => {
+                el.style.scale = '';
+                el.style.translate = '';
+                el.style.filter = '';
+                el.style.boxShadow = '';
+                el.style.transition = '';
+            };
+
+            const applyDownState = (el) => {
+                clearRunningAnimation(el);
+                el.style.willChange = 'transform, filter, box-shadow';
+                el.style.transition = `scale 78ms ${downEase}, translate 78ms ${downEase}, filter 78ms ${downEase}, box-shadow 78ms ${downEase}`;
+                el.style.scale = '0.95';
+                el.style.translate = '0 1.4px';
+                el.style.filter = 'brightness(1.045) contrast(1.03)';
+                el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+            };
+
+            const animateRelease = (el) => {
+                clearRunningAnimation(el);
+                const anim = el.animate([
+                    { scale: '0.95', translate: '0 1.4px', filter: 'brightness(1.045) contrast(1.03)', boxShadow: '0 2px 8px rgba(0,0,0,0.2)', offset: 0 },
+                    { scale: '1.04', translate: '0 -0.4px', filter: 'brightness(1.02) contrast(1.015)', boxShadow: '0 12px 30px rgba(0,0,0,0.3)', offset: 0.42 },
+                    { scale: '1', translate: '0 0', filter: 'brightness(1) contrast(1)', boxShadow: 'none', offset: 1 }
+                ], {
+                    duration: 220,
+                    easing: springEase,
+                    fill: 'forwards'
+                });
+                runningAnimations.set(el, anim);
+                anim.addEventListener('finish', () => {
+                    resetInline(el);
+                    runningAnimations.delete(el);
+                }, { once: true });
+            };
+
+            const animateCancel = (el) => {
+                clearRunningAnimation(el);
+                const anim = el.animate([
+                    { scale: '0.95', translate: '0 1.4px', filter: 'brightness(1.045) contrast(1.03)', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' },
+                    { scale: '1', translate: '0 0', filter: 'brightness(1) contrast(1)', boxShadow: 'none' }
+                ], {
+                    duration: 140,
+                    easing: downEase,
+                    fill: 'forwards'
+                });
+                runningAnimations.set(el, anim);
+                anim.addEventListener('finish', () => {
+                    resetInline(el);
+                    runningAnimations.delete(el);
+                }, { once: true });
+            };
+
+            document.addEventListener('pointerdown', (evt) => {
+                if (!evt.isPrimary || evt.button !== 0) return;
+                const el = getPressableTarget(evt.target);
+                if (!el) return;
+
+                applyDownState(el);
+                activePresses.set(evt.pointerId, { el, canceled: false });
+                try { el.setPointerCapture(evt.pointerId); } catch (e) {}
+            }, { passive: true });
+
+            document.addEventListener('pointermove', (evt) => {
+                const state = activePresses.get(evt.pointerId);
+                if (!state || state.canceled) return;
+                const currentEl = document.elementFromPoint(evt.clientX, evt.clientY);
+                if (!currentEl || !state.el.contains(currentEl)) {
+                    state.canceled = true;
+                    animateCancel(state.el);
+                }
+            }, { passive: true });
+
+            const finishPress = (evt, mode) => {
+                const state = activePresses.get(evt.pointerId);
+                if (!state) return;
+                activePresses.delete(evt.pointerId);
+                try { state.el.releasePointerCapture(evt.pointerId); } catch (e) {}
+
+                if (mode === 'release' && !state.canceled) {
+                    animateRelease(state.el);
+                } else {
+                    animateCancel(state.el);
+                }
+            };
+
+            document.addEventListener('pointerup', (evt) => finishPress(evt, 'release'), { passive: true });
+            document.addEventListener('pointercancel', (evt) => finishPress(evt, 'cancel'), { passive: true });
+            document.addEventListener('lostpointercapture', (evt) => finishPress(evt, 'cancel'), { passive: true });
         }
 
 
