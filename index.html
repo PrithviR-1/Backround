@@ -603,11 +603,33 @@
             cursor: pointer;
             border: none;
             font-size: 13px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
         .tab-btn.active {
-            background: linear-gradient(90deg, rgba(0,122,255,0.18), rgba(48,209,88,0.08));
+            background: linear-gradient(120deg, rgba(0, 210, 255, 0.42), rgba(67, 233, 123, 0.35));
+            background-size: 220% 220%;
             color: #fff;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 22px rgba(0, 210, 255, 0.38);
+            animation: active-tab-pulse 1.6s ease-in-out infinite;
+            transform: translateY(-1px);
+        }
+
+        @keyframes active-tab-pulse {
+            0% {
+                transform: translateY(-1px) scale(1);
+                background-position: 0% 50%;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 16px rgba(0, 210, 255, 0.28);
+            }
+            50% {
+                transform: translateY(-1px) scale(1.05);
+                background-position: 100% 50%;
+                box-shadow: 0 10px 34px rgba(0,0,0,0.52), 0 0 26px rgba(67, 233, 123, 0.42);
+            }
+            100% {
+                transform: translateY(-1px) scale(1);
+                background-position: 0% 50%;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 16px rgba(0, 210, 255, 0.28);
+            }
         }
         .click-radar {
             position: fixed;
