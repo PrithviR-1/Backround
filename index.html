@@ -210,6 +210,58 @@
             will-change: transform, opacity;
         }
 
+        .alarm-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .alarm-toggle {
+            position: relative;
+            width: 72px;
+            height: 40px;
+            display: inline-block;
+        }
+
+        .alarm-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .alarm-toggle-slider {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: #7a7f87;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15), 0 8px 20px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: background 0.25s ease;
+        }
+
+        .alarm-toggle-slider::before {
+            content: "";
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+            transition: transform 0.25s ease;
+        }
+
+        .alarm-toggle input:checked + .alarm-toggle-slider {
+            background: #4cd964;
+        }
+
+        .alarm-toggle input:checked + .alarm-toggle-slider::before {
+            transform: translateX(32px);
+        }
+
         /* --- DETAILED CARTOON CLOUD ARCHITECTURE --- */
         .cloud-container {
             position: absolute;
@@ -838,6 +890,7 @@
         // Alarm types: 'routine' = morning routine alarm, 'regular' = standard alarm
         let alarmTypes = alarms.map(() => 'routine'); // default to routine
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
+        let alarmEnabled = alarms.map(() => true);
 
         // Selected alarm sound type
         let selectedSound = 'digital'; // default sound
@@ -1337,6 +1390,7 @@
             list.innerHTML = alarms.map((a, i) => {
                 const metaDay = (alarmsMeta && alarmsMeta[i]) ? alarmsMeta[i] : 'Everyday';
                 const alarmType = (alarmTypes && alarmTypes[i]) ? alarmTypes[i] : 'routine';
+                const isEnabled = (alarmEnabled && typeof alarmEnabled[i] === 'boolean') ? alarmEnabled[i] : true;
                 const typeLabel = alarmType === 'routine' ? 'Morning Routine' : 'Regular';
                 const typeColor = alarmType === 'routine' ? 'var(--sun-main)' : 'var(--accent-blue)';
                 const timeUntil = _timeUntilAlarm(a, i);
@@ -1354,7 +1408,13 @@
                             <span style="font-size:12px; color:var(--text-secondary);">${metaDay}</span>
                         </div>
                     </div>
-                    <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
+                    <div class="alarm-actions">
+                        <label class="alarm-toggle" title="Enable or disable this alarm">
+                            <input type="checkbox" class="alarm-enable-toggle" data-alarm-idx="${i}" ${isEnabled ? 'checked' : ''}>
+                            <span class="alarm-toggle-slider"></span>
+                        </label>
+                        <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
+                    </div>
                 </div>
             `}).join('');
             
@@ -1362,6 +1422,16 @@
             document.querySelectorAll('.alarm-delete-btn').forEach(btn => {
                 const idx = parseInt(btn.dataset.alarmIdx);
                 btn.onclick = () => deleteAlarm(idx);
+            });
+
+            document.querySelectorAll('.alarm-enable-toggle').forEach(toggle => {
+                const idx = parseInt(toggle.dataset.alarmIdx, 10);
+                toggle.onchange = (evt) => {
+                    if (!Number.isFinite(idx)) return;
+                    if (!alarmEnabled) alarmEnabled = [];
+                    alarmEnabled[idx] = !!evt.target.checked;
+                    renderAlarms();
+                };
             });
         }
 
@@ -1397,6 +1467,7 @@
             alarmsMeta.push(d);
             // Store the alarm type
             alarmTypes.push(selectedAlarmType);
+            alarmEnabled.push(true);
             renderAlarms();
             
             // Interaction Feedback
@@ -1407,6 +1478,7 @@
             alarms.splice(index, 1);
             if (alarmsMeta && alarmsMeta.length > index) alarmsMeta.splice(index, 1);
             if (alarmTypes && alarmTypes.length > index) alarmTypes.splice(index, 1);
+            if (alarmEnabled && alarmEnabled.length > index) alarmEnabled.splice(index, 1);
             renderAlarms();
         }
 
@@ -1813,6 +1885,8 @@
             alarms.forEach((alarmStr, idx) => {
                 const parsed = _parseAlarmString(alarmStr);
                 if (!parsed) return;
+                const isEnabled = (alarmEnabled && typeof alarmEnabled[idx] === 'boolean') ? alarmEnabled[idx] : true;
+                if (!isEnabled) return;
                 if (parsed.hh === nowHH && parsed.mm === nowMM) {
                     // day check via alarmsMeta
                     const meta = (alarmsMeta && alarmsMeta[idx]) ? alarmsMeta[idx] : 'Everyday';
@@ -2023,6 +2097,12 @@
         // Show overlay and start sound
         function _ringAlarm(index) {
             _currentRingingIndexes.push(index);
+
+            // Auto-disable after ring so the slider turns gray/off until user re-enables.
+            if (alarmEnabled && Object.prototype.hasOwnProperty.call(alarmEnabled, index)) {
+                alarmEnabled[index] = false;
+                renderAlarms();
+            }
 
             // play sound immediately
             const stopBeep = _startBeep();
