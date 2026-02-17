@@ -75,15 +75,16 @@
             background: var(--sky-night);
             transition: background var(--transition-speed) var(--ease-out-expo);
             z-index: 1;
+            isolation: isolate;
         }
 
         /* --- HIGH-FIDELITY CARTOON SUN ENGINE --- */
         .sun-system {
             position: absolute;
-            top: 15%;
+            top: 11%;
             left: 50%;
-            width: 320px;
-            height: 320px;
+            width: 220px;
+            height: 220px;
             transform: translate(-50%, 100vh);
             transition: transform 6s cubic-bezier(0.23, 1, 0.32, 1), z-index 0.1s;
             z-index: 2;
@@ -93,36 +94,36 @@
             justify-content: center;
         }
 
-        .sun-on-top { z-index: 101 !important; }
+        .sun-on-top { z-index: 2 !important; }
 
         /* The stylized triangle rays */
         .sun-ray-layer {
             position: absolute;
-            width: 280px;
-            height: 280px;
+            width: 200px;
+            height: 200px;
             background: var(--sun-main);
             clip-path: polygon(50% 0%, 63% 38%, 100% 38%, 69% 59%, 82% 100%, 50% 75%, 18% 100%, 31% 59%, 0% 38%, 37% 38%);
-            border: 6px solid var(--sun-stroke);
+            border: 4px solid var(--sun-stroke);
             animation: rotate-sun 30s linear infinite;
         }
 
         .sun-ray-layer.back {
-            width: 310px;
-            height: 310px;
+            width: 224px;
+            height: 224px;
             background: var(--sun-stroke);
-            opacity: 0.6;
+            opacity: 0.46;
             animation: rotate-sun-reverse 45s linear infinite;
         }
 
         .sun-body-cartoon {
             position: relative;
-            width: 170px;
-            height: 170px;
+            width: 120px;
+            height: 120px;
             background: var(--sun-main);
-            border: 10px solid var(--sun-stroke);
+            border: 7px solid var(--sun-stroke);
             border-radius: 50%;
             z-index: 10;
-            box-shadow: 0 0 80px var(--sun-glow), 0 0 120px var(--sun-glow);
+            box-shadow: 0 0 46px var(--sun-glow), 0 0 76px var(--sun-glow);
             overflow: hidden;
         }
 
@@ -132,21 +133,21 @@
             position: absolute;
             top: 15%;
             left: 15%;
-            width: 70px;
-            height: 70px;
+            width: 45px;
+            height: 45px;
             background: var(--sun-light);
             border-radius: 50%;
-            opacity: 0.9;
+            opacity: 0.84;
         }
 
         /* Ambient Glow Pulse */
         .sun-aura {
             position: absolute;
-            width: 220px;
-            height: 220px;
+            width: 170px;
+            height: 170px;
             background: var(--sun-glow);
             border-radius: 50%;
-            filter: blur(40px);
+            filter: blur(28px);
             animation: sun-pulse 4s ease-in-out infinite alternate;
         }
 
@@ -166,6 +167,66 @@
         .day-active .starfield,
         .day-active .shooting-starfield {
             opacity: 0;
+        }
+
+        /* --- CARTOON WIND FX LAYER --- */
+        .wind-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0.38;
+            transition: opacity 1.2s ease;
+        }
+
+        .wind-streak {
+            position: absolute;
+            left: 0;
+            top: var(--wind-top, 40%);
+            width: var(--wind-length, 130px);
+            height: var(--wind-thickness, 3px);
+            border-radius: 999px;
+            background: linear-gradient(90deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.5) 20%,
+                rgba(255,255,255,0.82) 48%,
+                rgba(255,255,255,0.45) 76%,
+                rgba(255,255,255,0) 100%);
+            filter: blur(0.2px);
+            opacity: 0;
+            animation-duration: var(--wind-duration, 7.2s);
+            animation-delay: var(--wind-delay, 0s);
+            animation-timing-function: cubic-bezier(0.2, 0.7, 0.35, 1);
+            animation-iteration-count: infinite;
+            will-change: transform, opacity;
+        }
+
+        .wind-streak::after {
+            content: "";
+            position: absolute;
+            right: -14px;
+            top: -5px;
+            width: 20px;
+            height: 12px;
+            border: 2px solid rgba(255,255,255,0.58);
+            border-left: none;
+            border-bottom: none;
+            border-radius: 0 100% 0 0;
+            opacity: 0.85;
+            transform: rotate(16deg);
+        }
+
+        #body.wind-right .wind-streak {
+            animation-name: wind-sweep-right;
+        }
+
+        #body.wind-left .wind-streak {
+            animation-name: wind-sweep-left;
+        }
+
+        #body:not(.day-active) .wind-layer {
+            opacity: 0.16;
         }
 
         .star {
@@ -210,63 +271,11 @@
             will-change: transform, opacity;
         }
 
-        .alarm-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-        }
-
-        .alarm-toggle {
-            position: relative;
-            width: 72px;
-            height: 40px;
-            display: inline-block;
-        }
-
-        .alarm-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-
-        .alarm-toggle-slider {
-            position: absolute;
-            inset: 0;
-            border-radius: 999px;
-            background: #7a7f87;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15), 0 8px 20px rgba(0, 0, 0, 0.25);
-            cursor: pointer;
-            transition: background 0.25s ease;
-        }
-
-        .alarm-toggle-slider::before {
-            content: "";
-            position: absolute;
-            width: 34px;
-            height: 34px;
-            top: 3px;
-            left: 3px;
-            border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-            transition: transform 0.25s ease;
-        }
-
-        .alarm-toggle input:checked + .alarm-toggle-slider {
-            background: #4cd964;
-        }
-
-        .alarm-toggle input:checked + .alarm-toggle-slider::before {
-            transform: translateX(32px);
-        }
-
         /* --- DETAILED CARTOON CLOUD ARCHITECTURE --- */
         .cloud-container {
             position: absolute;
             inset: 0;
-            z-index: 3;
+            z-index: 4;
             perspective: 1200px;
             opacity: 1;
             transform: translate3d(0, 0, 0);
@@ -284,34 +293,48 @@
 
         .cloud-group {
             position: relative;
-            /* stronger, softer shadow for polished look */
-            filter: drop-shadow(0 24px 40px rgba(10,15,30,0.28));
+            /* Soft depth with subtle ambient bloom for natural edge lift */
+            filter: drop-shadow(0 18px 30px rgba(10,15,30,0.2)) drop-shadow(0 6px 18px rgba(255,255,255,0.08));
             transition: transform 420ms cubic-bezier(.2,.9,.3,1);
         }
 
         .puff-base {
             position: absolute;
-            background: linear-gradient(180deg, rgba(137,185,224,0.95), rgba(120,170,210,0.9));
+            background: radial-gradient(130% 105% at 50% 38%,
+                rgba(170, 206, 233, 0.88) 0%,
+                rgba(144, 188, 221, 0.82) 56%,
+                rgba(120, 170, 210, 0.62) 78%,
+                rgba(120, 170, 210, 0.26) 100%);
             border-radius: 120px;
             z-index: 1;
-            filter: blur(1px);
+            filter: blur(2px);
+            box-shadow: inset 0 8px 18px rgba(255,255,255,0.08);
         }
         .puff-body {
             position: absolute;
-            background: linear-gradient(180deg, rgba(226,241,250,0.98), rgba(238,244,249,0.98));
+            background: radial-gradient(135% 115% at 34% 28%,
+                rgba(249, 253, 255, 0.98) 0%,
+                rgba(238, 246, 251, 0.96) 52%,
+                rgba(221, 236, 247, 0.86) 76%,
+                rgba(213, 231, 245, 0.42) 100%);
             border-radius: 120px;
             z-index: 2;
             top: -8px; left: 6px;
-            box-shadow: inset -8px -6px 18px rgba(0,0,0,0.06);
+            box-shadow: inset -9px -7px 20px rgba(0,0,0,0.05), 0 3px 12px rgba(255,255,255,0.08);
+            filter: blur(0.65px);
         }
         .puff-highlight {
             position: absolute;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.82));
+            background: radial-gradient(120% 100% at 30% 26%,
+                rgba(255,255,255,0.95) 0%,
+                rgba(255,255,255,0.78) 52%,
+                rgba(255,255,255,0.34) 78%,
+                rgba(255,255,255,0.08) 100%);
             border-radius: 120px;
             z-index: 3;
             top: -18px; left: 12px;
-            filter: blur(0.6px);
-            opacity: 0.98;
+            filter: blur(1.1px);
+            opacity: 0.92;
         }
 
         /* Complex Positioning (static positions; JS will animate motion)
@@ -579,6 +602,48 @@
             100% { opacity: 0; transform: translate3d(var(--ex, 120vw), var(--ey, 60vh), 0) rotate(var(--shoot-angle, -26deg)); }
         }
 
+        @keyframes wind-sweep-right {
+            0% {
+                opacity: 0;
+                transform: translate3d(-18vw, 0, 0) scaleX(0.85);
+            }
+            12% {
+                opacity: 0.62;
+            }
+            56% {
+                opacity: 0.72;
+                transform: translate3d(52vw, 2px, 0) scaleX(1);
+            }
+            80% {
+                opacity: 0.4;
+            }
+            100% {
+                opacity: 0;
+                transform: translate3d(126vw, -2px, 0) scaleX(0.9);
+            }
+        }
+
+        @keyframes wind-sweep-left {
+            0% {
+                opacity: 0;
+                transform: translate3d(118vw, 0, 0) scaleX(0.85);
+            }
+            12% {
+                opacity: 0.62;
+            }
+            56% {
+                opacity: 0.72;
+                transform: translate3d(48vw, 2px, 0) scaleX(1);
+            }
+            80% {
+                opacity: 0.4;
+            }
+            100% {
+                opacity: 0;
+                transform: translate3d(-26vw, -2px, 0) scaleX(0.9);
+            }
+        }
+
         @keyframes click-radar {
             0% {
                 opacity: 0.95;
@@ -613,8 +678,8 @@
         @media (max-width: 500px) {
             .glass-card { padding: 32px 24px; border-radius: 36px; }
             h2 { font-size: 34px; }
-            .sun-system { width: 260px; height: 260px; }
-            .sun-body-cartoon { width: 130px; height: 130px; }
+            .sun-system { width: 190px; height: 190px; }
+            .sun-body-cartoon { width: 102px; height: 102px; }
         }
 
         /* STYLING OVERHEAD FOR 800+ LINE REQUIREMENT 
@@ -890,10 +955,11 @@
         // Alarm types: 'routine' = morning routine alarm, 'regular' = standard alarm
         let alarmTypes = alarms.map(() => 'routine'); // default to routine
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
-        let alarmEnabled = alarms.map(() => true);
 
         // Selected alarm sound type
         let selectedSound = 'digital'; // default sound
+        // Scene wind vector shared by cloud drift and cartoon wind streaks.
+        let _sceneWindDirection = 1; // 1 => left-to-right, -1 => right-to-left
 
         // 2. BOOT SEQUENCE
         window.onload = () => {
@@ -903,6 +969,7 @@
             renderApplication();
             attachScrollSnapping();
             initNightSky();
+            initWindFX();
             initCloudsMotion();
             initClickRadar();
 
@@ -937,6 +1004,38 @@
                 initNightSky();
             }, 180);
         });
+
+        // Build lightweight cartoony wind streaks and set a global wind direction.
+        function initWindFX() {
+            const body = document.getElementById('body');
+            const stage = document.getElementById('stage');
+            if (!body || !stage) return;
+
+            _sceneWindDirection = Math.random() < 0.5 ? -1 : 1;
+            body.classList.toggle('wind-right', _sceneWindDirection === 1);
+            body.classList.toggle('wind-left', _sceneWindDirection === -1);
+
+            let layer = document.getElementById('wind-layer');
+            if (!layer) {
+                layer = document.createElement('div');
+                layer.id = 'wind-layer';
+                layer.className = 'wind-layer';
+                stage.appendChild(layer);
+            }
+            layer.innerHTML = '';
+
+            const streakCount = 10;
+            for (let i = 0; i < streakCount; i++) {
+                const streak = document.createElement('div');
+                streak.className = 'wind-streak';
+                streak.style.setProperty('--wind-top', `${8 + Math.random() * 58}%`);
+                streak.style.setProperty('--wind-length', `${85 + Math.random() * 170}px`);
+                streak.style.setProperty('--wind-thickness', `${2 + Math.random() * 2.2}px`);
+                streak.style.setProperty('--wind-duration', `${5.8 + Math.random() * 4.6}s`);
+                streak.style.setProperty('--wind-delay', `${Math.random() * 5.2}s`);
+                layer.appendChild(streak);
+            }
+        }
 
         // 3. HARDWARE: CAMERA INTEGRATION
         async function setupCamera() {
@@ -1176,6 +1275,7 @@
         function initCloudsMotion() {
             const clouds = Array.from(document.querySelectorAll('.cloud'));
             if (!clouds.length) return;
+            const windDir = _sceneWindDirection || 1;
 
             // helper dims
             const W = () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
@@ -1186,15 +1286,17 @@
                 const cs = getComputedStyle(el);
                 const baseTransform = cs.transform && cs.transform !== 'none' ? cs.transform : '';
 
-                // assign a fixed speed (px/sec) and initial direction
-                const speed = 80 + Math.random() * 90; // 80-170 px/sec (consistently faster)
-                const dirX = Math.random() < 0.5 ? 1 : -1; // left-to-right or right-to-left
+                // assign a fixed speed (px/sec) and scene-wide wind direction
+                const speed = 28 + Math.random() * 30; // 28-58 px/sec for calmer glide
+                const dirX = windDir;
                 const norm = Math.hypot(dirX, 0); // only horizontal movement
 
                 el._cloud = {
                     baseTransform,
                     x: 0,
                     y: 0,
+                    targetX: 0,
+                    targetY: 0,
                     speed,
                     dir: { x: dirX / norm, y: 0 }, // no vertical movement
                     width: rect.width,
@@ -1204,6 +1306,8 @@
                 // small randomized phase so clouds don't move identically
                 el._cloud.x += (Math.random() * 120 - 60);
                 el._cloud.y += (Math.random() * 60 - 30);
+                el._cloud.targetX = el._cloud.x;
+                el._cloud.targetY = el._cloud.y;
                 // apply initial transform (preserve original scale/transform)
                 el.style.transform = (baseTransform ? baseTransform + ' ' : '') + ` translate3d(${el._cloud.x}px, ${el._cloud.y}px, 0)`;
             });
@@ -1215,8 +1319,12 @@
                 clouds.forEach(el => {
                     const d = el._cloud;
                     if (!d) return;
-                    d.x += d.dir.x * d.speed * dt;
-                    d.y += d.dir.y * d.speed * dt;
+                    d.targetX += d.dir.x * d.speed * dt;
+                    d.targetY += d.dir.y * d.speed * dt;
+                    // Exponential damping smooths visual motion and clone handoff.
+                    const lerp = 1 - Math.exp(-6.5 * dt);
+                    d.x += (d.targetX - d.x) * lerp;
+                    d.y += (d.targetY - d.y) * lerp;
                     el.style.transform = (d.baseTransform ? d.baseTransform + ' ' : '') + ` translate3d(${d.x}px, ${d.y}px, 0)`;
 
                     const rect = el.getBoundingClientRect();
@@ -1234,7 +1342,9 @@
                             const offsetX = -Math.sign(d.dir.x) * (W() + rect.width + 120);
                             const cd = Object.assign({}, d);
                             cd.x = d.x + offsetX;
-                            cd.y = d.y + (Math.random() * 40 - 20);
+                            cd.targetX = cd.x;
+                            cd.y = d.y + (Math.random() * 20 - 10);
+                            cd.targetY = cd.y;
                             cd._cloneCreated = false;
                             cd.baseTransform = d.baseTransform;
                             clone._cloud = cd;
@@ -1269,15 +1379,16 @@
             function reinitCloud(el) {
                 const d = el._cloud;
                 if (!d) return;
-                // preserve speed, pick new starting side and keep vertical position fixed
-                const side = Math.random() < 0.5 ? 'left' : 'right';
-                const startX = side === 'left' ? - (W() * 1.05 + d.width) : (W() * 1.05 + d.width);
+                // preserve speed and re-enter from the upwind side
+                const startX = windDir > 0 ? - (W() * 1.05 + d.width) : (W() * 1.05 + d.width);
                 const startY = d.y; // keep Y position fixed
 
                 d.x = startX;
                 d.y = startY;
+                d.targetX = startX;
+                d.targetY = startY;
 
-                const dirX = side === 'left' ? 1 : -1;
+                const dirX = windDir > 0 ? 1 : -1;
                 d.dir = { x: dirX, y: 0 }; // only horizontal movement
 
                 el.style.transform = (d.baseTransform ? d.baseTransform + ' ' : '') + ` translate3d(${d.x}px, ${d.y}px, 0)`;
@@ -1390,7 +1501,6 @@
             list.innerHTML = alarms.map((a, i) => {
                 const metaDay = (alarmsMeta && alarmsMeta[i]) ? alarmsMeta[i] : 'Everyday';
                 const alarmType = (alarmTypes && alarmTypes[i]) ? alarmTypes[i] : 'routine';
-                const isEnabled = (alarmEnabled && typeof alarmEnabled[i] === 'boolean') ? alarmEnabled[i] : true;
                 const typeLabel = alarmType === 'routine' ? 'Morning Routine' : 'Regular';
                 const typeColor = alarmType === 'routine' ? 'var(--sun-main)' : 'var(--accent-blue)';
                 const timeUntil = _timeUntilAlarm(a, i);
@@ -1408,13 +1518,7 @@
                             <span style="font-size:12px; color:var(--text-secondary);">${metaDay}</span>
                         </div>
                     </div>
-                    <div class="alarm-actions">
-                        <label class="alarm-toggle" title="Enable or disable this alarm">
-                            <input type="checkbox" class="alarm-enable-toggle" data-alarm-idx="${i}" ${isEnabled ? 'checked' : ''}>
-                            <span class="alarm-toggle-slider"></span>
-                        </label>
-                        <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
-                    </div>
+                    <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
                 </div>
             `}).join('');
             
@@ -1422,16 +1526,6 @@
             document.querySelectorAll('.alarm-delete-btn').forEach(btn => {
                 const idx = parseInt(btn.dataset.alarmIdx);
                 btn.onclick = () => deleteAlarm(idx);
-            });
-
-            document.querySelectorAll('.alarm-enable-toggle').forEach(toggle => {
-                const idx = parseInt(toggle.dataset.alarmIdx, 10);
-                toggle.onchange = (evt) => {
-                    if (!Number.isFinite(idx)) return;
-                    if (!alarmEnabled) alarmEnabled = [];
-                    alarmEnabled[idx] = !!evt.target.checked;
-                    renderAlarms();
-                };
             });
         }
 
@@ -1467,7 +1561,6 @@
             alarmsMeta.push(d);
             // Store the alarm type
             alarmTypes.push(selectedAlarmType);
-            alarmEnabled.push(true);
             renderAlarms();
             
             // Interaction Feedback
@@ -1478,7 +1571,6 @@
             alarms.splice(index, 1);
             if (alarmsMeta && alarmsMeta.length > index) alarmsMeta.splice(index, 1);
             if (alarmTypes && alarmTypes.length > index) alarmTypes.splice(index, 1);
-            if (alarmEnabled && alarmEnabled.length > index) alarmEnabled.splice(index, 1);
             renderAlarms();
         }
 
@@ -1885,8 +1977,6 @@
             alarms.forEach((alarmStr, idx) => {
                 const parsed = _parseAlarmString(alarmStr);
                 if (!parsed) return;
-                const isEnabled = (alarmEnabled && typeof alarmEnabled[idx] === 'boolean') ? alarmEnabled[idx] : true;
-                if (!isEnabled) return;
                 if (parsed.hh === nowHH && parsed.mm === nowMM) {
                     // day check via alarmsMeta
                     const meta = (alarmsMeta && alarmsMeta[idx]) ? alarmsMeta[idx] : 'Everyday';
@@ -2098,12 +2188,6 @@
         function _ringAlarm(index) {
             _currentRingingIndexes.push(index);
 
-            // Auto-disable after ring so the slider turns gray/off until user re-enables.
-            if (alarmEnabled && Object.prototype.hasOwnProperty.call(alarmEnabled, index)) {
-                alarmEnabled[index] = false;
-                renderAlarms();
-            }
-
             // play sound immediately
             const stopBeep = _startBeep();
             
@@ -2252,12 +2336,12 @@
 
             if (snoozeBtnEl) {
                 snoozeBtnEl.onclick = () => {
+                    const snoozeWheelEl = document.getElementById('alarm-snooze-minutes');
+                    const snoozeMinutes = Math.max(1, Math.min(59, parseInt((snoozeWheelEl && snoozeWheelEl.value) || '5', 10) || 5));
+
                     stopBeep();
                     _stopAllBeeps();
                     _closeAlarmOverlay();
-
-                    const snoozeWheelEl = document.getElementById('alarm-snooze-minutes');
-                    const snoozeMinutes = Math.max(1, Math.min(59, parseInt((snoozeWheelEl && snoozeWheelEl.value) || '5', 10) || 5));
                     _snoozeAlarm(index, snoozeMinutes);
 
                     try {
