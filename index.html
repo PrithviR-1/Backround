@@ -1027,12 +1027,21 @@
          */
 
         // 1. STATE MANAGEMENT
-        let tasks = [
+        const APP_STATE_STORAGE_KEY = 'atmospherePro.appState.v1';
+        const BASE_SOUND_OPTIONS = [
+            { id: 'classic', name: 'Classic Beep', description: 'Traditional sine wave alarm' },
+            { id: 'digital', name: 'Digital Pulse', description: 'Square wave with sharp edges' },
+            { id: 'gentle', name: 'Gentle Chime', description: 'Soft triangle wave melody' },
+            { id: 'urgent', name: 'Urgent Alert', description: 'Sawtooth wave for attention' }
+        ];
+        const createDefaultTasks = () => ([
             { id: 1, text: "Rehydrate (20oz Water)", done: false },
             { id: 2, text: "5 Min Mobility Stretch", done: false },
             { id: 3, text: "View Morning Sunlight", done: false },
             { id: 4, text: "No-Phone Focus Window", done: false }
-        ];
+        ]);
+
+        let tasks = createDefaultTasks();
 
         let alarms = [];
 
@@ -1058,12 +1067,205 @@
         // Scene wind vector shared by cloud drift and cartoon wind streaks.
         let _sceneWindDirection = 1; // 1 => left-to-right, -1 => right-to-left
 
+        function _safeParseJSON(raw) {
+            try { return JSON.parse(raw); } catch (e) { return null; }
+        }
+
+        function _normalizeTaskList(list) {
+            if (!Array.isArray(list)) return createDefaultTasks();
+            const normalized = list
+                .filter(t => t && typeof t.text === 'string')
+                .map(t => ({
+                    id: Number.isFinite(Number(t.id)) ? Number(t.id) : Date.now() + Math.floor(Math.random() * 10000),
+                    text: t.text.trim(),
+                    done: !!t.done
+                }))
+                .filter(t => t.text.length > 0);
+            return normalized.length ? normalized : createDefaultTasks();
+        }
+
+        function _serializeTimersForState() {
+            if (!Array.isArray(_timers)) return [];
+            return _timers.map(t => ({
+                id: String(t.id),
+                label: String(t.label || ''),
+                total: Math.max(0, Number(t.total) || 0),
+                remaining: Math.max(0, Number(t.remaining) || 0),
+                active: !!t.active,
+                endAt: t.active ? Math.max(Date.now(), Number(t.endAt) || (Date.now() + Math.max(0, Number(t.remaining) || 0))) : null
+            }));
+        }
+
+        function _serializeStopwatchForState() {
+            const elapsedNow = _sw_elapsed + (_sw_running ? (Date.now() - _sw_start) : 0);
+            return {
+                running: !!_sw_running,
+                elapsed: Math.max(0, elapsedNow),
+                laps: Array.isArray(_sw_laps) ? _sw_laps.filter(v => Number.isFinite(Number(v))).map(v => Math.max(0, Number(v))).slice(0, 100) : []
+            };
+        }
+
+        function saveState() {
+            try {
+                const customSounds = SOUND_OPTIONS
+                    .filter(s => s && s.isCustom && typeof s.audioUrl === 'string' && s.audioUrl.startsWith('data:'))
+                    .map(s => ({
+                        id: String(s.id),
+                        name: String(s.name || 'Imported Sound'),
+                        description: String(s.description || 'Imported sound'),
+                        audioUrl: s.audioUrl
+                    }));
+
+                const state = {
+                    version: 1,
+                    savedAt: Date.now(),
+                    tasks: _normalizeTaskList(tasks),
+                    alarms: Array.isArray(alarms) ? alarms.map(a => String(a || '')).filter(Boolean) : [],
+                    alarmsMeta: Array.isArray(alarmsMeta) ? alarmsMeta.map(d => String(d || 'Everyday')) : [],
+                    alarmTypes: Array.isArray(alarmTypes) ? alarmTypes.map(t => (t === 'regular' ? 'regular' : 'routine')) : [],
+                    selectedAlarmType: selectedAlarmType === 'regular' ? 'regular' : 'routine',
+                    selectedSound: String(selectedSound || 'digital'),
+                    customSounds,
+                    timers: _serializeTimersForState(),
+                    stopwatch: _serializeStopwatchForState()
+                };
+                localStorage.setItem(APP_STATE_STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.warn('Failed to save app state', e);
+            }
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(APP_STATE_STORAGE_KEY);
+                if (!raw) return null;
+                const parsed = _safeParseJSON(raw);
+                if (!parsed || typeof parsed !== 'object') return null;
+                return parsed;
+            } catch (e) {
+                console.warn('Failed to load app state', e);
+                return null;
+            }
+        }
+
+        function initializeState() {
+            const state = loadState();
+
+            // always rebuild sound options from defaults first
+            SOUND_OPTIONS = BASE_SOUND_OPTIONS.map(s => ({ ...s }));
+
+            if (!state) {
+                tasks = createDefaultTasks();
+                alarms = [];
+                alarmsMeta = [];
+                alarmTypes = [];
+                selectedAlarmType = 'routine';
+                selectedSound = 'digital';
+                _timers.splice(0, _timers.length);
+                _sw_running = false;
+                _sw_elapsed = 0;
+                _sw_start = 0;
+                _sw_laps = [];
+                if (_sw_tick) { clearInterval(_sw_tick); _sw_tick = null; }
+                const swBtn = document.getElementById('sw-start');
+                if (swBtn) swBtn.textContent = 'Start';
+                return;
+            }
+
+            tasks = _normalizeTaskList(state.tasks);
+            alarms = Array.isArray(state.alarms) ? state.alarms.map(a => String(a || '')).filter(Boolean) : [];
+            alarmsMeta = Array.isArray(state.alarmsMeta) ? state.alarmsMeta.map(v => String(v || 'Everyday')) : [];
+            alarmTypes = Array.isArray(state.alarmTypes) ? state.alarmTypes.map(v => (v === 'regular' ? 'regular' : 'routine')) : [];
+
+            while (alarmsMeta.length < alarms.length) alarmsMeta.push('Everyday');
+            while (alarmTypes.length < alarms.length) alarmTypes.push('routine');
+            if (alarmsMeta.length > alarms.length) alarmsMeta = alarmsMeta.slice(0, alarms.length);
+            if (alarmTypes.length > alarms.length) alarmTypes = alarmTypes.slice(0, alarms.length);
+
+            selectedAlarmType = state.selectedAlarmType === 'regular' ? 'regular' : 'routine';
+
+            const customSounds = Array.isArray(state.customSounds) ? state.customSounds : [];
+            customSounds.forEach(cs => {
+                if (!cs || typeof cs !== 'object') return;
+                if (typeof cs.audioUrl !== 'string' || !cs.audioUrl.startsWith('data:')) return;
+                const id = String(cs.id || `custom-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
+                if (SOUND_OPTIONS.some(s => s.id === id)) return;
+                SOUND_OPTIONS.unshift({
+                    id,
+                    name: String(cs.name || 'Imported Sound'),
+                    description: String(cs.description || 'Imported sound'),
+                    audioUrl: cs.audioUrl,
+                    isCustom: true
+                });
+            });
+
+            const soundExists = SOUND_OPTIONS.some(s => s.id === state.selectedSound);
+            selectedSound = soundExists ? state.selectedSound : 'digital';
+
+            _timers.splice(0, _timers.length);
+            const now = Date.now();
+            const persistedTimers = Array.isArray(state.timers) ? state.timers : [];
+            persistedTimers.forEach(pt => {
+                if (!pt || typeof pt !== 'object') return;
+                const timer = {
+                    id: String(pt.id || `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`),
+                    label: String(pt.label || ''),
+                    total: Math.max(0, Number(pt.total) || 0),
+                    remaining: Math.max(0, Number(pt.remaining) || 0),
+                    interval: null,
+                    active: !!pt.active,
+                    endAt: null
+                };
+                if (timer.total <= 0 && timer.remaining <= 0) return;
+
+                if (timer.active) {
+                    const restoredEndAt = Number(pt.endAt) || (now + timer.remaining);
+                    timer.remaining = Math.max(0, restoredEndAt - now);
+                    timer.endAt = restoredEndAt;
+                    if (timer.remaining === 0) {
+                        timer.active = false;
+                        timer.endAt = null;
+                    }
+                }
+
+                _timers.push(timer);
+            });
+
+            if (_sw_tick) { clearInterval(_sw_tick); _sw_tick = null; }
+            _sw_running = false;
+            _sw_elapsed = 0;
+            _sw_start = 0;
+            _sw_laps = [];
+            if (state.stopwatch && typeof state.stopwatch === 'object') {
+                _sw_elapsed = Math.max(0, Number(state.stopwatch.elapsed) || 0);
+                _sw_laps = Array.isArray(state.stopwatch.laps) ? state.stopwatch.laps.filter(v => Number.isFinite(Number(v))).map(v => Math.max(0, Number(v))).slice(0, 100) : [];
+                if (state.stopwatch.running) {
+                    _sw_running = true;
+                    _sw_start = Date.now();
+                    _sw_tick = setInterval(_sw_render, 60);
+                }
+            }
+
+            _timers.forEach(timer => {
+                if (timer.active && timer.remaining > 0) {
+                    _startTimerInterval(timer, { preserveEndAt: true, persist: false });
+                }
+            });
+            const swBtn = document.getElementById('sw-start');
+            if (swBtn) swBtn.textContent = _sw_running ? 'Stop' : 'Start';
+        }
+
         // 2. BOOT SEQUENCE
         window.onload = () => {
             console.log("Atmosphere Pro [Core Initializing...]");
             setupCamera();
+            initializeState();
             initPickerWheels();
             renderApplication();
+            renderAlarms();
+            renderSoundOptions();
+            _renderTimers();
+            _sw_render();
             attachScrollSnapping();
             initNightSky();
             initWindFX();
@@ -1094,6 +1296,10 @@
 
             console.log("Atmosphere Pro [System Online]");
         };
+
+        window.addEventListener('beforeunload', () => {
+            saveState();
+        });
 
         window.addEventListener('resize', () => {
             clearTimeout(window._nightSkyResizeTick);
@@ -1529,6 +1735,7 @@
             if(task) {
                 task.done = !task.done;
                 renderApplication();
+                saveState();
             }
         }
 
@@ -1644,6 +1851,7 @@
                     btnRegular.style.borderColor = 'var(--accent-blue)';
                 }
             }
+            saveState();
         }
 
         function addAlarm() {
@@ -1659,6 +1867,7 @@
             // Store the alarm type
             alarmTypes.push(selectedAlarmType);
             renderAlarms();
+            saveState();
             
             // Interaction Feedback
             console.log(`Alarm Set: ${newAlarm} (${d}) - Type: ${selectedAlarmType}`);
@@ -1669,6 +1878,7 @@
             if (alarmsMeta && alarmsMeta.length > index) alarmsMeta.splice(index, 1);
             if (alarmTypes && alarmTypes.length > index) alarmTypes.splice(index, 1);
             renderAlarms();
+            saveState();
         }
 
         // Hold-to-delete functionality
@@ -1751,21 +1961,18 @@
                 tasks.push({ id: Date.now(), text: val, done: false });
                 input.value = "";
                 renderApplication();
+                saveState();
             }
         }
 
         function deleteTask(id) {
             tasks = tasks.filter(t => t.id !== id);
             renderApplication();
+            saveState();
         }
 
         // 8.5. SOUND MANAGEMENT
-        const SOUND_OPTIONS = [
-            { id: 'classic', name: 'Classic Beep', description: 'Traditional sine wave alarm' },
-            { id: 'digital', name: 'Digital Pulse', description: 'Square wave with sharp edges' },
-            { id: 'gentle', name: 'Gentle Chime', description: 'Soft triangle wave melody' },
-            { id: 'urgent', name: 'Urgent Alert', description: 'Sawtooth wave for attention' }
-        ];
+        let SOUND_OPTIONS = BASE_SOUND_OPTIONS.map(s => ({ ...s }));
 
         function renderSoundOptions() {
             const container = document.getElementById('sound-options');
@@ -1795,6 +2002,7 @@
         function selectSound(soundId) {
             selectedSound = soundId;
             renderSoundOptions();
+            saveState();
         }
 
         function importSoundPrompt() {
@@ -1813,12 +2021,21 @@
                 try { evt.target.value = ''; } catch (e) {}
                 return;
             }
-            const url = URL.createObjectURL(file);
-            const id = 'custom-' + Date.now().toString(36);
-            SOUND_OPTIONS.unshift({ id, name, description: 'Imported sound', audioUrl: url });
-            // auto-select imported sound
-            selectedSound = id;
-            renderSoundOptions();
+            const reader = new FileReader();
+            reader.onload = () => {
+                const audioUrl = typeof reader.result === 'string' ? reader.result : '';
+                if (!audioUrl.startsWith('data:')) return;
+                const id = 'custom-' + Date.now().toString(36);
+                SOUND_OPTIONS.unshift({ id, name, description: 'Imported sound', audioUrl, isCustom: true });
+                // auto-select imported sound
+                selectedSound = id;
+                renderSoundOptions();
+                saveState();
+            };
+            reader.onerror = () => {
+                console.warn('Failed to read imported sound file');
+            };
+            reader.readAsDataURL(file);
         }
 
         function testSound(soundId) {
@@ -1885,6 +2102,7 @@
                     wake.style.transform = 'translateY(0) scale(1)';
                 }, 150);
             }, 900);
+            saveState();
         }
 
         function forceStopRoutine() {
@@ -1896,6 +2114,7 @@
                 showTabs();
                 renderApplication();
                 renderAlarms();
+                saveState();
             } catch (e) {
                 console.warn('Failed to force-stop routine', e);
             }
@@ -2532,6 +2751,7 @@
             
             // Re-render the alarms list to show the updated +5 minute time
             renderAlarms();
+            saveState();
 
             // Snooze should always bring the user back to home with tabs visible.
             try {
@@ -2625,7 +2845,7 @@
         /* ---------------------------
            Timers: lightweight in-app implementation
            --------------------------- */
-        const _timers = [];
+        let _timers = [];
         function _formatMs(ms){
             const s = Math.max(0, Math.floor(ms/1000));
             const hh = Math.floor(s/3600);
@@ -2673,6 +2893,46 @@
                 displayEl.textContent = _formatMs(timer.remaining);
             }
         }
+
+        function _startTimerInterval(timer, opts = {}) {
+            const { preserveEndAt = false, persist = true } = opts;
+            if (!timer) return;
+            clearInterval(timer.interval);
+            timer.active = true;
+            timer.endAt = preserveEndAt && Number.isFinite(Number(timer.endAt))
+                ? Number(timer.endAt)
+                : (Date.now() + Math.max(0, Number(timer.remaining) || 0));
+            timer.interval = setInterval(() => {
+                timer.remaining = Math.max(0, (Number(timer.endAt) || Date.now()) - Date.now());
+                if (timer.remaining === 0) {
+                    clearInterval(timer.interval);
+                    timer.interval = null;
+                    timer.active = false;
+                    timer.endAt = null;
+                    saveState();
+                    _timerDone(timer);
+                    return;
+                }
+                if (!window._holdToDeleteInProgress) {
+                    _renderTimers();
+                } else {
+                    _updateTimerDisplay(timer.id);
+                }
+            }, 250);
+            if (persist) saveState();
+        }
+
+        function _stopTimerInterval(timer, persist = true) {
+            if (!timer) return;
+            if (timer.active && Number.isFinite(Number(timer.endAt))) {
+                timer.remaining = Math.max(0, Number(timer.endAt) - Date.now());
+            }
+            clearInterval(timer.interval);
+            timer.interval = null;
+            timer.active = false;
+            timer.endAt = null;
+            if (persist) saveState();
+        }
         function getWheelValue(wheelId) {
             const wheel = document.getElementById(wheelId);
             if (!wheel) return 0;
@@ -2697,23 +2957,11 @@
             const total = (hour*3600 + min*60 + sec)*1000;
             if (total <= 0) return;
             const id = String(Date.now()) + Math.random().toString(36).slice(2,6);
-            const timer = { id, label, total, remaining: total, interval: null, active: false };
+            const timer = { id, label, total, remaining: total, interval: null, active: false, endAt: null };
             _timers.unshift(timer);
             
             // Automatically start the timer
-            timer.active = true;
-            const end = Date.now() + timer.remaining;
-            timer.interval = setInterval(()=> {
-                timer.remaining = Math.max(0, end - Date.now());
-                if (timer.remaining===0) { clearInterval(timer.interval); timer.interval=null; timer.active=false; _timerDone(timer); }
-                // Only re-render if no hold-to-delete is in progress
-                if (!window._holdToDeleteInProgress) {
-                    _renderTimers();
-                } else {
-                    // Just update the timer display without re-rendering buttons
-                    _updateTimerDisplay(timer.id);
-                }
-            }, 250);
+            _startTimerInterval(timer);
             
             _renderTimers();
             
@@ -2724,20 +2972,30 @@
         function toggleTimer(id) {
             const t = _timers.find(x=>x.id===id); if(!t) return;
             if (t.active) {
-                clearInterval(t.interval); t.interval=null; t.active=false;
+                _stopTimerInterval(t);
             } else {
-                t.active = true;
-                const end = Date.now() + t.remaining;
-                t.interval = setInterval(()=> {
-                    t.remaining = Math.max(0, end - Date.now());
-                    if (t.remaining===0) { clearInterval(t.interval); t.interval=null; t.active=false; _timerDone(t); }
-                    _renderTimers();
-                }, 250);
+                _startTimerInterval(t);
             }
             _renderTimers();
         }
-        function resetTimer(id) { const t=_timers.find(x=>x.id===id); if(!t) return; clearInterval(t.interval); t.interval=null; t.active=false; t.remaining=t.total; _renderTimers(); }
-        function deleteTimer(id) { const idx=_timers.findIndex(x=>x.id===id); if(idx>=0){ clearInterval(_timers[idx].interval); _timers.splice(idx,1); _renderTimers(); } }
+        function resetTimer(id) {
+            const t=_timers.find(x=>x.id===id);
+            if(!t) return;
+            _stopTimerInterval(t, false);
+            t.remaining = t.total;
+            t.endAt = null;
+            _renderTimers();
+            saveState();
+        }
+        function deleteTimer(id) {
+            const idx=_timers.findIndex(x=>x.id===id);
+            if(idx>=0){
+                _stopTimerInterval(_timers[idx], false);
+                _timers.splice(idx,1);
+                _renderTimers();
+                saveState();
+            }
+        }
         function _timerDone(t) {
             // play sound continuously until user stops it via overlay
             try {
@@ -2823,23 +3081,12 @@
                             const extendMs = extMinutes * 60 * 1000;
                             timer.remaining = extendMs;
                             timer.total += extendMs;
-                            timer.active = true;
-                            const end = Date.now() + timer.remaining;
-                            clearInterval(timer.interval);
-                            timer.interval = setInterval(() => {
-                                timer.remaining = Math.max(0, end - Date.now());
-                                if (timer.remaining === 0) {
-                                    clearInterval(timer.interval);
-                                    timer.interval = null;
-                                    timer.active = false;
-                                    _timerDone(timer);
-                                }
-                                _renderTimers();
-                            }, 250);
+                            _startTimerInterval(timer);
                         }
                         
                         _closeTimerOverlay();
                         _renderTimers();
+                        saveState();
                     };
 
                     const pickerContainer = document.createElement('div');
@@ -3010,9 +3257,10 @@
                 document.getElementById('sw-start').textContent = 'Stop';
             }
             _sw_render();
+            saveState();
         }
-        function _sw_lap(){ const now = _sw_elapsed + (_sw_running ? (Date.now()-_sw_start) : 0); _sw_laps.unshift(now); _sw_render(); try{ const stop=_startBeep(); setTimeout(()=>{ stop(); _stopAllBeeps(); },160);}catch(e){} }
-        function _sw_reset(){ _sw_running=false; clearInterval(_sw_tick); _sw_tick=null; _sw_elapsed=0; _sw_start=0; _sw_laps=[]; document.getElementById('sw-start').textContent='Start'; _sw_render(); }
+        function _sw_lap(){ const now = _sw_elapsed + (_sw_running ? (Date.now()-_sw_start) : 0); _sw_laps.unshift(now); _sw_render(); saveState(); try{ const stop=_startBeep(); setTimeout(()=>{ stop(); _stopAllBeeps(); },160);}catch(e){} }
+        function _sw_reset(){ _sw_running=false; clearInterval(_sw_tick); _sw_tick=null; _sw_elapsed=0; _sw_start=0; _sw_laps=[]; document.getElementById('sw-start').textContent='Start'; _sw_render(); saveState(); }
         document.getElementById('sw-start')?.addEventListener('click', _sw_startstop);
         document.getElementById('sw-lap')?.addEventListener('click', _sw_lap);
         document.getElementById('sw-reset')?.addEventListener('click', _sw_reset);
