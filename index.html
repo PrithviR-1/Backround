@@ -262,37 +262,47 @@
             position: absolute;
             left: -22vw;
             top: var(--y, 26%);
-            width: 28px;
-            height: 12px;
+            width: 30px;
+            height: 18px;
             color: rgba(0, 0, 0, 0.82);
             filter: none;
-            transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8));
+            transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8)) rotate(var(--tilt, 0deg));
             animation: bird-fly var(--dur, 32s) linear 1;
             animation-delay: var(--delay, 0s);
             will-change: transform, opacity;
         }
 
-        .bird::before,
-        .bird::after {
-            content: "";
-            position: absolute;
-            top: 3px;
-            width: 13px;
-            height: 8px;
-            border-top: 2.6px solid currentColor;
-            border-radius: 50% 50% 0 0;
+        .bird-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            overflow: visible;
+            animation: bird-bob var(--bobdur, 2.6s) ease-in-out infinite;
+            will-change: transform;
         }
 
-        .bird::before {
-            left: 2px;
-            transform-origin: right 60%;
-            animation: bird-wing-left 900ms cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        .bird .body {
+            fill: currentColor;
+            opacity: 0.92;
         }
 
-        .bird::after {
-            right: 2px;
-            transform-origin: left 60%;
-            animation: bird-wing-right 900ms cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        .bird .wing {
+            fill: currentColor;
+            transform-box: fill-box;
+            transform-origin: 82% 78%;
+            animation: bird-flap var(--flapdur, 1.35s) cubic-bezier(0.42, 0, 0.2, 1) infinite;
+            animation-delay: var(--flapdelay, 0s);
+            will-change: transform;
+        }
+
+        .bird .wing.right {
+            transform-origin: 18% 78%;
+            animation-name: bird-flap-right;
+        }
+
+        .bird .tail {
+            fill: currentColor;
+            opacity: 0.86;
         }
 
         /* --- CARTOON WIND FX LAYER --- */
@@ -719,29 +729,53 @@
 
         @keyframes bird-fly {
             0% {
-                transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8));
+                transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8)) rotate(var(--tilt, 0deg));
                 opacity: 0;
             }
             10% { opacity: 1; }
-            50% {
-                transform: translate3d(52vw, -10px, 0) scale(var(--scale, 0.8));
+            28% {
+                transform: translate3d(26vw, calc(var(--arc, -10px) * 0.55), 0) scale(var(--scale, 0.8)) rotate(calc(var(--tilt, 0deg) + 0.9deg));
+                opacity: 1;
+            }
+            56% {
+                transform: translate3d(56vw, calc(var(--arc, -10px) * 1.05), 0) scale(var(--scale, 0.8)) rotate(calc(var(--tilt, 0deg) - 0.8deg));
+                opacity: 1;
+            }
+            80% {
+                transform: translate3d(88vw, calc(var(--arc, -10px) * 0.35), 0) scale(var(--scale, 0.8)) rotate(calc(var(--tilt, 0deg) + 0.5deg));
                 opacity: 1;
             }
             92% { opacity: 1; }
             100% {
-                transform: translate3d(122vw, 3px, 0) scale(var(--scale, 0.8));
+                transform: translate3d(122vw, calc(var(--arc, -10px) * -0.18), 0) scale(var(--scale, 0.8)) rotate(var(--tilt, 0deg));
                 opacity: 0;
             }
         }
 
-        @keyframes bird-wing-left {
-            0%, 100% { transform: rotate(34deg) translateY(0); }
-            50% { transform: rotate(-26deg) translateY(1px); }
+        @keyframes bird-flap {
+            /* Includes a brief glide pause near open-wing phase */
+            0% { transform: rotate(-6deg) translateY(0); }
+            16% { transform: rotate(36deg) translateY(-0.6px); }
+            38% { transform: rotate(-18deg) translateY(0.8px); }
+            56% { transform: rotate(26deg) translateY(-0.4px); }
+            72% { transform: rotate(4deg) translateY(0); }
+            84% { transform: rotate(2deg) translateY(0); }
+            100% { transform: rotate(-6deg) translateY(0); }
         }
 
-        @keyframes bird-wing-right {
-            0%, 100% { transform: scaleX(-1) rotate(34deg) translateY(0); }
-            50% { transform: scaleX(-1) rotate(-26deg) translateY(1px); }
+        @keyframes bird-flap-right {
+            0% { transform: rotate(6deg) translateY(0); }
+            16% { transform: rotate(-36deg) translateY(-0.6px); }
+            38% { transform: rotate(18deg) translateY(0.8px); }
+            56% { transform: rotate(-26deg) translateY(-0.4px); }
+            72% { transform: rotate(-4deg) translateY(0); }
+            84% { transform: rotate(-2deg) translateY(0); }
+            100% { transform: rotate(6deg) translateY(0); }
+        }
+
+        @keyframes bird-bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(1.5px); }
         }
 
         @keyframes wind-sweep-right {
@@ -839,7 +873,7 @@
             .sun-spin { width: 108px; height: 108px; }
             .sun-glow { width: 152px; height: 152px; }
             .sun-lightcast { width: 260px; height: 260px; }
-            .bird { width: 22px; height: 10px; }
+            .bird { width: 24px; height: 14px; }
             .moon-system { width: 100px; height: 100px; top: 10%; left: 53%; }
             .moon-body { width: 64px; height: 64px; }
             .moon-shadow { width: 64px; height: 64px; }
@@ -1908,10 +1942,27 @@
                     const scale = baseScale + (Math.random() * 0.18 - 0.09);
                     const dur = baseDur + (Math.random() * 2.6 - 1.3);
                     const delay = i * (0.35 + Math.random() * 0.28);
+                    const flapDur = 1.08 + Math.random() * 0.72;
+                    const bobDur = 2.1 + Math.random() * 1.3;
+                    const arc = -6 - Math.random() * 12;
+                    const tilt = (Math.random() * 3.2 - 1.6);
                     bird.style.setProperty('--y', `${Math.max(8, Math.min(48, y))}%`);
                     bird.style.setProperty('--scale', `${Math.max(0.72, scale).toFixed(2)}`);
                     bird.style.setProperty('--dur', `${Math.max(10, dur).toFixed(2)}s`);
                     bird.style.setProperty('--delay', `${delay.toFixed(2)}s`);
+                    bird.style.setProperty('--flapdur', `${flapDur.toFixed(2)}s`);
+                    bird.style.setProperty('--flapdelay', `${(Math.random() * 0.5).toFixed(2)}s`);
+                    bird.style.setProperty('--bobdur', `${bobDur.toFixed(2)}s`);
+                    bird.style.setProperty('--arc', `${arc.toFixed(1)}px`);
+                    bird.style.setProperty('--tilt', `${tilt.toFixed(2)}deg`);
+                    bird.innerHTML = `
+                        <svg class="bird-svg" viewBox="0 0 60 36" aria-hidden="true">
+                            <path class="wing left" d="M29 19 C23 10, 14 8, 8 14 C14 16, 21 21, 29 19 Z"></path>
+                            <path class="wing right" d="M31 19 C37 10, 46 8, 52 14 C46 16, 39 21, 31 19 Z"></path>
+                            <ellipse class="body" cx="30" cy="19" rx="6.2" ry="3.7"></ellipse>
+                            <polygon class="tail" points="23,19 16,17 16,21"></polygon>
+                        </svg>
+                    `;
                     layer.appendChild(bird);
                     bird.addEventListener('animationend', () => {
                         try { if (bird.parentNode) bird.parentNode.removeChild(bird); } catch (e) {}
