@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atmosphere Pro | Elite Bio-Harmonization</title>
+    <title>Routinely</title>
     <style>
         /* --- ATMOSPHERE PRO DESIGN SYSTEM v2.2 ---
            ENGINEERING SPECIFICATIONS:
@@ -83,8 +83,8 @@
             position: absolute;
             top: 11%;
             left: 50%;
-            width: 220px;
-            height: 220px;
+            width: 116px;
+            height: 116px;
             transform: translate(-50%, 100vh);
             transition: transform 6s cubic-bezier(0.23, 1, 0.32, 1), z-index 0.1s;
             z-index: 2;
@@ -168,61 +168,60 @@
         .moon-system.phase-threeq-right .moon-shadow { opacity: 1; transform: translateX(-22px); }
         .moon-system.phase-threeq-left .moon-shadow { opacity: 1; transform: translateX(22px); }
 
-        /* The stylized triangle rays */
-        .sun-ray-layer {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: var(--sun-main);
-            clip-path: polygon(50% 0%, 63% 38%, 100% 38%, 69% 59%, 82% 100%, 50% 75%, 18% 100%, 31% 59%, 0% 38%, 37% 38%);
-            border: 4px solid var(--sun-stroke);
-            animation: rotate-sun 30s linear infinite;
-        }
-
-        .sun-ray-layer.back {
-            width: 224px;
-            height: 224px;
-            background: var(--sun-stroke);
-            opacity: 0.46;
-            animation: rotate-sun-reverse 45s linear infinite;
-        }
-
-        .sun-body-cartoon {
+        .sun-spin {
+            width: 126px;
+            height: 126px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            width: 120px;
-            height: 120px;
-            background: var(--sun-main);
-            border: 7px solid var(--sun-stroke);
-            border-radius: 50%;
-            z-index: 10;
-            box-shadow: 0 0 46px var(--sun-glow), 0 0 76px var(--sun-glow);
-            overflow: hidden;
+            z-index: 3;
         }
 
-        /* Highlight Spot */
-        .sun-body-cartoon::before {
-            content: "";
+        .sun-glow {
             position: absolute;
-            top: 15%;
-            left: 15%;
-            width: 45px;
-            height: 45px;
-            background: var(--sun-light);
+            width: 178px;
+            height: 178px;
             border-radius: 50%;
-            opacity: 0.84;
+            background: radial-gradient(circle, rgba(255, 218, 120, 0.58) 0%, rgba(255, 196, 84, 0.34) 40%, rgba(255, 166, 52, 0.1) 68%, rgba(255, 166, 52, 0) 100%);
+            filter: blur(10px);
+            opacity: 0.9;
+            animation: sun-pulse 5s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        /* Ambient Glow Pulse */
-        .sun-aura {
+        .sun-lightcast {
             position: absolute;
-            width: 170px;
-            height: 170px;
-            background: var(--sun-glow);
+            width: 320px;
+            height: 320px;
             border-radius: 50%;
-            filter: blur(28px);
-            animation: sun-pulse 4s ease-in-out infinite alternate;
+            background: radial-gradient(circle, rgba(255, 222, 145, 0.24) 0%, rgba(255, 206, 110, 0.14) 35%, rgba(255, 186, 88, 0.05) 58%, rgba(255, 186, 88, 0) 100%);
+            filter: blur(20px);
+            opacity: 0.72;
+            animation: sun-pulse 6.4s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 0;
         }
 
+        .sun-icon {
+            width: 100%;
+            height: 100%;
+            display: block;
+            overflow: visible;
+        }
+
+        .sun-icon .sun-rotor {
+            opacity: 0.96;
+            transform-origin: 100px 100px;
+            transform-box: view-box;
+            animation: rotate-sun 30s linear infinite;
+            will-change: transform;
+        }
+
+        .sun-icon .sun-core {
+            filter: drop-shadow(0 0 11px rgba(255, 205, 98, 0.4)) drop-shadow(0 0 24px rgba(255, 205, 98, 0.22));
+        }
 
         /* --- NIGHT SKY STARFIELD --- */
         .starfield,
@@ -239,6 +238,61 @@
         .day-active .starfield,
         .day-active .shooting-starfield {
             opacity: 0;
+        }
+
+        .birds-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        .day-active .birds-layer {
+            opacity: 0.78;
+        }
+
+        #body:not(.day-active) .birds-layer {
+            opacity: 0;
+        }
+
+        .bird {
+            position: absolute;
+            left: -22vw;
+            top: var(--y, 26%);
+            width: 28px;
+            height: 12px;
+            color: rgba(0, 0, 0, 0.82);
+            filter: none;
+            transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8));
+            animation: bird-fly var(--dur, 32s) linear 1;
+            animation-delay: var(--delay, 0s);
+            will-change: transform, opacity;
+        }
+
+        .bird::before,
+        .bird::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            width: 13px;
+            height: 8px;
+            border-top: 2.6px solid currentColor;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .bird::before {
+            left: 2px;
+            transform-origin: right 60%;
+            animation: bird-wing-left 900ms cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        }
+
+        .bird::after {
+            right: 2px;
+            transform-origin: left 60%;
+            animation: bird-wing-right 900ms cubic-bezier(0.42, 0, 0.58, 1) infinite;
         }
 
         /* --- CARTOON WIND FX LAYER --- */
@@ -357,7 +411,7 @@
         .cloud {
             position: absolute;
             /* Remove CSS looping animations — movement handled by JS for randomness */
-            filter: url(#cloud-filter);
+            filter: none;
             will-change: transform, opacity;
             pointer-events: none;
             transform-origin: center;
@@ -365,48 +419,29 @@
 
         .cloud-group {
             position: relative;
-            /* Soft depth with subtle ambient bloom for natural edge lift */
-            filter: drop-shadow(0 18px 30px rgba(10,15,30,0.2)) drop-shadow(0 6px 18px rgba(255,255,255,0.08));
+            filter: none;
             transition: transform 420ms cubic-bezier(.2,.9,.3,1);
         }
 
         .puff-base {
             position: absolute;
-            background: radial-gradient(130% 105% at 50% 38%,
-                rgba(170, 206, 233, 0.88) 0%,
-                rgba(144, 188, 221, 0.82) 56%,
-                rgba(120, 170, 210, 0.62) 78%,
-                rgba(120, 170, 210, 0.26) 100%);
+            background: #f4f9ff;
             border-radius: 120px;
             z-index: 1;
-            filter: blur(2px);
-            box-shadow: inset 0 8px 18px rgba(255,255,255,0.08);
+            filter: none;
+            box-shadow: none;
         }
         .puff-body {
             position: absolute;
-            background: radial-gradient(135% 115% at 34% 28%,
-                rgba(249, 253, 255, 0.98) 0%,
-                rgba(238, 246, 251, 0.96) 52%,
-                rgba(221, 236, 247, 0.86) 76%,
-                rgba(213, 231, 245, 0.42) 100%);
+            background: #f4f9ff;
             border-radius: 120px;
             z-index: 2;
             top: -8px; left: 6px;
-            box-shadow: inset -9px -7px 20px rgba(0,0,0,0.05), 0 3px 12px rgba(255,255,255,0.08);
-            filter: blur(0.65px);
+            box-shadow: none;
+            filter: none;
         }
         .puff-highlight {
-            position: absolute;
-            background: radial-gradient(120% 100% at 30% 26%,
-                rgba(255,255,255,0.95) 0%,
-                rgba(255,255,255,0.78) 52%,
-                rgba(255,255,255,0.34) 78%,
-                rgba(255,255,255,0.08) 100%);
-            border-radius: 120px;
-            z-index: 3;
-            top: -18px; left: 12px;
-            filter: blur(1.1px);
-            opacity: 0.92;
+            display: none;
         }
 
         /* Complex Positioning (static positions; JS will animate motion)
@@ -682,6 +717,33 @@
             100% { opacity: 0; transform: translate3d(var(--ex, 120vw), var(--ey, 60vh), 0) rotate(var(--shoot-angle, -26deg)); }
         }
 
+        @keyframes bird-fly {
+            0% {
+                transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8));
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            50% {
+                transform: translate3d(52vw, -10px, 0) scale(var(--scale, 0.8));
+                opacity: 1;
+            }
+            92% { opacity: 1; }
+            100% {
+                transform: translate3d(122vw, 3px, 0) scale(var(--scale, 0.8));
+                opacity: 0;
+            }
+        }
+
+        @keyframes bird-wing-left {
+            0%, 100% { transform: rotate(34deg) translateY(0); }
+            50% { transform: rotate(-26deg) translateY(1px); }
+        }
+
+        @keyframes bird-wing-right {
+            0%, 100% { transform: scaleX(-1) rotate(34deg) translateY(0); }
+            50% { transform: scaleX(-1) rotate(-26deg) translateY(1px); }
+        }
+
         @keyframes wind-sweep-right {
             0% {
                 opacity: 0;
@@ -773,8 +835,11 @@
         @media (max-width: 500px) {
             .glass-card { padding: 32px 24px; border-radius: 36px; }
             h2 { font-size: 34px; }
-            .sun-system { width: 190px; height: 190px; }
-            .sun-body-cartoon { width: 102px; height: 102px; }
+            .sun-system { width: 100px; height: 100px; }
+            .sun-spin { width: 108px; height: 108px; }
+            .sun-glow { width: 152px; height: 152px; }
+            .sun-lightcast { width: 260px; height: 260px; }
+            .bird { width: 22px; height: 10px; }
             .moon-system { width: 100px; height: 100px; top: 10%; left: 53%; }
             .moon-body { width: 64px; height: 64px; }
             .moon-shadow { width: 64px; height: 64px; }
@@ -812,12 +877,31 @@
         .tab-btn {
             background: transparent;
             color: var(--text-primary);
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 14px;
             font-weight: 800;
             cursor: pointer;
             border: none;
-            font-size: 13px;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-width: 72px;
+        }
+        .tab-icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .tab-label {
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         .tab-btn.active {
             background: linear-gradient(90deg, rgba(0,122,255,0.18), rgba(48,209,88,0.08));
@@ -856,10 +940,49 @@
 
     <div id="stage">
         <div id="sun-system" class="sun-system">
-            <div class="sun-aura"></div>
-            <div class="sun-ray-layer back"></div>
-            <div class="sun-ray-layer"></div>
-            <div class="sun-body-cartoon"></div>
+            <div class="sun-lightcast" aria-hidden="true"></div>
+            <div class="sun-glow" aria-hidden="true"></div>
+            <div class="sun-spin" aria-hidden="true">
+                <svg class="sun-icon" viewBox="0 0 200 200">
+                    <defs>
+                        <radialGradient id="sun-core-shade" cx="34%" cy="30%" r="78%">
+                            <stop offset="0%" stop-color="#f8de84" stop-opacity="0.52"></stop>
+                            <stop offset="62%" stop-color="#f2cf66" stop-opacity="0.16"></stop>
+                            <stop offset="100%" stop-color="#e7b74e" stop-opacity="0.3"></stop>
+                        </radialGradient>
+                        <clipPath id="sun-core-clip">
+                            <circle cx="100" cy="100" r="56"></circle>
+                        </clipPath>
+                    </defs>
+                    <g class="sun-rotor" fill="#f0d26b">
+                        <rect x="95" y="8" width="10" height="38" rx="5"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(22.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(45 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(67.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(90 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(112.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(135 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(157.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(180 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(202.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(225 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(247.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(270 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(292.5 100 100)"></rect>
+                        <rect x="95" y="8" width="10" height="38" rx="5" transform="rotate(315 100 100)"></rect>
+                        <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(337.5 100 100)"></rect>
+                    </g>
+                    <g class="sun-core">
+                        <circle cx="100" cy="100" r="56" fill="#f0d26b"></circle>
+                        <g clip-path="url(#sun-core-clip)">
+                            <circle cx="100" cy="100" r="56" fill="url(#sun-core-shade)"></circle>
+                            <ellipse cx="78" cy="76" rx="23" ry="16" fill="rgba(255, 241, 178, 0.36)"></ellipse>
+                            <path d="M132 72 l7 -4 M140 80 l5 -3 M122 142 l7 -4 M130 150 l7 -4" stroke="#f6bc5f" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+                        </g>
+                        <circle cx="100" cy="100" r="56" fill="none" stroke="rgba(255, 241, 178, 0.45)" stroke-width="1.5"></circle>
+                    </g>
+                </svg>
+            </div>
         </div>
 
         <div id="moon-system" class="moon-system phase-full" aria-hidden="true">
@@ -874,6 +997,7 @@
 
         <div id="starfield" class="starfield" aria-hidden="true"></div>
         <div id="shooting-starfield" class="shooting-starfield" aria-hidden="true"></div>
+        <div id="birds-layer" class="birds-layer" aria-hidden="true"></div>
 
         <div class="cloud-container">
             <div class="cloud c1">
@@ -1032,10 +1156,41 @@
     <!-- BOTTOM TAB NAV -->
     <div class="bottom-nav" aria-hidden="false">
         <div class="nav-inner">
-            <button class="tab-btn" id="tab-alarms" onclick="switchTab('post')">Alarms</button>
-            <button class="tab-btn" id="tab-timers" onclick="switchTab('timers')">Timer</button>
-            <button class="tab-btn" id="tab-stopwatch" onclick="switchTab('stopwatch')">Stopwatch</button>
-            <button class="tab-btn" id="tab-sounds" onclick="switchTab('sounds')">Sounds</button>
+            <button class="tab-btn" id="tab-alarms" onclick="switchTab('post')" aria-label="Alarms">
+                <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 21a2 2 0 0 1-4 0"></path>
+                    <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16z"></path>
+                    <path d="M7.5 5 5 3"></path>
+                    <path d="m16.5 5 2.5-2"></path>
+                </svg>
+                <span class="tab-label">Alarms</span>
+            </button>
+            <button class="tab-btn" id="tab-timers" onclick="switchTab('timers')" aria-label="Timers">
+                <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="14" r="7"></circle>
+                    <path d="M9 3h6"></path>
+                    <path d="M12 7v3"></path>
+                    <path d="m12 14 3-2"></path>
+                </svg>
+                <span class="tab-label">Timers</span>
+            </button>
+            <button class="tab-btn" id="tab-stopwatch" onclick="switchTab('stopwatch')" aria-label="Stopwatch">
+                <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="13" r="8"></circle>
+                    <path d="M12 13 15 10"></path>
+                    <path d="M9 2h6"></path>
+                    <path d="M15.5 5.5 17 4"></path>
+                </svg>
+                <span class="tab-label">Stopwatch</span>
+            </button>
+            <button class="tab-btn" id="tab-sounds" onclick="switchTab('sounds')" aria-label="Sounds">
+                <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M11 6 7.8 9H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2.8L11 18a1 1 0 0 0 1.7-.7V6.7A1 1 0 0 0 11 6z"></path>
+                    <path d="M16 9.5a4 4 0 0 1 0 5"></path>
+                    <path d="M18.7 7a7.5 7.5 0 0 1 0 10"></path>
+                </svg>
+                <span class="tab-label">Sounds</span>
+            </button>
         </div>
     </div>
 
@@ -1047,12 +1202,148 @@
 
         // 1. STATE MANAGEMENT
         const APP_STATE_STORAGE_KEY = 'atmospherePro.appState.v1';
+        const DEFAULT_SOUND_ID = 'sunrise-chimes';
         const BASE_SOUND_OPTIONS = [
-            { id: 'classic', name: 'Classic Beep', description: 'Traditional sine wave alarm' },
-            { id: 'digital', name: 'Digital Pulse', description: 'Square wave with sharp edges' },
-            { id: 'gentle', name: 'Gentle Chime', description: 'Soft triangle wave melody' },
-            { id: 'urgent', name: 'Urgent Alert', description: 'Sawtooth wave for attention' }
+            { id: 'sunrise-chimes', name: 'Sunrise Chimes', description: 'Gentle layered bells with breathing pauses.' },
+            { id: 'soft-glass-bells', name: 'Soft Glass Bells', description: 'Clean glass-like tones with soft urgency.' },
+            { id: 'warm-marimba-steps', name: 'Warm Marimba Steps', description: 'Wooden, warm steps with a steady morning pulse.' },
+            { id: 'ambient-pulse', name: 'Ambient Pulse', description: 'Low, airy pulse designed to rise slowly.' },
+            { id: 'gentle-digital-bloom', name: 'Gentle Digital Bloom', description: 'Modern digital plucks that bloom instead of stab.' },
+            { id: 'temple-bell-calm', name: 'Temple Bell Calm', description: 'Grounded bell strikes with spacious rests.' },
+            { id: 'morning-piano-drops', name: 'Morning Piano Drops', description: 'Soft piano droplets with a reassuring cadence.' },
+            { id: 'breezy-wind-chime', name: 'Breezy Wind Chime', description: 'Airy chimes with subtle motion and lift.' }
         ];
+        const ALARM_SOUND_PROFILES = {
+            'sunrise-chimes': {
+                // Developer notes:
+                // vibe: Calm sunrise; optimistic and premium without urgency.
+                // texture: Warm bell layers with gentle harmonics and soft air.
+                // rhythm: Two connected 10s phrases (20.6s total cycle) with breathing rests.
+                // frequency range: ~280Hz to 1040Hz; avoids piercing highs.
+                // loudness: starts soft and blooms through the full composition.
+                // why it works: clear melodic identity, gradual lift, never shrill.
+                // shaping: smooth envelopes, subtle delay tail, harmonic doubling.
+                cycleLength: 20.6,
+                rampSeconds: 10,
+                level: 0.21,
+                motifs: [
+                    { length: 10.4, notes: [{ t: 0.0, d: 0.52, f: 392, g: 0.22, w: 'sine', harmonic: 2, hg: 0.1, pan: -0.06 }, { t: 1.3, d: 0.5, f: 523.25, g: 0.23, w: 'triangle', harmonic: 1.5, hg: 0.08, pan: 0.06 }, { t: 2.7, d: 0.56, f: 659.25, g: 0.24, w: 'sine', harmonic: 2, hg: 0.1, pan: -0.03 }, { t: 4.5, d: 0.48, f: 523.25, g: 0.21, w: 'triangle', pan: 0.05 }, { t: 6.3, d: 0.5, f: 587.33, g: 0.22, w: 'sine', harmonic: 1.8, hg: 0.08, pan: -0.05 }, { t: 8.4, d: 0.62, f: 440, g: 0.2, w: 'triangle', pan: 0.04 }] },
+                    { length: 10.2, notes: [{ t: 0.2, d: 0.48, f: 523.25, g: 0.24, w: 'sine', harmonic: 2, hg: 0.1, pan: 0.05 }, { t: 1.4, d: 0.54, f: 659.25, g: 0.25, w: 'triangle', harmonic: 1.5, hg: 0.09, pan: -0.05 }, { t: 2.8, d: 0.6, f: 783.99, g: 0.26, w: 'sine', harmonic: 2, hg: 0.11, pan: 0.03 }, { t: 4.7, d: 0.48, f: 659.25, g: 0.23, w: 'triangle', pan: -0.04 }, { t: 6.6, d: 0.5, f: 587.33, g: 0.22, w: 'sine', harmonic: 1.8, hg: 0.08, pan: 0.04 }, { t: 8.5, d: 0.66, f: 523.25, g: 0.21, w: 'triangle', pan: -0.02 }] }
+                ]
+            },
+            'soft-glass-bells': {
+                // vibe: Clean modern calm with soft urgency.
+                // texture: Glass-like bell pings with controlled shimmer.
+                // rhythm: 20.4s cycle across two 10s phrases; call-and-answer structure.
+                // frequency range: ~410Hz to 1180Hz; filtered to keep edges soft.
+                // loudness: gentle onset with slight second-half lift.
+                // why it works: articulate enough to wake, spacious enough to stay pleasant.
+                // shaping: short attack, controlled decay, light ambient tail.
+                cycleLength: 20.4,
+                rampSeconds: 9,
+                level: 0.2,
+                motifs: [
+                    { length: 10.0, notes: [{ t: 0.0, d: 0.36, f: 698.46, g: 0.22, w: 'triangle', harmonic: 2.6, hg: 0.08, pan: -0.08 }, { t: 0.7, d: 0.34, f: 880, g: 0.21, w: 'sine', harmonic: 2.2, hg: 0.08, pan: 0.08 }, { t: 2.2, d: 0.38, f: 783.99, g: 0.22, w: 'triangle', pan: -0.06 }, { t: 3.8, d: 0.46, f: 587.33, g: 0.24, w: 'sine', harmonic: 1.8, hg: 0.09, pan: 0.05 }, { t: 5.8, d: 0.4, f: 659.25, g: 0.22, w: 'triangle', pan: -0.05 }, { t: 7.9, d: 0.54, f: 523.25, g: 0.2, w: 'sine', pan: 0.04 }] },
+                    { length: 10.4, notes: [{ t: 0.3, d: 0.34, f: 783.99, g: 0.23, w: 'triangle', harmonic: 2.4, hg: 0.09, pan: 0.07 }, { t: 1.1, d: 0.34, f: 987.77, g: 0.22, w: 'sine', harmonic: 2, hg: 0.08, pan: -0.07 }, { t: 2.5, d: 0.42, f: 880, g: 0.23, w: 'triangle', pan: 0.05 }, { t: 4.2, d: 0.48, f: 659.25, g: 0.24, w: 'sine', harmonic: 1.8, hg: 0.09, pan: -0.05 }, { t: 6.3, d: 0.42, f: 783.99, g: 0.22, w: 'triangle', pan: 0.04 }, { t: 8.5, d: 0.6, f: 587.33, g: 0.21, w: 'sine', pan: -0.03 }] }
+                ]
+            },
+            'warm-marimba-steps': {
+                // vibe: Grounded and positive; confident wake-up momentum.
+                // texture: Wooden marimba body with warm fundamental support.
+                // rhythm: 20.8s composed step pattern with repeated groove and variation.
+                // frequency range: ~220Hz to 760Hz for warm mids.
+                // loudness: soft transients early, stronger phrase accents later.
+                // why it works: predictable cadence keeps attention without stress.
+                // shaping: damped decay and rounded attack like felt mallets.
+                cycleLength: 20.8,
+                rampSeconds: 10,
+                level: 0.22,
+                motifs: [
+                    { length: 10.6, notes: [{ t: 0.0, d: 0.26, f: 293.66, g: 0.26, w: 'triangle', harmonic: 2, hg: 0.06, pan: -0.05 }, { t: 0.65, d: 0.24, f: 329.63, g: 0.27, w: 'triangle', pan: -0.03 }, { t: 1.3, d: 0.24, f: 392, g: 0.27, w: 'triangle', pan: 0.03 }, { t: 1.95, d: 0.24, f: 440, g: 0.28, w: 'triangle', pan: 0.05 }, { t: 3.4, d: 0.28, f: 329.63, g: 0.26, w: 'sine', harmonic: 1.7, hg: 0.06, pan: -0.04 }, { t: 4.3, d: 0.26, f: 392, g: 0.27, w: 'triangle', pan: 0.04 }, { t: 5.2, d: 0.28, f: 493.88, g: 0.28, w: 'sine', pan: -0.02 }, { t: 6.8, d: 0.3, f: 440, g: 0.29, w: 'triangle', pan: 0.03 }, { t: 8.8, d: 0.36, f: 349.23, g: 0.24, w: 'sine', pan: 0.0 }] },
+                    { length: 10.2, notes: [{ t: 0.2, d: 0.26, f: 329.63, g: 0.28, w: 'triangle', harmonic: 2, hg: 0.07, pan: 0.04 }, { t: 0.86, d: 0.24, f: 392, g: 0.29, w: 'triangle', pan: 0.02 }, { t: 1.52, d: 0.24, f: 440, g: 0.29, w: 'triangle', pan: -0.02 }, { t: 2.18, d: 0.24, f: 523.25, g: 0.3, w: 'triangle', pan: -0.04 }, { t: 3.7, d: 0.28, f: 392, g: 0.27, w: 'sine', harmonic: 1.6, hg: 0.06, pan: 0.04 }, { t: 4.7, d: 0.26, f: 493.88, g: 0.28, w: 'triangle', pan: -0.03 }, { t: 5.7, d: 0.28, f: 587.33, g: 0.29, w: 'sine', pan: 0.03 }, { t: 7.2, d: 0.3, f: 523.25, g: 0.3, w: 'triangle', pan: -0.02 }, { t: 8.8, d: 0.38, f: 392, g: 0.25, w: 'sine', pan: 0.0 }] }
+                ]
+            },
+            'ambient-pulse': {
+                // vibe: Minimal ambient wake-up with soft confidence.
+                // texture: Warm pad pulses and mellow airy layer.
+                // rhythm: 21.2s slow-moving composition with long breathing space.
+                // frequency range: ~170Hz to 560Hz emphasizing warm low-mids.
+                // loudness: very gentle start, progressive lift through second phrase.
+                // why it works: sustained pulse builds alertness without agitation.
+                // shaping: long envelopes, low-pass smoothing, soft harmonic bloom.
+                cycleLength: 21.2,
+                rampSeconds: 11,
+                level: 0.2,
+                motifs: [
+                    { length: 10.8, notes: [{ t: 0.0, d: 1.4, f: 220, g: 0.15, w: 'sine', harmonic: 2, hg: 0.04, pan: -0.03 }, { t: 1.9, d: 1.3, f: 246.94, g: 0.16, w: 'triangle', harmonic: 1.5, hg: 0.04, pan: 0.03 }, { t: 3.9, d: 1.4, f: 261.63, g: 0.16, w: 'sine', pan: -0.02 }, { t: 6.1, d: 1.2, f: 293.66, g: 0.17, w: 'triangle', harmonic: 1.6, hg: 0.05, pan: 0.02 }, { t: 8.4, d: 1.2, f: 329.63, g: 0.16, w: 'sine', pan: 0.0 }] },
+                    { length: 10.4, notes: [{ t: 0.4, d: 1.3, f: 246.94, g: 0.17, w: 'sine', harmonic: 2, hg: 0.05, pan: 0.03 }, { t: 2.3, d: 1.2, f: 261.63, g: 0.18, w: 'triangle', harmonic: 1.5, hg: 0.05, pan: -0.03 }, { t: 4.2, d: 1.35, f: 293.66, g: 0.18, w: 'sine', pan: 0.02 }, { t: 6.2, d: 1.15, f: 349.23, g: 0.19, w: 'triangle', harmonic: 1.6, hg: 0.05, pan: -0.02 }, { t: 8.4, d: 1.2, f: 392, g: 0.17, w: 'sine', pan: 0.0 }] }
+                ]
+            },
+            'gentle-digital-bloom': {
+                // vibe: Contemporary, polished, and calm-modern.
+                // texture: Rounded digital plucks with gentle harmonic bloom.
+                // rhythm: 20.2s through two 10s phrases; clustered motif + response.
+                // frequency range: ~260Hz to 980Hz; no harsh upper spikes.
+                // loudness: subtle open, clearer articulation in back half.
+                // why it works: modern identity with melodic structure, never chaotic.
+                // shaping: quick-soft attacks, medium release, filtered harmonics.
+                cycleLength: 20.2,
+                rampSeconds: 9,
+                level: 0.22,
+                motifs: [
+                    { length: 10.0, notes: [{ t: 0.0, d: 0.28, f: 523.25, g: 0.2, w: 'triangle', harmonic: 2, hg: 0.07, pan: -0.06 }, { t: 0.45, d: 0.24, f: 659.25, g: 0.19, w: 'sine', harmonic: 2.3, hg: 0.06, pan: 0.06 }, { t: 0.9, d: 0.24, f: 783.99, g: 0.18, w: 'triangle', pan: -0.04 }, { t: 2.0, d: 0.32, f: 587.33, g: 0.21, w: 'triangle', pan: 0.05 }, { t: 2.7, d: 0.34, f: 659.25, g: 0.2, w: 'sine', pan: -0.03 }, { t: 4.3, d: 0.3, f: 523.25, g: 0.21, w: 'triangle', harmonic: 1.8, hg: 0.06, pan: 0.03 }, { t: 5.2, d: 0.3, f: 587.33, g: 0.2, w: 'sine', pan: -0.02 }, { t: 7.4, d: 0.42, f: 440, g: 0.18, w: 'triangle', pan: 0.01 }] },
+                    { length: 10.2, notes: [{ t: 0.3, d: 0.3, f: 587.33, g: 0.21, w: 'triangle', harmonic: 2, hg: 0.07, pan: 0.05 }, { t: 0.78, d: 0.25, f: 739.99, g: 0.2, w: 'sine', harmonic: 2.1, hg: 0.06, pan: -0.05 }, { t: 1.28, d: 0.25, f: 880, g: 0.19, w: 'triangle', pan: 0.04 }, { t: 2.4, d: 0.34, f: 659.25, g: 0.22, w: 'triangle', pan: -0.04 }, { t: 3.15, d: 0.35, f: 739.99, g: 0.21, w: 'sine', pan: 0.03 }, { t: 4.9, d: 0.32, f: 587.33, g: 0.22, w: 'triangle', harmonic: 1.8, hg: 0.06, pan: -0.02 }, { t: 5.9, d: 0.3, f: 659.25, g: 0.21, w: 'sine', pan: 0.02 }, { t: 8.1, d: 0.46, f: 493.88, g: 0.19, w: 'triangle', pan: 0.0 }] }
+                ]
+            },
+            'temple-bell-calm': {
+                // vibe: Centered, peaceful, ceremonial calm.
+                // texture: Grounded bell fundamentals with low harmonic body.
+                // rhythm: 21.6s sparse composition; deliberate strikes with long rests.
+                // frequency range: ~190Hz to 760Hz, favoring mellow mids.
+                // loudness: smooth start, each strike blooms and settles naturally.
+                // why it works: sparse pacing remains effective without sounding frantic.
+                // shaping: long release and subtle echo for meditative space.
+                cycleLength: 21.6,
+                rampSeconds: 10,
+                level: 0.23,
+                motifs: [
+                    { length: 11.0, notes: [{ t: 0.0, d: 0.82, f: 246.94, g: 0.2, w: 'sine', harmonic: 2, hg: 0.09, pan: -0.03 }, { t: 2.3, d: 0.78, f: 329.63, g: 0.2, w: 'triangle', harmonic: 1.5, hg: 0.09, pan: 0.03 }, { t: 4.9, d: 0.86, f: 392, g: 0.21, w: 'sine', harmonic: 2, hg: 0.09, pan: -0.02 }, { t: 7.6, d: 0.82, f: 329.63, g: 0.2, w: 'triangle', pan: 0.02 }, { t: 9.5, d: 0.92, f: 261.63, g: 0.19, w: 'sine', pan: 0.0 }] },
+                    { length: 10.6, notes: [{ t: 0.4, d: 0.8, f: 293.66, g: 0.21, w: 'sine', harmonic: 2, hg: 0.09, pan: 0.03 }, { t: 2.5, d: 0.78, f: 392, g: 0.21, w: 'triangle', harmonic: 1.5, hg: 0.09, pan: -0.03 }, { t: 5.0, d: 0.9, f: 440, g: 0.22, w: 'sine', harmonic: 2, hg: 0.1, pan: 0.02 }, { t: 7.4, d: 0.82, f: 349.23, g: 0.2, w: 'triangle', pan: -0.02 }, { t: 9.0, d: 0.96, f: 293.66, g: 0.19, w: 'sine', pan: 0.0 }] }
+                ]
+            },
+            'morning-piano-drops': {
+                // vibe: Familiar, human, reassuring wake-up tone.
+                // texture: Soft piano-like droplets with warm support.
+                // rhythm: 20.6s composed sequence with recognizable descending motif.
+                // frequency range: ~230Hz to 900Hz, no metallic top-end.
+                // loudness: starts low, rounded accents become clearer over time.
+                // why it works: melodic motion attracts attention without annoyance.
+                // shaping: cushioned attack with medium release and gentle tail.
+                cycleLength: 20.6,
+                rampSeconds: 10,
+                level: 0.22,
+                motifs: [
+                    { length: 10.2, notes: [{ t: 0.0, d: 0.34, f: 659.25, g: 0.2, w: 'triangle', harmonic: 2, hg: 0.06, pan: -0.05 }, { t: 0.8, d: 0.36, f: 587.33, g: 0.21, w: 'triangle', pan: 0.05 }, { t: 1.7, d: 0.38, f: 523.25, g: 0.22, w: 'sine', harmonic: 1.7, hg: 0.06, pan: -0.03 }, { t: 2.8, d: 0.44, f: 440, g: 0.23, w: 'sine', pan: 0.03 }, { t: 4.6, d: 0.36, f: 493.88, g: 0.21, w: 'triangle', pan: -0.03 }, { t: 5.5, d: 0.38, f: 523.25, g: 0.22, w: 'sine', pan: 0.03 }, { t: 7.2, d: 0.4, f: 392, g: 0.2, w: 'triangle', pan: -0.02 }, { t: 8.9, d: 0.52, f: 349.23, g: 0.19, w: 'sine', pan: 0.0 }] },
+                    { length: 10.4, notes: [{ t: 0.3, d: 0.34, f: 739.99, g: 0.21, w: 'triangle', harmonic: 2, hg: 0.07, pan: 0.05 }, { t: 1.1, d: 0.36, f: 659.25, g: 0.22, w: 'triangle', pan: -0.05 }, { t: 2.0, d: 0.38, f: 587.33, g: 0.23, w: 'sine', harmonic: 1.7, hg: 0.06, pan: 0.03 }, { t: 3.2, d: 0.44, f: 493.88, g: 0.24, w: 'sine', pan: -0.03 }, { t: 5.0, d: 0.36, f: 523.25, g: 0.22, w: 'triangle', pan: 0.02 }, { t: 5.9, d: 0.38, f: 587.33, g: 0.23, w: 'sine', pan: -0.02 }, { t: 7.6, d: 0.42, f: 440, g: 0.21, w: 'triangle', pan: 0.01 }, { t: 9.2, d: 0.56, f: 392, g: 0.19, w: 'sine', pan: 0.0 }] }
+                ]
+            },
+            'breezy-wind-chime': {
+                // vibe: Airy and fresh with soft emotional lift.
+                // texture: Wind-chime clusters with gentle harmonic air.
+                // rhythm: 21.2s cycle with flutter clusters and calm answering tones.
+                // frequency range: ~320Hz to 1120Hz; highs remain controlled.
+                // loudness: very gentle open, modest intensity build across cycle.
+                // why it works: musical movement stays pleasant while still awakening.
+                // shaping: softened transients, longer tails, subtle spatial delay.
+                cycleLength: 21.2,
+                rampSeconds: 10,
+                level: 0.2,
+                motifs: [
+                    { length: 10.4, notes: [{ t: 0.0, d: 0.28, f: 523.25, g: 0.18, w: 'sine', harmonic: 2.2, hg: 0.06, pan: -0.08 }, { t: 0.38, d: 0.26, f: 659.25, g: 0.17, w: 'triangle', harmonic: 2, hg: 0.06, pan: 0.08 }, { t: 0.76, d: 0.3, f: 783.99, g: 0.16, w: 'sine', harmonic: 1.8, hg: 0.05, pan: -0.06 }, { t: 1.2, d: 0.34, f: 659.25, g: 0.17, w: 'triangle', pan: 0.06 }, { t: 2.6, d: 0.42, f: 587.33, g: 0.19, w: 'sine', pan: -0.04 }, { t: 4.5, d: 0.4, f: 523.25, g: 0.19, w: 'triangle', pan: 0.04 }, { t: 6.8, d: 0.44, f: 493.88, g: 0.18, w: 'sine', pan: -0.03 }, { t: 8.8, d: 0.54, f: 440, g: 0.17, w: 'triangle', pan: 0.02 }] },
+                    { length: 10.8, notes: [{ t: 0.3, d: 0.28, f: 587.33, g: 0.19, w: 'sine', harmonic: 2.1, hg: 0.06, pan: 0.08 }, { t: 0.66, d: 0.26, f: 739.99, g: 0.18, w: 'triangle', harmonic: 2, hg: 0.06, pan: -0.08 }, { t: 1.04, d: 0.3, f: 880, g: 0.17, w: 'sine', harmonic: 1.8, hg: 0.05, pan: 0.06 }, { t: 1.46, d: 0.34, f: 739.99, g: 0.18, w: 'triangle', pan: -0.06 }, { t: 2.9, d: 0.44, f: 659.25, g: 0.2, w: 'sine', pan: 0.04 }, { t: 4.9, d: 0.4, f: 587.33, g: 0.2, w: 'triangle', pan: -0.04 }, { t: 7.2, d: 0.46, f: 523.25, g: 0.19, w: 'sine', pan: 0.02 }, { t: 9.3, d: 0.6, f: 493.88, g: 0.18, w: 'triangle', pan: 0.0 }] }
+                ]
+            }
+        };
         const createDefaultTasks = () => ([
             { id: 1, text: "Rehydrate (20oz Water)", done: false },
             { id: 2, text: "5 Min Mobility Stretch", done: false },
@@ -1074,7 +1365,7 @@
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
 
         // Selected alarm sound type
-        let selectedSound = 'digital'; // default sound
+        let selectedSound = DEFAULT_SOUND_ID; // default sound
         const MOON_PHASES = [
             { cls: 'phase-crescent-right', weight: 14, label: 'crescent-right' },
             { cls: 'phase-crescent-left', weight: 12, label: 'crescent-left' },
@@ -1144,7 +1435,7 @@
                     alarmsMeta: Array.isArray(alarmsMeta) ? alarmsMeta.map(d => String(d || 'Everyday')) : [],
                     alarmTypes: Array.isArray(alarmTypes) ? alarmTypes.map(t => (t === 'regular' ? 'regular' : 'routine')) : [],
                     selectedAlarmType: selectedAlarmType === 'regular' ? 'regular' : 'routine',
-                    selectedSound: String(selectedSound || 'digital'),
+                    selectedSound: String(selectedSound || DEFAULT_SOUND_ID),
                     customSounds,
                     timers: _serializeTimersForState(),
                     stopwatch: _serializeStopwatchForState()
@@ -1180,7 +1471,7 @@
                 alarmsMeta = [];
                 alarmTypes = [];
                 selectedAlarmType = 'routine';
-                selectedSound = 'digital';
+                selectedSound = DEFAULT_SOUND_ID;
                 _timers.splice(0, _timers.length);
                 _sw_running = false;
                 _sw_elapsed = 0;
@@ -1220,7 +1511,7 @@
             });
 
             const soundExists = SOUND_OPTIONS.some(s => s.id === state.selectedSound);
-            selectedSound = soundExists ? state.selectedSound : 'digital';
+            selectedSound = soundExists ? state.selectedSound : DEFAULT_SOUND_ID;
 
             _timers.splice(0, _timers.length);
             const now = Date.now();
@@ -1288,6 +1579,7 @@
             _sw_render();
             attachScrollSnapping();
             initNightSky();
+            initDayBirds();
             initWindFX();
             initCloudsMotion();
             initClickRadar();
@@ -1592,6 +1884,50 @@
                 streak.style.setProperty('--shoot-delay', `${Math.random() * 10}s`);
                 shootingField.appendChild(streak);
             }
+        }
+
+        // 4.45 Day birds: probabilistic group spawns (1-4 birds), daytime only.
+        function initDayBirds() {
+            const layer = document.getElementById('birds-layer');
+            if (!layer) return;
+
+            function spawnGroup() {
+                // Only spawn groups during daytime.
+                if (!document.getElementById('body')?.classList.contains('day-active')) return;
+
+                const groupSize = 1 + Math.floor(Math.random() * 4); // 1..4
+                const baseY = 14 + Math.random() * 24; // upper sky band
+                const baseScale = 0.82 + Math.random() * 0.35; // slightly closer/larger
+                const baseDur = 12 + Math.random() * 8;
+                const flockSpread = 3.2 + Math.random() * 4.2;
+
+                for (let i = 0; i < groupSize; i++) {
+                    const bird = document.createElement('span');
+                    bird.className = 'bird';
+                    const y = baseY + ((i - (groupSize - 1) / 2) * flockSpread) + (Math.random() * 2 - 1);
+                    const scale = baseScale + (Math.random() * 0.18 - 0.09);
+                    const dur = baseDur + (Math.random() * 2.6 - 1.3);
+                    const delay = i * (0.35 + Math.random() * 0.28);
+                    bird.style.setProperty('--y', `${Math.max(8, Math.min(48, y))}%`);
+                    bird.style.setProperty('--scale', `${Math.max(0.72, scale).toFixed(2)}`);
+                    bird.style.setProperty('--dur', `${Math.max(10, dur).toFixed(2)}s`);
+                    bird.style.setProperty('--delay', `${delay.toFixed(2)}s`);
+                    layer.appendChild(bird);
+                    bird.addEventListener('animationend', () => {
+                        try { if (bird.parentNode) bird.parentNode.removeChild(bird); } catch (e) {}
+                    }, { once: true });
+                }
+            }
+
+            function loop() {
+                spawnGroup();
+                // Variable probability pacing: frequent enough to feel alive, not constant.
+                const nextMs = 2200 + Math.random() * 5200;
+                setTimeout(loop, nextMs);
+            }
+
+            // Start with a short delay so first flock appears promptly on day screens.
+            setTimeout(loop, 900);
         }
 
         // 4.5 Cloud motion: randomized, per-cloud constant speed (JS-driven)
@@ -2084,31 +2420,43 @@
                     audio.volume = 0.0; // start silent then ramp
                     audio.loop = false;
                     const start = audio.play();
+                    if (start && typeof start.catch === 'function') start.catch(() => {});
                     // ramp volume in 2s
                     let vol = 0.0;
                     const rampInt = setInterval(() => {
-                        vol = Math.min(0.9, vol + 0.06);
+                        vol = Math.min(0.9, vol + 0.05);
                         try { audio.volume = vol; } catch (e) {}
-                    }, 140);
+                    }, 120);
 
                     const stop = () => {
-                        try { audio.pause(); audio.currentTime = 0; } catch (e) {}
                         try { clearInterval(rampInt); } catch (e) {}
+                        const fadeMs = 360;
+                        const steps = 9;
+                        const volNow = Number.isFinite(audio.volume) ? audio.volume : 0;
+                        let step = 0;
+                        const fade = setInterval(() => {
+                            step += 1;
+                            try { audio.volume = Math.max(0, volNow * (1 - (step / steps))); } catch (e) {}
+                            if (step >= steps) {
+                                clearInterval(fade);
+                                try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+                            }
+                        }, Math.max(20, Math.floor(fadeMs / steps)));
                     };
 
                     _activeOscillators.push({ audioEl: audio, stop });
 
-                    // stop after 4s
-                    setTimeout(() => { stop(); }, 4000);
+                    // stop after 6s
+                    setTimeout(() => { stop(); }, 6000);
                 } catch (e) {
                     console.warn('Failed to play imported audio', e);
                 }
             } else {
-                // Play the selected sound for 2 seconds (WebAudio-based)
+                // Play one full composed cycle (20s+) for accurate preview.
                 const stopBeep = _startBeep(soundId);
                 setTimeout(() => {
                     try { stopBeep(); } catch(e){}
-                }, 2000);
+                }, 22000);
             }
         }
 
@@ -2402,191 +2750,339 @@
             });
         }
 
-        // Start a repeating beep using WebAudio or imported audio; returns stop function
-        // Starts softer and lower, then slowly increases pitch and volume to sound less like a whistle
+        // Start a repeating alarm phrase using WebAudio (or imported audio fallback); returns stop function.
+        // Sound design rules:
+        // - fixed composed patterns (20s+ cycles) with breathing space
+        // - soft attack and smooth release
+        // - no piercing highs (filtered + constrained frequencies)
+        // - one active alarm sound at a time
+        const ALARM_TEMPO_SCALE = 0.56; // <1 = faster melodic motion inside a 20s song
+        const ALARM_MELODIC_DENSITY = 3; // add rhythmic companion notes per melodic event
+        const ALARM_SONG_LOOP_SECONDS = 20; // each alarm repeats after exactly 20s
+        const ALARM_GROOVE_CONFIG = {
+            'sunrise-chimes': { bpm: 114, bassFreq: 220, accents: [1.0, 0.72, 0.9, 0.76] },
+            'soft-glass-bells': { bpm: 118, bassFreq: 246.94, accents: [1.0, 0.7, 0.86, 0.74] },
+            'warm-marimba-steps': { bpm: 122, bassFreq: 207.65, accents: [1.0, 0.78, 0.92, 0.8] },
+            'ambient-pulse': { bpm: 108, bassFreq: 196, accents: [1.0, 0.68, 0.82, 0.7] },
+            'gentle-digital-bloom': { bpm: 124, bassFreq: 233.08, accents: [1.0, 0.74, 0.9, 0.76] },
+            'temple-bell-calm': { bpm: 110, bassFreq: 185, accents: [1.0, 0.66, 0.82, 0.7] },
+            'morning-piano-drops': { bpm: 120, bassFreq: 220, accents: [1.0, 0.74, 0.9, 0.78] },
+            'breezy-wind-chime': { bpm: 116, bassFreq: 233.08, accents: [1.0, 0.72, 0.86, 0.74] }
+        };
+        const ALARM_BACKGROUND_ARRANGEMENTS = {
+            'sunrise-chimes': { wave: 'sine', arpWave: 'triangle', chords: [[261.63, 329.63, 392], [293.66, 369.99, 440], [329.63, 415.3, 493.88], [293.66, 369.99, 440]] },
+            'soft-glass-bells': { wave: 'triangle', arpWave: 'sine', chords: [[293.66, 369.99, 440], [329.63, 415.3, 493.88], [349.23, 440, 523.25], [329.63, 415.3, 493.88]] },
+            'warm-marimba-steps': { wave: 'triangle', arpWave: 'triangle', chords: [[246.94, 311.13, 392], [261.63, 329.63, 415.3], [293.66, 369.99, 466.16], [261.63, 329.63, 415.3]] },
+            'ambient-pulse': { wave: 'sine', arpWave: 'sine', chords: [[220, 277.18, 329.63], [246.94, 311.13, 369.99], [261.63, 329.63, 392], [246.94, 311.13, 369.99]] },
+            'gentle-digital-bloom': { wave: 'triangle', arpWave: 'sine', chords: [[261.63, 329.63, 415.3], [293.66, 369.99, 466.16], [329.63, 415.3, 523.25], [293.66, 369.99, 466.16]] },
+            'temple-bell-calm': { wave: 'sine', arpWave: 'triangle', chords: [[196, 246.94, 293.66], [220, 277.18, 329.63], [246.94, 311.13, 369.99], [220, 277.18, 329.63]] },
+            'morning-piano-drops': { wave: 'triangle', arpWave: 'sine', chords: [[261.63, 329.63, 392], [293.66, 369.99, 440], [329.63, 415.3, 493.88], [293.66, 369.99, 440]] },
+            'breezy-wind-chime': { wave: 'sine', arpWave: 'triangle', chords: [[277.18, 349.23, 415.3], [311.13, 392, 466.16], [329.63, 415.3, 493.88], [311.13, 392, 466.16]] }
+        };
         function _startBeep(soundType = selectedSound) {
+            // ensure only one alarm audio stream exists at once
+            _stopAllBeeps(true);
             try {
-                // if the selected sound is an imported audio file, use HTMLAudioElement looping playback
                 const opt = (typeof SOUND_OPTIONS !== 'undefined') ? SOUND_OPTIONS.find(s => s.id === soundType) : null;
                 if (opt && opt.audioUrl) {
                     try {
                         const audio = new Audio(opt.audioUrl);
                         audio.loop = true;
-                        audio.volume = 0.0; // start silent
+                        audio.volume = 0.0;
                         const playPromise = audio.play();
-                        // some browsers return a promise
-                        if (playPromise && typeof playPromise.then === 'function') {
+                        if (playPromise && typeof playPromise.catch === 'function') {
                             playPromise.catch(() => {});
                         }
-
-                        // ramp volume up to full over 10 seconds
-                        let target = 0.8;
-                        let vol = 0.0;
+                        const target = 0.8;
+                        const rampMs = 10000;
+                        const started = Date.now();
                         const ramp = setInterval(() => {
-                            vol = Math.min(target, vol + (target / 100)); // increments to reach target in 10s (100 intervals * 100ms)
-                            try { audio.volume = vol; } catch (e) {}
+                            const pct = Math.min(1, (Date.now() - started) / rampMs);
+                            try { audio.volume = target * pct; } catch (e) {}
+                            if (pct >= 1) clearInterval(ramp);
                         }, 100);
-
-                        const stop = () => {
+                        let stopped = false;
+                        const stop = (immediate = false) => {
+                            if (stopped) return;
+                            stopped = true;
                             try { clearInterval(ramp); } catch (e) {}
-                            try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+                            if (immediate) {
+                                try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+                                return;
+                            }
+                            const fadeMs = 420;
+                            const steps = 12;
+                            const startVol = Number.isFinite(audio.volume) ? audio.volume : 0;
+                            let i = 0;
+                            const fade = setInterval(() => {
+                                i += 1;
+                                try { audio.volume = Math.max(0, startVol * (1 - (i / steps))); } catch (e) {}
+                                if (i >= steps) {
+                                    clearInterval(fade);
+                                    try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+                                }
+                            }, Math.max(20, Math.floor(fadeMs / steps)));
                         };
-
-                        _activeOscillators.push({ audioEl: audio, stop });
+                        const handle = { audioEl: audio, stop };
+                        _activeOscillators.push(handle);
                         return stop;
                     } catch (e) {
                         console.warn('Failed to play imported audio', e);
-                        // fall through to WebAudio fallback
                     }
                 }
 
+                const profile = ALARM_SOUND_PROFILES[soundType] || ALARM_SOUND_PROFILES[DEFAULT_SOUND_ID];
+                const groove = ALARM_GROOVE_CONFIG[soundType] || ALARM_GROOVE_CONFIG[DEFAULT_SOUND_ID];
+                const arrangement = ALARM_BACKGROUND_ARRANGEMENTS[soundType] || ALARM_BACKGROUND_ARRANGEMENTS[DEFAULT_SOUND_ID];
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-                // master gain to control overall volume
-                const master = ctx.createGain();
-                master.gain.value = 0.02; // start very soft
-                master.connect(ctx.destination);
-
-                // gentle lowpass to avoid piercing whistle timbre
-                const lp = ctx.createBiquadFilter();
-                lp.type = 'lowpass';
-                lp.frequency.value = 2400;
-                lp.Q.value = 0.7;
-                lp.connect(master);
-
-                // Layered oscillators for richer, non-whistle timbre (Apple-like approximation)
-                const oscA = ctx.createOscillator(); // body
-                const oscB = ctx.createOscillator(); // detuned layer
-                const oscC = ctx.createOscillator(); // sub for warmth
-
-                // create small gain for each oscillator
-                const gA = ctx.createGain(); gA.gain.value = 0.6;
-                const gB = ctx.createGain(); gB.gain.value = 0.35;
-                const gC = ctx.createGain(); gC.gain.value = 0.25;
-
-                // connect chain: each => lp
-                gA.connect(lp); gB.connect(lp); gC.connect(lp);
-
-                // default params per soundType (startFreq, endFreq, rampSeconds, waveform choices)
-                let params = {
-                    startFreq: 420,
-                    endFreq: 980,
-                    ramp: 5.5,
-                    oscAType: 'sawtooth',
-                    oscBType: 'triangle',
-                    oscCType: 'sine'
-                };
-
-                switch(soundType) {
-                    case 'classic':
-                        params = Object.assign(params, { startFreq: 380, endFreq: 980, ramp: 5.5 });
-                        break;
-                    case 'digital':
-                        params = Object.assign(params, { startFreq: 300, endFreq: 1100, ramp: 4.0, oscAType: 'square', oscBType: 'sawtooth' });
-                        break;
-                    case 'gentle':
-                        params = Object.assign(params, { startFreq: 480, endFreq: 720, ramp: 6.5, oscAType: 'triangle', oscBType: 'sine', oscCType: 'sine' });
-                        break;
-                    case 'urgent':
-                        params = Object.assign(params, { startFreq: 520, endFreq: 1400, ramp: 3.2, oscAType: 'sawtooth', oscBType: 'square' });
-                        break;
-                }
-
-                oscA.type = params.oscAType;
-                oscB.type = params.oscBType;
-                oscC.type = params.oscCType;
-
-                // connect oscillators to their gains
-                oscA.connect(gA); oscB.connect(gB); oscC.connect(gC);
-
                 const now = ctx.currentTime;
 
-                // start frequencies slightly detuned for warmth
-                oscA.frequency.setValueAtTime(params.startFreq, now);
-                oscB.frequency.setValueAtTime(params.startFreq * 0.997, now);
-                oscC.frequency.setValueAtTime(params.startFreq * 0.5, now);
+                const master = ctx.createGain();
+                master.gain.setValueAtTime(0.0001, now);
+                master.connect(ctx.destination);
 
-                // ramp frequencies up smoothly to the end frequency
-                oscA.frequency.linearRampToValueAtTime(params.endFreq, now + params.ramp);
-                oscB.frequency.linearRampToValueAtTime(params.endFreq * 0.997, now + params.ramp);
-                oscC.frequency.linearRampToValueAtTime(params.endFreq * 0.5, now + params.ramp);
+                const comp = ctx.createDynamicsCompressor();
+                comp.threshold.value = -28;
+                comp.knee.value = 22;
+                comp.ratio.value = 3;
+                comp.attack.value = 0.01;
+                comp.release.value = 0.35;
+                comp.connect(master);
 
-                // slowly increase master volume (soft -> louder) but keep constant once reached
-                master.gain.cancelScheduledValues(now);
-                master.gain.setValueAtTime(0.02, now);
-                master.gain.linearRampToValueAtTime(0.18, now + Math.min(4, params.ramp));
+                const toneBus = ctx.createGain();
+                toneBus.gain.value = 1;
+                toneBus.connect(comp);
 
-                // subtle LFO on filter cutoff for organic motion
-                const lfo = ctx.createOscillator();
-                const lfoGain = ctx.createGain();
-                lfo.type = 'sine'; lfo.frequency.value = 0.18 + Math.random() * 0.12; // slow
-                lfoGain.gain.value = 220 + Math.random() * 180;
-                lfo.connect(lfoGain);
-                lfoGain.connect(lp.frequency);
-                lp.frequency.setValueAtTime(2200, now);
+                const lp = ctx.createBiquadFilter();
+                lp.type = 'lowpass';
+                lp.frequency.value = 2900;
+                lp.Q.value = 0.6;
+                lp.connect(toneBus);
 
-                oscA.start(now); oscB.start(now); oscC.start(now); lfo.start(now);
+                // Gentle delay network gives a premium, spacious tail without haze.
+                const wet = ctx.createGain();
+                wet.gain.value = 0.11;
+                const delay = ctx.createDelay(0.6);
+                delay.delayTime.value = 0.22;
+                const feedback = ctx.createGain();
+                feedback.gain.value = 0.14;
+                lp.connect(wet);
+                wet.connect(delay);
+                delay.connect(feedback);
+                feedback.connect(delay);
+                delay.connect(comp);
 
-                // push to active nodes so we can stop cleanly
-                const pulse = null; // not using setInterval pulsing anymore
-                _activeOscillators.push({ ctx, oscA, oscB, oscC, gA, gB, gC, master, lp, lfo, lfoGain, pulse });
+                const safeLevel = Math.max(0.12, Math.min(0.28, Number(profile.level) || 0.2));
+                const rampSeconds = Math.max(4, Math.min(14, Number(profile.rampSeconds) || 10));
+                master.gain.linearRampToValueAtTime(safeLevel, now + rampSeconds);
 
-                // return a stop function that ramps down and stops all nodes
-                return () => {
+                const activeOsc = [];
+                let scheduler = null;
+                let stopped = false;
+                let nextSongAt = now + 0.05;
+                let songIndex = 0;
+                const motifs = Array.isArray(profile.motifs) && profile.motifs.length ? profile.motifs : [{ length: 3.0, notes: [] }];
+                const beatSeconds = 60 / Math.max(92, Math.min(140, Number(groove.bpm) || 116));
+                const eighthSeconds = beatSeconds / 2;
+
+                function scheduleNote(baseTime, note, levelScale = 1, timeOffset = 0) {
+                    const rawAt = Math.max(0, (Number(note.t) || 0) + timeOffset);
+                    const quantizedAt = Math.round(rawAt / eighthSeconds) * eighthSeconds;
+                    const at = baseTime + Math.max(0, quantizedAt);
+                    const dur = Math.max(0.09, Number(note.d) || 0.3);
+                    const freq = Math.max(140, Math.min(1600, Number(note.f) || 440));
+                    const gainLevel = Math.max(0.03, Math.min(0.5, (Number(note.g) || 0.2) * levelScale));
+                    const release = Math.min(1.2, Math.max(0.12, dur * 0.75));
+                    const attack = Math.min(0.08, Math.max(0.01, dur * 0.16));
+                    const stopAt = at + dur + release + 0.06;
+
+                    const panner = ctx.createStereoPanner();
+                    const notePan = Number.isFinite(Number(note.pan)) ? Number(note.pan) : 0;
+                    panner.pan.value = Math.max(-0.28, Math.min(0.28, notePan));
+                    panner.connect(lp);
+
+                    const env = ctx.createGain();
+                    env.gain.setValueAtTime(0.0001, at);
+                    env.gain.linearRampToValueAtTime(gainLevel, at + attack);
+                    env.gain.exponentialRampToValueAtTime(Math.max(0.0001, gainLevel * 0.65), at + Math.max(attack + 0.03, dur * 0.55));
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + dur + release);
+                    env.connect(panner);
+
+                    const osc = ctx.createOscillator();
+                    osc.type = note.w || 'sine';
+                    osc.frequency.setValueAtTime(freq, at);
+                    osc.connect(env);
+                    osc.start(at);
+                    osc.stop(stopAt);
+                    activeOsc.push(osc);
+
+                    const harmonic = Number(note.harmonic) || 0;
+                    if (harmonic > 0) {
+                        const hGainLevel = Math.max(0.02, Math.min(0.2, Number(note.hg) || (gainLevel * 0.3)));
+                        const hEnv = ctx.createGain();
+                        hEnv.gain.setValueAtTime(0.0001, at);
+                        hEnv.gain.linearRampToValueAtTime(hGainLevel, at + attack * 0.8);
+                        hEnv.gain.exponentialRampToValueAtTime(0.0001, at + dur + (release * 0.8));
+                        hEnv.connect(panner);
+                        const hOsc = ctx.createOscillator();
+                        hOsc.type = 'sine';
+                        hOsc.frequency.setValueAtTime(Math.min(2200, freq * harmonic), at);
+                        hOsc.connect(hEnv);
+                        hOsc.start(at);
+                        hOsc.stop(stopAt);
+                        activeOsc.push(hOsc);
+                    }
+                }
+
+                function scheduleBeatBackbone(baseTime, motifLen) {
+                    const beatsInPhrase = Math.max(4, Math.floor(motifLen / beatSeconds));
+                    const accents = Array.isArray(groove.accents) && groove.accents.length ? groove.accents : [1.0, 0.72, 0.9, 0.76];
+                    const bass = Math.max(170, Math.min(320, Number(groove.bassFreq) || 220));
+                    for (let i = 0; i < beatsInPhrase; i += 1) {
+                        const beatOffset = i * beatSeconds;
+                        const accent = accents[i % accents.length];
+                        scheduleNote(baseTime, {
+                            t: beatOffset,
+                            d: 0.18,
+                            f: bass,
+                            g: 0.1 * accent,
+                            w: 'triangle',
+                            harmonic: 2,
+                            hg: 0.025,
+                            pan: 0
+                        }, 1, 0);
+                        scheduleNote(baseTime, {
+                            t: beatOffset + (beatSeconds * 0.5),
+                            d: 0.12,
+                            f: bass * 1.12,
+                            g: 0.055 * accent,
+                            w: 'sine',
+                            harmonic: 0,
+                            pan: 0
+                        }, 1, 0);
+                    }
+                }
+
+                function scheduleBackgroundArrangement(baseTime, loopLen) {
+                    const chords = Array.isArray(arrangement.chords) && arrangement.chords.length ? arrangement.chords : [[261.63, 329.63, 392]];
+                    const sectionLen = loopLen / chords.length;
+                    const padWave = arrangement.wave || 'sine';
+                    const arpWave = arrangement.arpWave || 'triangle';
+                    chords.forEach((chord, chordIdx) => {
+                        const start = chordIdx * sectionLen;
+                        chord.forEach((freq, fIdx) => {
+                            scheduleNote(baseTime, {
+                                t: start + (fIdx * 0.06),
+                                d: Math.max(1.2, sectionLen * 0.86),
+                                f: Math.max(150, Math.min(1200, Number(freq) || 330)),
+                                g: 0.055,
+                                w: padWave,
+                                harmonic: 2,
+                                hg: 0.02,
+                                pan: (fIdx - 1) * 0.08
+                            }, 1, 0);
+                        });
+                        const arpStep = Math.max(0.18, beatSeconds / 2);
+                        const arpCount = Math.max(4, Math.floor(sectionLen / arpStep));
+                        for (let i = 0; i < arpCount; i += 1) {
+                            const arpFreq = chord[i % chord.length] * (i % 2 === 0 ? 1 : 2);
+                            scheduleNote(baseTime, {
+                                t: start + (i * arpStep) + (songIndex % 2 ? arpStep * 0.25 : 0),
+                                d: Math.max(0.1, arpStep * 0.62),
+                                f: Math.max(180, Math.min(1400, arpFreq)),
+                                g: 0.04 + ((i % 4 === 0) ? 0.015 : 0),
+                                w: arpWave,
+                                harmonic: 0,
+                                pan: ((i % 3) - 1) * 0.06
+                            }, 1, 0);
+                        }
+                    });
+                }
+
+                function scheduleMelodySong(baseTime, loopLen) {
+                    let cursor = 0;
+                    let localMotifIndex = songIndex % motifs.length;
+                    while (cursor < (loopLen - 0.22)) {
+                        const motif = motifs[localMotifIndex % motifs.length];
+                        const notes = Array.isArray(motif.notes) ? motif.notes : [];
+                        const motifLen = Math.max(1.0, (Number(motif.length) || Number(profile.phraseLength) || 3.0) * ALARM_TEMPO_SCALE);
+                        notes.forEach(note => {
+                            const scaledNote = {
+                                ...note,
+                                t: cursor + ((Number(note.t) || 0) * ALARM_TEMPO_SCALE),
+                                d: Math.max(0.09, (Number(note.d) || 0.3) * ALARM_TEMPO_SCALE)
+                            };
+                            scheduleNote(baseTime, scaledNote);
+                            if (ALARM_MELODIC_DENSITY > 1) {
+                                scheduleNote(baseTime, scaledNote, 0.62, eighthSeconds * 0.5);
+                            }
+                            if (ALARM_MELODIC_DENSITY > 2) {
+                                scheduleNote(baseTime, scaledNote, 0.46, eighthSeconds);
+                            }
+                        });
+                        cursor += motifLen;
+                        localMotifIndex += 1;
+                    }
+                }
+
+                function scheduleSongs() {
+                    if (stopped) return;
+                    while (nextSongAt < (ctx.currentTime + 2.4)) {
+                        scheduleBeatBackbone(nextSongAt, ALARM_SONG_LOOP_SECONDS);
+                        scheduleBackgroundArrangement(nextSongAt, ALARM_SONG_LOOP_SECONDS);
+                        scheduleMelodySong(nextSongAt, ALARM_SONG_LOOP_SECONDS);
+                        nextSongAt += ALARM_SONG_LOOP_SECONDS;
+                        songIndex += 1;
+                    }
+                }
+
+                scheduleSongs();
+                scheduler = setInterval(scheduleSongs, 220);
+
+                const stop = (immediate = false) => {
+                    if (stopped) return;
+                    stopped = true;
+                    if (scheduler) clearInterval(scheduler);
+                    if (immediate) {
+                        activeOsc.forEach(o => { try { o.stop(); } catch (e) {} });
+                        try { ctx.close(); } catch (e) {}
+                        return;
+                    }
                     try {
-                        const stopNow = ctx.currentTime;
-                        // ramp master down
-                        master.gain.cancelScheduledValues(stopNow);
-                        master.gain.setValueAtTime(master.gain.value, stopNow);
-                        master.gain.linearRampToValueAtTime(0.0001, stopNow + 0.35);
-
-                        // stop oscillators after fade
-                        setTimeout(() => {
-                            try { oscA.stop(); } catch (e) {}
-                            try { oscB.stop(); } catch (e) {}
-                            try { oscC.stop(); } catch (e) {}
-                            try { lfo.stop(); } catch (e) {}
-                            try { ctx.close(); } catch (e) {}
-                        }, 420);
+                        const t = ctx.currentTime;
+                        master.gain.cancelScheduledValues(t);
+                        master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), t);
+                        master.gain.linearRampToValueAtTime(0.0001, t + 0.42);
                     } catch (e) {}
+                    setTimeout(() => {
+                        activeOsc.forEach(o => { try { o.stop(); } catch (e) {} });
+                        try { ctx.close(); } catch (e) {}
+                    }, 500);
                 };
+
+                _activeOscillators.push({ ctx, master, stop, scheduler });
+                return stop;
             } catch (e) {
                 console.warn('AudioContext unavailable', e);
                 return () => {};
             }
         }
 
-        // Stop all active beeps
-        function _stopAllBeeps() {
+        // Stop all active alarm sounds with graceful fades.
+        function _stopAllBeeps(immediate = false) {
             while (_activeOscillators.length) {
                 const node = _activeOscillators.pop();
                 try {
-                    // HTMLAudioElement-based entries
-                    if (node && node.audioEl) {
-                        try { node.audioEl.pause(); node.audioEl.currentTime = 0; } catch (e) {}
-                        try { if (typeof node.stop === 'function') node.stop(); } catch (e) {}
+                    if (node && typeof node.stop === 'function') {
+                        node.stop(immediate);
                         continue;
                     }
-
-                    // WebAudio-based entries
+                    if (node && node.audioEl) {
+                        try { node.audioEl.pause(); node.audioEl.currentTime = 0; } catch (e) {}
+                        continue;
+                    }
                     if (node && node.ctx) {
-                        try { clearInterval(node.pulse); } catch (e) {}
-                        try {
-                            // prefer master gain if present
-                            if (node.master && node.master.gain) {
-                                node.master.gain.linearRampToValueAtTime(0, node.ctx.currentTime + 0.1);
-                            } else if (node.gain && node.gain.gain) {
-                                node.gain.gain.linearRampToValueAtTime(0, node.ctx.currentTime + 0.1);
-                            }
-                        } catch (e) {}
-                        setTimeout(() => {
-                            try { if (node.oscA) node.oscA.stop(); } catch(e){}
-                            try { if (node.oscB) node.oscB.stop(); } catch(e){}
-                            try { if (node.oscC) node.oscC.stop(); } catch(e){}
-                            try { if (node.osc) node.osc.stop(); } catch(e){}
-                            try { if (node.lfo) node.lfo.stop(); } catch(e){}
-                            try { node.ctx.close(); } catch(e){}
-                        }, 120);
+                        try { node.ctx.close(); } catch (e) {}
                     }
                 } catch (e) {}
             }
