@@ -251,7 +251,7 @@
         }
 
         .day-active .birds-layer {
-            opacity: 0.78;
+            opacity: 0.62;
         }
 
         #body:not(.day-active) .birds-layer {
@@ -260,13 +260,13 @@
 
         .bird {
             position: absolute;
-            left: -22vw;
+            left: -16vw;
             top: var(--y, 26%);
-            width: 30px;
-            height: 18px;
-            color: rgba(0, 0, 0, 0.82);
+            width: 22px;
+            height: 14px;
+            color: var(--bird-color, rgba(0, 0, 0, 0.82));
             filter: none;
-            transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8)) rotate(var(--tilt, 0deg));
+            transform: translate3d(var(--sx, -16vw), 0, 0) rotate(var(--tilt, 0deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
             animation: bird-fly var(--dur, 32s) linear 1;
             animation-delay: var(--delay, 0s);
             will-change: transform, opacity;
@@ -290,14 +290,14 @@
             fill: currentColor;
             transform-box: fill-box;
             transform-origin: 82% 78%;
-            animation: bird-flap var(--flapdur, 1.35s) cubic-bezier(0.42, 0, 0.2, 1) infinite;
+            animation: bird-flap-seq var(--flapcycle, 5.8s) cubic-bezier(0.42, 0, 0.2, 1) infinite;
             animation-delay: var(--flapdelay, 0s);
             will-change: transform;
         }
 
         .bird .wing.right {
             transform-origin: 18% 78%;
-            animation-name: bird-flap-right;
+            animation-name: bird-flap-seq-right;
         }
 
         .bird .tail {
@@ -729,48 +729,60 @@
 
         @keyframes bird-fly {
             0% {
-                transform: translate3d(-22vw, 0, 0) scale(var(--scale, 0.8)) rotate(var(--tilt, 0deg));
+                transform: translate3d(var(--sx, -16vw), 0, 0) rotate(var(--tilt, 0deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
                 opacity: 0;
             }
             10% { opacity: 1; }
             28% {
-                transform: translate3d(26vw, calc(var(--arc, -10px) * 0.55), 0) scale(var(--scale, 0.8)) rotate(calc(var(--tilt, 0deg) + 0.9deg));
+                transform: translate3d(calc(var(--sx, -16vw) + (var(--dx, 132vw) * 0.28)), calc(var(--arc, -10px) * 0.55), 0) rotate(calc(var(--tilt, 0deg) + 0.9deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
                 opacity: 1;
             }
             56% {
-                transform: translate3d(56vw, calc(var(--arc, -10px) * 1.05), 0) scale(var(--scale, 0.8)) rotate(calc(var(--tilt, 0deg) - 0.8deg));
+                transform: translate3d(calc(var(--sx, -16vw) + (var(--dx, 132vw) * 0.56)), calc(var(--arc, -10px) * 1.05), 0) rotate(calc(var(--tilt, 0deg) - 0.8deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
                 opacity: 1;
             }
             80% {
-                transform: translate3d(88vw, calc(var(--arc, -10px) * 0.35), 0) scale(var(--scale, 0.8)) rotate(calc(var(--tilt, 0deg) + 0.5deg));
+                transform: translate3d(calc(var(--sx, -16vw) + (var(--dx, 132vw) * 0.80)), calc(var(--arc, -10px) * 0.35), 0) rotate(calc(var(--tilt, 0deg) + 0.5deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
                 opacity: 1;
             }
             92% { opacity: 1; }
             100% {
-                transform: translate3d(122vw, calc(var(--arc, -10px) * -0.18), 0) scale(var(--scale, 0.8)) rotate(var(--tilt, 0deg));
+                transform: translate3d(calc(var(--sx, -16vw) + var(--dx, 132vw)), calc(var(--arc, -10px) * -0.18), 0) rotate(var(--tilt, 0deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
                 opacity: 0;
             }
         }
 
-        @keyframes bird-flap {
-            /* Includes a brief glide pause near open-wing phase */
-            0% { transform: rotate(-6deg) translateY(0); }
-            16% { transform: rotate(36deg) translateY(-0.6px); }
-            38% { transform: rotate(-18deg) translateY(0.8px); }
-            56% { transform: rotate(26deg) translateY(-0.4px); }
-            72% { transform: rotate(4deg) translateY(0); }
-            84% { transform: rotate(2deg) translateY(0); }
-            100% { transform: rotate(-6deg) translateY(0); }
+        @keyframes bird-flap-seq {
+            /* 3 flaps -> 1s pause -> 1 flap -> 1s pause -> 2 flaps */
+            0%, 2% { transform: rotate(-6deg) translateY(0); }
+            4% { transform: rotate(34deg) translateY(-0.6px); }   /* flap 1 */
+            8% { transform: rotate(-6deg) translateY(0.3px); }
+            12% { transform: rotate(34deg) translateY(-0.6px); }  /* flap 2 */
+            16% { transform: rotate(-6deg) translateY(0.3px); }
+            20% { transform: rotate(34deg) translateY(-0.6px); }  /* flap 3 */
+            24%, 41% { transform: rotate(-2deg) translateY(0); }  /* ~1s pause */
+            45% { transform: rotate(34deg) translateY(-0.6px); }  /* flap 4 (single) */
+            49%, 66% { transform: rotate(-2deg) translateY(0); }  /* ~1s pause */
+            72% { transform: rotate(34deg) translateY(-0.6px); }  /* flap 5 */
+            78% { transform: rotate(-6deg) translateY(0.3px); }
+            84% { transform: rotate(34deg) translateY(-0.6px); }  /* flap 6 */
+            90%, 100% { transform: rotate(-6deg) translateY(0); }
         }
 
-        @keyframes bird-flap-right {
-            0% { transform: rotate(6deg) translateY(0); }
-            16% { transform: rotate(-36deg) translateY(-0.6px); }
-            38% { transform: rotate(18deg) translateY(0.8px); }
-            56% { transform: rotate(-26deg) translateY(-0.4px); }
-            72% { transform: rotate(-4deg) translateY(0); }
-            84% { transform: rotate(-2deg) translateY(0); }
-            100% { transform: rotate(6deg) translateY(0); }
+        @keyframes bird-flap-seq-right {
+            0%, 2% { transform: rotate(6deg) translateY(0); }
+            4% { transform: rotate(-34deg) translateY(-0.6px); }
+            8% { transform: rotate(6deg) translateY(0.3px); }
+            12% { transform: rotate(-34deg) translateY(-0.6px); }
+            16% { transform: rotate(6deg) translateY(0.3px); }
+            20% { transform: rotate(-34deg) translateY(-0.6px); }
+            24%, 41% { transform: rotate(2deg) translateY(0); }
+            45% { transform: rotate(-34deg) translateY(-0.6px); }
+            49%, 66% { transform: rotate(2deg) translateY(0); }
+            72% { transform: rotate(-34deg) translateY(-0.6px); }
+            78% { transform: rotate(6deg) translateY(0.3px); }
+            84% { transform: rotate(-34deg) translateY(-0.6px); }
+            90%, 100% { transform: rotate(6deg) translateY(0); }
         }
 
         @keyframes bird-bob {
@@ -873,7 +885,7 @@
             .sun-spin { width: 108px; height: 108px; }
             .sun-glow { width: 152px; height: 152px; }
             .sun-lightcast { width: 260px; height: 260px; }
-            .bird { width: 24px; height: 14px; }
+            .bird { width: 18px; height: 11px; }
             .moon-system { width: 100px; height: 100px; top: 10%; left: 53%; }
             .moon-body { width: 64px; height: 64px; }
             .moon-shadow { width: 64px; height: 64px; }
@@ -1396,6 +1408,7 @@
         
         // Alarm types: 'routine' = morning routine alarm, 'regular' = standard alarm
         let alarmTypes = alarms.map(() => 'routine'); // default to routine
+        let alarmEnabled = alarms.map(() => true); // per-alarm on/off state
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
 
         // Selected alarm sound type
@@ -1411,6 +1424,16 @@
         // Scene wind vector shared by cloud drift and cartoon wind streaks.
         let _sceneWindDirection = 1; // 1 => left-to-right, -1 => right-to-left
         let _setAlarmGlowTimeout = null;
+        let _isRoutineTransitioning = false;
+        let _taskIdCounter = 0;
+        let _isRenderingApplication = false;
+        let _isRenderingRoutineEditor = false;
+        let _isMutatingTasks = false;
+
+        function _createTaskId() {
+            _taskIdCounter += 1;
+            return `task-${Date.now()}-${_taskIdCounter}-${Math.random().toString(36).slice(2, 6)}`;
+        }
 
         function _safeParseJSON(raw) {
             try { return JSON.parse(raw); } catch (e) { return null; }
@@ -1418,13 +1441,22 @@
 
         function _normalizeTaskList(list) {
             if (!Array.isArray(list)) return createDefaultTasks();
+            const seen = new Set();
             const normalized = list
                 .filter(t => t && typeof t.text === 'string')
                 .map(t => ({
-                    id: Number.isFinite(Number(t.id)) ? Number(t.id) : Date.now() + Math.floor(Math.random() * 10000),
+                    id: t.id,
                     text: t.text.trim(),
                     done: !!t.done
                 }))
+                .map(t => {
+                    let id = (typeof t.id === 'string' && t.id.trim())
+                        ? t.id.trim()
+                        : (Number.isFinite(Number(t.id)) ? String(Number(t.id)) : _createTaskId());
+                    if (seen.has(id)) id = _createTaskId();
+                    seen.add(id);
+                    return { ...t, id };
+                })
                 .filter(t => t.text.length > 0);
             return normalized.length ? normalized : createDefaultTasks();
         }
@@ -1468,6 +1500,7 @@
                     alarms: Array.isArray(alarms) ? alarms.map(a => String(a || '')).filter(Boolean) : [],
                     alarmsMeta: Array.isArray(alarmsMeta) ? alarmsMeta.map(d => String(d || 'Everyday')) : [],
                     alarmTypes: Array.isArray(alarmTypes) ? alarmTypes.map(t => (t === 'regular' ? 'regular' : 'routine')) : [],
+                    alarmEnabled: Array.isArray(alarmEnabled) ? alarmEnabled.map(v => !!v) : [],
                     selectedAlarmType: selectedAlarmType === 'regular' ? 'regular' : 'routine',
                     selectedSound: String(selectedSound || DEFAULT_SOUND_ID),
                     customSounds,
@@ -1504,6 +1537,7 @@
                 alarms = [];
                 alarmsMeta = [];
                 alarmTypes = [];
+                alarmEnabled = [];
                 selectedAlarmType = 'routine';
                 selectedSound = DEFAULT_SOUND_ID;
                 _timers.splice(0, _timers.length);
@@ -1521,11 +1555,14 @@
             alarms = Array.isArray(state.alarms) ? state.alarms.map(a => String(a || '')).filter(Boolean) : [];
             alarmsMeta = Array.isArray(state.alarmsMeta) ? state.alarmsMeta.map(v => String(v || 'Everyday')) : [];
             alarmTypes = Array.isArray(state.alarmTypes) ? state.alarmTypes.map(v => (v === 'regular' ? 'regular' : 'routine')) : [];
+            alarmEnabled = Array.isArray(state.alarmEnabled) ? state.alarmEnabled.map(v => !!v) : [];
 
             while (alarmsMeta.length < alarms.length) alarmsMeta.push('Everyday');
             while (alarmTypes.length < alarms.length) alarmTypes.push('routine');
+            while (alarmEnabled.length < alarms.length) alarmEnabled.push(true);
             if (alarmsMeta.length > alarms.length) alarmsMeta = alarmsMeta.slice(0, alarms.length);
             if (alarmTypes.length > alarms.length) alarmTypes = alarmTypes.slice(0, alarms.length);
+            if (alarmEnabled.length > alarms.length) alarmEnabled = alarmEnabled.slice(0, alarms.length);
 
             selectedAlarmType = state.selectedAlarmType === 'regular' ? 'regular' : 'routine';
 
@@ -1931,9 +1968,10 @@
 
                 const groupSize = 1 + Math.floor(Math.random() * 4); // 1..4
                 const baseY = 14 + Math.random() * 24; // upper sky band
-                const baseScale = 0.82 + Math.random() * 0.35; // slightly closer/larger
-                const baseDur = 12 + Math.random() * 8;
+                const baseScale = 0.62 + Math.random() * 0.26; // farther away/smaller
+                const baseDur = 15 + Math.random() * 10;
                 const flockSpread = 3.2 + Math.random() * 4.2;
+                const fromRight = Math.random() < 0.5;
 
                 for (let i = 0; i < groupSize; i++) {
                     const bird = document.createElement('span');
@@ -1942,19 +1980,25 @@
                     const scale = baseScale + (Math.random() * 0.18 - 0.09);
                     const dur = baseDur + (Math.random() * 2.6 - 1.3);
                     const delay = i * (0.35 + Math.random() * 0.28);
-                    const flapDur = 1.08 + Math.random() * 0.72;
+                    const flapCycle = 5.4 + Math.random() * 0.8;
                     const bobDur = 2.1 + Math.random() * 1.3;
                     const arc = -6 - Math.random() * 12;
-                    const tilt = (Math.random() * 3.2 - 1.6);
+                    const tiltBase = Math.random() * 3.2 - 1.6;
+                    const tilt = fromRight ? (-tiltBase) : tiltBase;
+                    const isGray = Math.random() < 0.2; // 1 in 5
                     bird.style.setProperty('--y', `${Math.max(8, Math.min(48, y))}%`);
-                    bird.style.setProperty('--scale', `${Math.max(0.72, scale).toFixed(2)}`);
-                    bird.style.setProperty('--dur', `${Math.max(10, dur).toFixed(2)}s`);
+                    bird.style.setProperty('--scale', `${Math.max(0.5, scale).toFixed(2)}`);
+                    bird.style.setProperty('--dur', `${Math.max(12, dur).toFixed(2)}s`);
                     bird.style.setProperty('--delay', `${delay.toFixed(2)}s`);
-                    bird.style.setProperty('--flapdur', `${flapDur.toFixed(2)}s`);
+                    bird.style.setProperty('--flapcycle', `${flapCycle.toFixed(2)}s`);
                     bird.style.setProperty('--flapdelay', `${(Math.random() * 0.5).toFixed(2)}s`);
                     bird.style.setProperty('--bobdur', `${bobDur.toFixed(2)}s`);
                     bird.style.setProperty('--arc', `${arc.toFixed(1)}px`);
                     bird.style.setProperty('--tilt', `${tilt.toFixed(2)}deg`);
+                    bird.style.setProperty('--sx', fromRight ? '116vw' : '-16vw');
+                    bird.style.setProperty('--dx', fromRight ? '-132vw' : '132vw');
+                    bird.style.setProperty('--flip', fromRight ? '-1' : '1');
+                    bird.style.setProperty('--bird-color', isGray ? 'rgba(126, 130, 136, 0.78)' : 'rgba(0, 0, 0, 0.82)');
                     bird.innerHTML = `
                         <svg class="bird-svg" viewBox="0 0 60 36" aria-hidden="true">
                             <path class="wing left" d="M29 19 C23 10, 14 8, 8 14 C14 16, 21 21, 29 19 Z"></path>
@@ -1973,7 +2017,7 @@
             function loop() {
                 spawnGroup();
                 // Variable probability pacing: frequent enough to feel alive, not constant.
-                const nextMs = 2200 + Math.random() * 5200;
+                const nextMs = 4800 + Math.random() * 7600;
                 setTimeout(loop, nextMs);
             }
 
@@ -2109,45 +2153,71 @@
 
         // 5. APPLICATION RENDER ENGINE
         function renderApplication() {
-            // Update Routine List (Wake Screen)
-            const list = document.getElementById('routine-list');
-            list.innerHTML = tasks.map(t => `
-                <div class="item ${t.done ? 'checked' : ''}" onclick="toggleTaskCompletion(${t.id})">
-                    <div class="check-circle">${t.done ? '✓' : ''}</div>
-                    <span>${t.text}</span>
-                </div>
-            `).join('');
-
-            // Calculate Progress
-            const completedCount = tasks.filter(t => t.done).length;
-            const progressRatio = tasks.length > 0 ? (completedCount / tasks.length) : 0;
-            const progressPercent = Math.round(progressRatio * 100);
-            
-            const fill = document.getElementById('progress-fill');
-            const text = document.getElementById('progress-percent');
-            
-            fill.style.width = progressPercent + '%';
-            text.innerText = progressPercent + '%';
+            if (_isRenderingApplication) return;
+            _isRenderingApplication = true;
+            try {
+            _renderWakeRoutineListAndProgress();
 
             // Transition Logic
-            if (tasks.length > 0 && tasks.every(t => t.done)) {
+            if (!_isRoutineTransitioning && _isWakeScreenActive() && tasks.length > 0 && tasks.every(t => t.done)) {
                 executeMorningTransition();
             }
 
             renderRoutineEditor();
+            } catch (e) {
+                console.error('renderApplication failed', e);
+            } finally {
+                _isRenderingApplication = false;
+            }
+        }
+
+        function _renderWakeRoutineListAndProgress() {
+            const list = document.getElementById('routine-list');
+            if (list) {
+                list.innerHTML = '';
+                tasks.forEach(t => {
+                    const item = document.createElement('div');
+                    item.className = `item ${t.done ? 'checked' : ''}`;
+                    item.onclick = () => toggleTaskCompletion(t.id);
+
+                    const check = document.createElement('div');
+                    check.className = 'check-circle';
+                    check.textContent = t.done ? '✓' : '';
+
+                    const text = document.createElement('span');
+                    text.textContent = String(t.text || '');
+
+                    item.appendChild(check);
+                    item.appendChild(text);
+                    list.appendChild(item);
+                });
+            }
+
+            const completedCount = tasks.filter(t => t.done).length;
+            const progressRatio = tasks.length > 0 ? (completedCount / tasks.length) : 0;
+            const progressPercent = Math.round(progressRatio * 100);
+            const fill = document.getElementById('progress-fill');
+            const text = document.getElementById('progress-percent');
+            if (fill) fill.style.width = progressPercent + '%';
+            if (text) text.innerText = progressPercent + '%';
+        }
+
+        function _isWakeScreenActive() {
+            const wakeScreen = document.getElementById('screen-wake');
+            return !!(wakeScreen && !wakeScreen.classList.contains('hidden'));
         }
 
         function toggleTaskCompletion(id) {
-            const task = tasks.find(x => x.id === id);
-            if(task) {
-                task.done = !task.done;
-                renderApplication();
-                saveState();
-            }
+            _applyTaskMutation(() => {
+                const task = tasks.find(x => x.id === id);
+                if(task) task.done = !task.done;
+            }, { renderMode: 'full' });
         }
 
         // 6. ANIMATION: SYSTEM TRANSITION
         function executeMorningTransition() {
+            if (_isRoutineTransitioning) return;
+            _isRoutineTransitioning = true;
             console.log("Transition: Sequence Start");
             setTimeout(() => {
                 // sun comes up when transitioning to post screen
@@ -2169,6 +2239,7 @@
                          postScreen.style.transform = 'translateY(0) scale(1)';
                          // routine finished and post screen fully visible -> restore tabs
                          showTabs();
+                         _isRoutineTransitioning = false;
                      }, 150);
                  }, 1000);
              }, 700);
@@ -2177,6 +2248,7 @@
         // 7. ALARM MANAGEMENT
         function _timeUntilAlarm(alarmStr, idx) {
             // Calculate milliseconds until alarm rings
+            if (Array.isArray(alarmEnabled) && alarmEnabled[idx] === false) return Infinity;
             const now = new Date();
             const parsed = _parseAlarmString(alarmStr);
             if (!parsed) return Infinity;
@@ -2212,10 +2284,11 @@
             list.innerHTML = alarms.map((a, i) => {
                 const metaDay = (alarmsMeta && alarmsMeta[i]) ? alarmsMeta[i] : 'Everyday';
                 const alarmType = (alarmTypes && alarmTypes[i]) ? alarmTypes[i] : 'routine';
+                const isEnabled = !(Array.isArray(alarmEnabled) && alarmEnabled[i] === false);
                 const typeLabel = alarmType === 'routine' ? 'Morning Routine' : 'Regular';
                 const typeColor = alarmType === 'routine' ? 'var(--sun-main)' : 'var(--accent-blue)';
                 const timeUntil = _timeUntilAlarm(a, i);
-                const isCloseToRinging = timeUntil < 300000; // within 5 minutes
+                const isCloseToRinging = isEnabled && timeUntil < 300000; // within 5 minutes
                 const highlightStyle = isCloseToRinging ? 'border:2px solid var(--accent-blue);background:rgba(0,122,255,0.15);box-shadow:0 0 20px rgba(0,122,255,0.3);' : '';
                 return `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.1);${highlightStyle}padding:20px;border-radius:12px;margin-bottom:8px;">
@@ -2229,15 +2302,32 @@
                             <span style="font-size:12px; color:var(--text-secondary);">${metaDay}</span>
                         </div>
                     </div>
-                    <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <button class="alarm-toggle-btn" data-alarm-idx="${i}" aria-label="${isEnabled ? 'Turn alarm off' : 'Turn alarm on'}" style="position:relative; width:56px; height:32px; border:none; border-radius:999px; cursor:pointer; background:${isEnabled ? '#10d176' : '#7a7f88'}; transition:background .2s ease;">
+                            <span style="position:absolute; top:3px; left:${isEnabled ? '27px' : '3px'}; width:26px; height:26px; border-radius:50%; background:#fff; transition:left .2s ease;"></span>
+                        </button>
+                        <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
+                    </div>
                 </div>
             `}).join('');
-            
+
+            document.querySelectorAll('.alarm-toggle-btn').forEach(btn => {
+                const idx = parseInt(btn.dataset.alarmIdx);
+                btn.onclick = () => toggleAlarmEnabled(idx);
+            });
+
             // Attach click-to-delete handlers to all alarm delete buttons
             document.querySelectorAll('.alarm-delete-btn').forEach(btn => {
                 const idx = parseInt(btn.dataset.alarmIdx);
                 btn.onclick = () => deleteAlarm(idx);
             });
+        }
+
+        function toggleAlarmEnabled(index) {
+            if (!Array.isArray(alarmEnabled) || index < 0 || index >= alarms.length) return;
+            alarmEnabled[index] = !alarmEnabled[index];
+            renderAlarms();
+            saveState();
         }
 
         function setAlarmType(type) {
@@ -2286,6 +2376,8 @@
             alarmsMeta.push(d);
             // Store the alarm type
             alarmTypes.push(selectedAlarmType);
+            // New alarms are on by default
+            alarmEnabled.push(true);
             renderAlarms();
             saveState();
             triggerSetAlarmSuccessGlow();
@@ -2298,6 +2390,7 @@
             alarms.splice(index, 1);
             if (alarmsMeta && alarmsMeta.length > index) alarmsMeta.splice(index, 1);
             if (alarmTypes && alarmTypes.length > index) alarmTypes.splice(index, 1);
+            if (alarmEnabled && alarmEnabled.length > index) alarmEnabled.splice(index, 1);
             renderAlarms();
             saveState();
         }
@@ -2365,31 +2458,96 @@
 
         // 8. ROUTINE EDITOR
         function renderRoutineEditor() {
+            if (_isRenderingRoutineEditor) return;
+            _isRenderingRoutineEditor = true;
+            try {
             const list = document.getElementById('edit-list');
-            list.innerHTML = tasks.map(t => `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; background:rgba(255,255,255,0.06); padding:20px 24px; border-radius:24px; border: 1px solid rgba(255,255,255,0.05);">
-                    <span style="opacity:0.9; font-size:16px; font-weight:700;">${t.text}</span>
-                    <span style="color:var(--accent-red); cursor:pointer; font-weight:900; font-size:18px; padding:4px;" onclick="deleteTask(${t.id})">✕</span>
-                </div>
-            `).join('');
+            if (!list) return;
+            list.innerHTML = '';
+            tasks.forEach(t => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.alignItems = 'center';
+                row.style.marginBottom = '14px';
+                row.style.background = 'rgba(255,255,255,0.06)';
+                row.style.padding = '20px 24px';
+                row.style.borderRadius = '24px';
+                row.style.border = '1px solid rgba(255,255,255,0.05)';
+
+                const text = document.createElement('span');
+                text.style.opacity = '0.9';
+                text.style.fontSize = '16px';
+                text.style.fontWeight = '700';
+                text.textContent = String(t.text || '');
+
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.textContent = '✕';
+                del.setAttribute('aria-label', 'Delete routine item');
+                del.style.color = 'var(--accent-red)';
+                del.style.cursor = 'pointer';
+                del.style.fontWeight = '900';
+                del.style.fontSize = '18px';
+                del.style.padding = '4px';
+                del.style.background = 'none';
+                del.style.border = 'none';
+                del.onclick = () => deleteTask(t.id);
+
+                row.appendChild(text);
+                row.appendChild(del);
+                list.appendChild(row);
+            });
+            } catch (e) {
+                console.error('renderRoutineEditor failed', e);
+            } finally {
+                _isRenderingRoutineEditor = false;
+            }
         }
 
         function addTask() {
             const input = document.getElementById('task-in');
+            if (!input) return;
             const val = input.value.trim();
             
             if(val.length > 0) {
-                tasks.push({ id: Date.now(), text: val, done: false });
+                _applyTaskMutation(() => {
+                    const id = _createTaskId();
+                    tasks.push({ id, text: val, done: false });
+                }, { renderMode: 'routine_only' });
                 input.value = "";
-                renderApplication();
-                saveState();
             }
         }
 
         function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            renderApplication();
-            saveState();
+            const target = String(id);
+            _applyTaskMutation(() => {
+                const idx = tasks.findIndex(t => String(t.id) === target);
+                if (idx >= 0) tasks.splice(idx, 1); // remove exactly one
+            }, { renderMode: 'routine_only' });
+        }
+
+        function _applyTaskMutation(mutator, opts = {}) {
+            if (_isMutatingTasks) return;
+            _isMutatingTasks = true;
+            try {
+                if (!Array.isArray(tasks)) tasks = [];
+                if (typeof mutator === 'function') mutator();
+                tasks = _normalizeTaskList(tasks);
+
+                const renderMode = opts.renderMode || 'full';
+                if (renderMode === 'routine_only') {
+                    try { _renderWakeRoutineListAndProgress(); } catch (e) { console.error('wake render failed', e); }
+                    try { renderRoutineEditor(); } catch (e) { console.error('routine editor render failed', e); }
+                } else {
+                    renderApplication();
+                }
+                saveState();
+            } catch (e) {
+                console.error('Task mutation failed', e);
+            } finally {
+                _isMutatingTasks = false;
+            }
         }
 
         // 8.5. SOUND MANAGEMENT
@@ -2514,6 +2672,7 @@
         // 9. SYSTEM RESET
         function restart() {
             console.log("System Reset initiated...");
+            _isRoutineTransitioning = false;
             tasks.forEach(t => t.done = false);
             
             document.getElementById('body').classList.remove('day-active');
@@ -2540,6 +2699,7 @@
 
         function forceStopRoutine() {
             try {
+                _isRoutineTransitioning = false;
                 tasks.forEach(t => t.done = false);
                 if (typeof setTabsLocked === 'function') setTabsLocked(false);
                 switchTab('post');
@@ -2782,6 +2942,7 @@
             const todayDayIndex = now.getDay(); // 0-6
 
             alarms.forEach((alarmStr, idx) => {
+                if (Array.isArray(alarmEnabled) && alarmEnabled[idx] === false) return;
                 const parsed = _parseAlarmString(alarmStr);
                 if (!parsed) return;
                 if (parsed.hh === nowHH && parsed.mm === nowMM) {
@@ -3141,6 +3302,13 @@
 
         // Show overlay and start sound
         function _ringAlarm(index) {
+            // Auto-turn off alarm immediately after it rings.
+            if (Array.isArray(alarmEnabled) && index >= 0 && index < alarmEnabled.length && alarmEnabled[index] !== false) {
+                alarmEnabled[index] = false;
+                try { renderAlarms(); } catch (e) {}
+                try { saveState(); } catch (e) {}
+            }
+
             _currentRingingIndexes.push(index);
             _scheduleAlarmAutoStop(index);
 
