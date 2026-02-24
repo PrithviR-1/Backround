@@ -694,54 +694,6 @@
             gap: 10px;
             min-width: 0;
         }
-        .alarm-name-row {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            min-width: 0;
-        }
-        .alarm-name-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 0;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            max-width: 100%;
-            min-width: 0;
-        }
-        .alarm-name-text {
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.3px;
-            text-transform: none;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 100%;
-        }
-        .alarm-name-pencil {
-            flex: 0 0 auto;
-            font-size: 12px;
-            line-height: 1;
-            opacity: 0.85;
-        }
-        .alarm-name-pencil svg {
-            width: 13px;
-            height: 13px;
-            display: block;
-            fill: currentColor;
-        }
-        .alarm-name-input {
-            width: min(100%, 320px);
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.2px;
-            padding: 7px 10px;
-            border-radius: 10px;
-        }
         .alarm-controls-row {
             display: flex;
             justify-content: space-between;
@@ -891,10 +843,6 @@
             background: #0a84ff;
             color: #fff;
             cursor: pointer;
-        }
-
-        #set-alarm-btn.alarm-confirm-glow {
-            animation: alarm-confirm-glow 720ms cubic-bezier(0.22, 0.9, 0.3, 1) 1;
         }
 
         input[type="text"] {
@@ -1065,21 +1013,6 @@
             }
         }
 
-        @keyframes alarm-confirm-glow {
-            0% {
-                filter: brightness(1);
-                box-shadow: 0 0 0 rgba(48, 209, 88, 0), 0 6px 14px rgba(0, 122, 255, 0.25);
-            }
-            40% {
-                filter: brightness(1.08);
-                box-shadow: 0 0 0 1px rgba(48, 209, 88, 0.22), 0 0 26px rgba(48, 209, 88, 0.58), 0 0 44px rgba(48, 209, 88, 0.28);
-            }
-            100% {
-                filter: brightness(1);
-                box-shadow: 0 0 0 rgba(48, 209, 88, 0), 0 6px 14px rgba(0, 122, 255, 0.25);
-            }
-        }
-
         .day-active #stage { background: var(--sky-day); }
         .day-active .sun-system { transform: translate(-50%, -100px); }
         #body:not(.day-active) .cloud-container {
@@ -1184,6 +1117,57 @@
         }
         
         .glass-card.aux { padding: 22px; max-width: 640px; }
+
+        /* ===== ALARM UI LAYOUT FIX START ===== */
+        #alarms-screen-layout {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 250px);
+            min-height: 460px;
+            max-height: 760px;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+        }
+
+        #alarm-create-panel {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 14px 14px 12px;
+            background: linear-gradient(180deg, rgba(17,18,20,0.98) 0%, rgba(17,18,20,0.9) 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        #alarm-create-panel .picker-container {
+            margin: 14px 0;
+        }
+
+        #alarm-list-panel {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 14px;
+            scrollbar-width: none;
+        }
+        #alarm-list-panel::-webkit-scrollbar { display: none; }
+
+        #alarm-list {
+            position: relative;
+            z-index: 12;
+            padding-bottom: 8px;
+        }
+
+        @media (max-width: 700px) {
+            #alarms-screen-layout {
+                height: calc(100vh - 230px);
+                min-height: 420px;
+            }
+        }
+        /* ===== ALARM UI LAYOUT FIX END ===== */
     </style>
 </head>
 <body id="body">
@@ -1342,23 +1326,31 @@
             
             <section style="margin-bottom: 45px;">
                 <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Upcoming Alarms</p>
-                <div id="alarm-list"></div>
-                
-                <div style="margin-bottom: 20px; display: flex; gap: 12px;">
-                    <button class="alarm-type-btn" id="btn-routine" onclick="setAlarmType('routine')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,211,78,0.25); color: var(--sun-main); cursor: pointer; transition: all 0.3s; border-color: var(--sun-main);">Morning Routine</button>
-                    <button class="alarm-type-btn" id="btn-regular" onclick="setAlarmType('regular')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-primary); cursor: pointer; transition: all 0.3s;">Regular Alarm</button>
-                </div>
-                
-                <div class="picker-container">
-                    <div class="wheel" id="h-wheel"></div>
-                    <div class="wheel" id="m-wheel"></div>
-                    <div class="wheel" id="d-wheel"></div>
-                    <div class="wheel" id="p-wheel">
-                        <div></div><div>AM</div><div>PM</div><div></div>
+                <!-- ===== ALARM UI LAYOUT FIX START ===== -->
+                <div id="alarms-screen-layout">
+                    <div id="alarm-create-panel">
+                        <div style="margin-bottom: 20px; display: flex; gap: 12px;">
+                            <button class="alarm-type-btn" id="btn-routine" onclick="setAlarmType('routine')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,211,78,0.25); color: var(--sun-main); cursor: pointer; transition: all 0.3s; border-color: var(--sun-main);">Morning Routine</button>
+                            <button class="alarm-type-btn" id="btn-regular" onclick="setAlarmType('regular')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-primary); cursor: pointer; transition: all 0.3s;">Regular Alarm</button>
+                        </div>
+                        
+                        <div class="picker-container">
+                            <div class="wheel" id="h-wheel"></div>
+                            <div class="wheel" id="m-wheel"></div>
+                            <div class="wheel" id="d-wheel"></div>
+                            <div class="wheel" id="p-wheel">
+                                <div></div><div>AM</div><div>PM</div><div></div>
+                            </div>
+                        </div>
+                        <button id="set-alarm-btn" class="btn-add" style="width:100%; height: 64px; font-size: 17px;" onclick="addAlarm()">Set New Alarm</button>
+                        <button id="undo-edit-alarm-btn" class="btn-primary" style="display:none; width:100%; margin-top:10px; height:52px; font-size:15px; background: var(--accent-red); color: #fff;" onclick="undoAlarmEdits()">Undo Edits</button>
+                    </div>
+
+                    <div id="alarm-list-panel">
+                        <div id="alarm-list"></div>
                     </div>
                 </div>
-                <button id="set-alarm-btn" class="btn-add" style="width:100%; height: 64px; font-size: 17px;" onclick="addAlarm()">Set New Alarm</button>
-                <button id="undo-edit-alarm-btn" class="btn-primary" style="display:none; width:100%; margin-top:10px; height:52px; font-size:15px; background: var(--accent-red); color: #fff;" onclick="undoAlarmEdits()">Undo Edits</button>
+                <!-- ===== ALARM UI LAYOUT FIX END ===== -->
             </section>
 
             <div class="divider-glass"></div>
@@ -1560,18 +1552,14 @@
         const ALL_DAY_INDICES = [0,1,2,3,4,5,6];
         let alarmsMeta = alarms.map(() => 'Everyday');
         let alarmsRepeatDays = alarms.map(() => [...ALL_DAY_INDICES]);
-        let alarmNames = alarms.map((_, idx) => `Alarm ${idx + 1}`);
-        let nextAlarmNameNumber = alarmNames.length + 1;
         
         let alarmTypes = alarms.map(() => 'routine'); // default to routine
         let alarmEnabled = alarms.map(() => true); // per-alarm on/off state
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
         let editingAlarmIndex = null;
         let originalAlarmDraft = null;
-        let renamingAlarmIndex = null;
         let _openRepeatEditorIndex = null;
         let _repeatPopover = null;
-        const ALARM_NAME_MAX_LENGTH = 40;
 
         let selectedSound = DEFAULT_SOUND_ID; // default sound
         const MOON_PHASES = [
@@ -1583,13 +1571,18 @@
             { cls: 'phase-threeq-left', weight: 14, label: 'three-quarters-left' }
         ];
         let _sceneWindDirection = 1; // 1 => left-to-right, -1 => right-to-left
-        let _setAlarmGlowTimeout = null;
         let _isRoutineTransitioning = false;
         let _inRoutineSession = false;
         let _taskIdCounter = 0;
         let _isRenderingApplication = false;
         let _isRenderingRoutineEditor = false;
         let _isMutatingTasks = false;
+        // Alarm mutation queue (DO NOT DROP MUTATIONS)
+        let _alarmMutationQueue = Promise.resolve();
+        let _alarmMutationPendingCount = 0;
+        let _lastAlarmCommitAt = 0;
+        let _lastAlarmCommitPayload = '';
+        let _setAlarmLocked = false;
 
         function _createTaskId() {
             _taskIdCounter += 1;
@@ -1657,31 +1650,72 @@
             return normalized.map(d => DAY_LABELS[d]).join(', ');
         }
 
-        function _escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+        function _setAlarmButtonBusy(isBusy) {
+            const btn = document.getElementById('set-alarm-btn') || document.getElementById('alarm-commit-btn');
+            if (!btn) return;
+            btn.disabled = !!isBusy;
+            btn.style.opacity = isBusy ? '0.6' : '1';
+            btn.style.pointerEvents = isBusy ? 'none' : 'auto';
         }
 
-        function _normalizeAlarmName(value) {
-            return String(value ?? '').trim().slice(0, ALARM_NAME_MAX_LENGTH);
-        }
+        function _normalizeAlarmCollections() {
+            if (!Array.isArray(alarms)) alarms = [];
+            if (!Array.isArray(alarmsRepeatDays)) alarmsRepeatDays = [];
+            if (!Array.isArray(alarmsMeta)) alarmsMeta = [];
+            if (!Array.isArray(alarmTypes)) alarmTypes = [];
+            if (!Array.isArray(alarmEnabled)) alarmEnabled = [];
 
-        function _ensureAlarmName(index) {
-            if (!Array.isArray(alarmNames)) alarmNames = [];
-            if (index < 0 || index >= alarms.length) return '';
-            const existing = _normalizeAlarmName(alarmNames[index]);
-            if (existing) {
-                alarmNames[index] = existing;
-                return existing;
+            const len = alarms.length;
+            alarms = alarms.map(a => String(a || '').trim()).filter(Boolean);
+            const targetLen = alarms.length;
+
+            alarmsRepeatDays = alarms.map((_, i) => _normalizeRepeatDays(alarmsRepeatDays[i]));
+            alarmsMeta = alarms.map((_, i) => _formatRepeatDays(alarmsRepeatDays[i]));
+            alarmTypes = alarms.map((_, i) => (alarmTypes[i] === 'regular' ? 'regular' : 'routine'));
+            alarmEnabled = alarms.map((_, i) => alarmEnabled[i] !== false);
+
+            if (targetLen !== len && Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= targetLen) {
+                editingAlarmIndex = null;
+                originalAlarmDraft = null;
             }
-            const fallback = `Alarm ${Math.max(1, Number(nextAlarmNameNumber) || 1)}`;
-            alarmNames[index] = fallback;
-            nextAlarmNameNumber = Math.max(1, Number(nextAlarmNameNumber) || 1) + 1;
-            return fallback;
+        }
+
+        function queueAlarmMutation(mutator, opts = {}) {
+            const { render = true, save = true, renderReason = 'queued-mutation' } = opts;
+            _alarmMutationPendingCount += 1;
+            _setAlarmButtonBusy(true);
+
+            _alarmMutationQueue = _alarmMutationQueue
+                .then(() => {
+                    if (!Array.isArray(alarms)) alarms = [];
+                    if (typeof mutator === 'function') mutator();
+
+                    _normalizeAlarmCollections();
+
+                    if (Number.isInteger(editingAlarmIndex) && (editingAlarmIndex < 0 || editingAlarmIndex >= alarms.length)) {
+                        editingAlarmIndex = null;
+                        originalAlarmDraft = null;
+                    }
+
+                    if (render) {
+                        if (typeof scheduleRender === 'function') scheduleRender('alarms', renderReason);
+                        else renderAlarms();
+                    }
+                    if (save) saveState();
+                })
+                .catch((e) => {
+                    console.error('queueAlarmMutation failed', e);
+                })
+                .finally(() => {
+                    _alarmMutationPendingCount = Math.max(0, _alarmMutationPendingCount - 1);
+                    _setAlarmButtonBusy(_alarmMutationPendingCount > 0);
+                });
+
+            return _alarmMutationQueue;
+        }
+
+        function _enqueueAlarmMutation(mutator, opts = {}) {
+            return queueAlarmMutation(mutator, opts);
         }
 
         function _getRepeatDaysForAlarm(index) {
@@ -1729,8 +1763,6 @@
                     savedAt: Date.now(),
                     tasks: _normalizeTaskList(tasks),
                     alarms: Array.isArray(alarms) ? alarms.map(a => String(a || '')).filter(Boolean) : [],
-                    alarmNames: Array.isArray(alarmNames) ? alarmNames.map(n => _normalizeAlarmName(n)) : [],
-                    nextAlarmNameNumber: Math.max(1, Number(nextAlarmNameNumber) || 1),
                     alarmsMeta: Array.isArray(alarmsMeta) ? alarmsMeta.map(d => String(d || 'Everyday')) : [],
                     alarmsRepeatDays: Array.isArray(alarmsRepeatDays) ? alarmsRepeatDays.map(days => _normalizeRepeatDays(days)) : [],
                     alarmTypes: Array.isArray(alarmTypes) ? alarmTypes.map(t => (t === 'regular' ? 'regular' : 'routine')) : [],
@@ -1768,8 +1800,6 @@
             if (!state) {
                 tasks = createDefaultTasks();
                 alarms = [];
-                alarmNames = [];
-                nextAlarmNameNumber = 1;
                 alarmsMeta = [];
                 alarmsRepeatDays = [];
                 alarmTypes = [];
@@ -1789,8 +1819,6 @@
 
             tasks = _normalizeTaskList(state.tasks);
             alarms = Array.isArray(state.alarms) ? state.alarms.map(a => String(a || '')).filter(Boolean) : [];
-            alarmNames = Array.isArray(state.alarmNames) ? state.alarmNames.map(n => _normalizeAlarmName(n)) : [];
-            nextAlarmNameNumber = Math.max(1, Number(state.nextAlarmNameNumber) || 1);
             alarmsMeta = Array.isArray(state.alarmsMeta) ? state.alarmsMeta.map(v => String(v || 'Everyday')) : [];
             alarmsRepeatDays = Array.isArray(state.alarmsRepeatDays)
                 ? state.alarmsRepeatDays.map(_normalizeRepeatDays)
@@ -1798,18 +1826,6 @@
             alarmTypes = Array.isArray(state.alarmTypes) ? state.alarmTypes.map(v => (v === 'regular' ? 'regular' : 'routine')) : [];
             alarmEnabled = Array.isArray(state.alarmEnabled) ? state.alarmEnabled.map(v => !!v) : [];
 
-            while (alarmNames.length < alarms.length) {
-                alarmNames.push(`Alarm ${nextAlarmNameNumber}`);
-                nextAlarmNameNumber += 1;
-            }
-            if (alarmNames.length > alarms.length) alarmNames = alarmNames.slice(0, alarms.length);
-            alarmNames = alarmNames.map(name => {
-                const normalized = _normalizeAlarmName(name);
-                if (normalized) return normalized;
-                const fallback = `Alarm ${nextAlarmNameNumber}`;
-                nextAlarmNameNumber += 1;
-                return fallback;
-            });
             while (alarmsMeta.length < alarms.length) alarmsMeta.push('Everyday');
             while (alarmsRepeatDays.length < alarms.length) alarmsRepeatDays.push([...ALL_DAY_INDICES]);
             while (alarmTypes.length < alarms.length) alarmTypes.push('routine');
@@ -1910,6 +1926,11 @@
             initCloudsMotion();
             initClickRadar();
             initRepeatPopoverDismiss();
+            const alarmCommitBtn = document.getElementById('set-alarm-btn') || document.getElementById('alarm-commit-btn');
+            if (alarmCommitBtn) {
+                alarmCommitBtn.onclick = null;
+                alarmCommitBtn.addEventListener('click', commitAlarmFromPicker);
+            }
 
             try {
                 const wakeScreen = document.getElementById('screen-wake');
@@ -2516,13 +2537,26 @@
             handleWheelSnap(wheel);
         }
 
+        // ===== ALARM UI LAYOUT FIX START =====
+        function _scrollAlarmPickerIntoView() {
+            const createPanel = document.getElementById('alarm-create-panel');
+            if (createPanel) {
+                createPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+            const wheelContainer = document.querySelector('#screen-post .picker-container');
+            if (wheelContainer) {
+                wheelContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        // ===== ALARM UI LAYOUT FIX END =====
+
         function _updateAlarmEditActions() {
             const setBtn = document.getElementById('set-alarm-btn');
             const undoBtn = document.getElementById('undo-edit-alarm-btn');
             const isEditing = Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length;
             if (setBtn) {
                 setBtn.textContent = isEditing ? 'Save Changes' : 'Set New Alarm';
-                setBtn.onclick = isEditing ? saveAlarmEdits : addAlarm;
             }
             if (undoBtn) {
                 undoBtn.style.display = isEditing ? 'block' : 'none';
@@ -2559,39 +2593,12 @@
             selectedAlarmType = (alarmTypes && alarmTypes[index]) ? alarmTypes[index] : 'routine';
             setAlarmType(selectedAlarmType);
 
-            const wheelContainer = document.querySelector('#screen-post .picker-container');
-            if (wheelContainer) {
-                const rect = wheelContainer.getBoundingClientRect();
-                const centerDelta = Math.abs((rect.top + (rect.height / 2)) - (window.innerHeight / 2));
-                if (centerDelta > 24) {
-                    wheelContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
+            // ===== ALARM UI LAYOUT FIX START =====
+            _scrollAlarmPickerIntoView();
+            // ===== ALARM UI LAYOUT FIX END =====
         }
 
-        function saveAlarmEdits() {
-            if (!(Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length)) return;
-            const h = document.querySelector('#h-wheel .active')?.innerText || "6";
-            const m = document.querySelector('#m-wheel .active')?.innerText || "00";
-            const p = document.querySelector('#p-wheel .active')?.innerText || "AM";
-            const d = document.querySelector('#d-wheel .active')?.innerText || "Everyday";
-
-            const updatedAlarm = `${h}:${m} ${p}`;
-            const parsedDay = DAY_LABELS.findIndex(label => label === d);
-            const selectedDays = parsedDay >= 0 ? [parsedDay] : [...ALL_DAY_INDICES];
-            const idx = editingAlarmIndex;
-
-            alarms[idx] = updatedAlarm;
-            alarmsRepeatDays[idx] = _normalizeRepeatDays(selectedDays);
-            alarmsMeta[idx] = _formatRepeatDays(alarmsRepeatDays[idx]);
-            alarmTypes[idx] = selectedAlarmType;
-
-            editingAlarmIndex = null;
-            originalAlarmDraft = null;
-            _closeRepeatPopover();
-            renderAlarms();
-            saveState();
-        }
+        function saveAlarmEdits() { return commitAlarmFromPicker(); }
 
         function undoAlarmEdits() {
             if (!(Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length)) return;
@@ -2716,8 +2723,6 @@
             const list = document.getElementById('alarm-list');
             if (!list) return;
             list.innerHTML = alarms.map((a, i) => {
-                const alarmName = _ensureAlarmName(i);
-                const isRenaming = renamingAlarmIndex === i;
                 const repeatLabel = _formatRepeatDays(_getRepeatDaysForAlarm(i));
                 const alarmType = (alarmTypes && alarmTypes[i]) ? alarmTypes[i] : 'routine';
                 const isEnabled = !(Array.isArray(alarmEnabled) && alarmEnabled[i] === false);
@@ -2728,14 +2733,8 @@
                 const highlightStyle = isCloseToRinging ? 'border:2px solid var(--accent-blue);background:rgba(0,122,255,0.15);box-shadow:0 0 20px rgba(0,122,255,0.3);' : '';
                 const rowDisabledStyle = !isEnabled ? 'background:rgba(130,130,130,0.12); border:1px solid rgba(180,180,180,0.2);' : '';
                 const contentDisabledStyle = !isEnabled ? 'opacity:0.46; filter:grayscale(1);' : '';
-                const alarmNameMarkup = isRenaming
-                    ? `<input type="text" class="alarm-name-input" data-alarm-idx="${i}" value="${_escapeHtml(alarmName)}" maxlength="${ALARM_NAME_MAX_LENGTH}" aria-label="Rename alarm">`
-                    : `<button type="button" class="alarm-name-btn" data-alarm-idx="${i}" aria-label="Rename ${_escapeHtml(alarmName)}"><span class="alarm-name-text">${_escapeHtml(alarmName)}</span><span class="alarm-name-pencil" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm2.92 2.33H5v-.92l9.06-9.06.92.92L5.92 19.58zM20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"></path></svg></span></button>`;
                 return `
                 <div class="alarm-row" data-alarm-idx="${i}" style="padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.1);${highlightStyle}${rowDisabledStyle}padding:20px;border-radius:12px;margin-bottom:8px;">
-                    <div class="alarm-name-row" style="${contentDisabledStyle}">
-                        ${alarmNameMarkup}
-                    </div>
                     <div class="alarm-time-row" style="${contentDisabledStyle}">
                         <span style="font-size:36px; font-weight:300; letter-spacing:2px; margin-right:10px;">${a.split(' ')[0]}</span>
                         <span style="font-size:14px; font-weight:900; opacity:0.5;">${a.split(' ')[1]}</span>
@@ -2778,58 +2777,12 @@
                 const idx = parseInt(btn.dataset.alarmIdx);
                 btn.onclick = () => deleteAlarm(idx);
             });
-            document.querySelectorAll('.alarm-name-btn').forEach(btn => {
-                const idx = parseInt(btn.dataset.alarmIdx, 10);
-                btn.onclick = (evt) => {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                    if (!Number.isInteger(idx) || idx < 0 || idx >= alarms.length) return;
-                    renamingAlarmIndex = idx;
-                    renderAlarms();
-                };
-            });
-            document.querySelectorAll('.alarm-name-input').forEach(input => {
-                const idx = parseInt(input.dataset.alarmIdx, 10);
-                let finalized = false;
-                const finalizeRename = (save) => {
-                    if (finalized) return;
-                    finalized = true;
-                    if (save && Number.isInteger(idx) && idx >= 0 && idx < alarms.length) {
-                        const nextName = _normalizeAlarmName(input.value);
-                        if (nextName) alarmNames[idx] = nextName;
-                        else alarmNames[idx] = _ensureAlarmName(idx);
-                        saveState();
-                    }
-                    renamingAlarmIndex = null;
-                    renderAlarms();
-                };
-                input.addEventListener('keydown', (evt) => {
-                    evt.stopPropagation();
-                    if (evt.key === 'Enter') {
-                        evt.preventDefault();
-                        finalizeRename(true);
-                    } else if (evt.key === 'Escape') {
-                        evt.preventDefault();
-                        finalizeRename(false);
-                    }
-                });
-                input.addEventListener('blur', () => finalizeRename(true));
-                input.addEventListener('click', (evt) => evt.stopPropagation());
-            });
             _updateAlarmEditActions();
 
             if (_openRepeatEditorIndex !== null) {
                 const activeTrigger = document.querySelector(`.alarm-repeat-trigger[data-alarm-idx="${_openRepeatEditorIndex}"]`);
                 if (!activeTrigger) _closeRepeatPopover();
                 else if (_repeatPopover) _positionRepeatPopover(activeTrigger, _repeatPopover);
-            }
-            if (Number.isInteger(renamingAlarmIndex)) {
-                const activeInput = list.querySelector(`.alarm-name-input[data-alarm-idx="${renamingAlarmIndex}"]`);
-                if (activeInput) {
-                    activeInput.focus();
-                    const endPos = activeInput.value.length;
-                    try { activeInput.setSelectionRange(endPos, endPos); } catch (e) {}
-                }
             }
         }
 
@@ -2860,20 +2813,18 @@
             saveState();
         }
 
-        function triggerSetAlarmSuccessGlow() {
-            const btn = document.getElementById('set-alarm-btn');
-            if (!btn) return;
-            btn.classList.remove('alarm-confirm-glow');
-            void btn.offsetWidth; // restart animation if user clicks rapidly
-            btn.classList.add('alarm-confirm-glow');
-            if (_setAlarmGlowTimeout) clearTimeout(_setAlarmGlowTimeout);
-            _setAlarmGlowTimeout = setTimeout(() => {
-                btn.classList.remove('alarm-confirm-glow');
-                _setAlarmGlowTimeout = null;
-            }, 820);
-        }
+        async function commitAlarmFromPicker() {
+            if (_setAlarmLocked) return;
+            _setAlarmLocked = true;
 
-        function addAlarm() {
+            const btn = document.getElementById('set-alarm-btn') || document.getElementById('alarm-commit-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+                btn.style.pointerEvents = 'none';
+            }
+
+            const now = Date.now();
             const h = document.querySelector('#h-wheel .active')?.innerText || "6";
             const m = document.querySelector('#m-wheel .active')?.innerText || "00";
             const p = document.querySelector('#p-wheel .active')?.innerText || "AM";
@@ -2882,37 +2833,64 @@
             const newAlarm = `${h}:${m} ${p}`;
             const parsedDay = DAY_LABELS.findIndex(label => label === d);
             const selectedDaysForCreate = parsedDay >= 0 ? [parsedDay] : [...ALL_DAY_INDICES];
-            if (editingAlarmIndex !== null && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length) {
-                alarms[editingAlarmIndex] = newAlarm;
-                alarmsRepeatDays[editingAlarmIndex] = _normalizeRepeatDays(selectedDaysForCreate);
-                alarmsMeta[editingAlarmIndex] = _formatRepeatDays(alarmsRepeatDays[editingAlarmIndex]);
-                alarmTypes[editingAlarmIndex] = selectedAlarmType;
-                alarmEnabled[editingAlarmIndex] = alarmEnabled[editingAlarmIndex] !== false;
-                editingAlarmIndex = null;
-            } else {
-                alarms.push(newAlarm);
-                alarmsRepeatDays.push(selectedDaysForCreate);
-                alarmsMeta.push(_formatRepeatDays(selectedDaysForCreate));
-                alarmTypes.push(selectedAlarmType);
-                alarmEnabled.push(true);
-                alarmNames.push(`Alarm ${nextAlarmNameNumber}`);
-                nextAlarmNameNumber += 1;
+            const normalizedDays = _normalizeRepeatDays(selectedDaysForCreate);
+            const normalizedType = selectedAlarmType === 'regular' ? 'regular' : 'routine';
+            const editing = Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length;
+            const editIdx = editing ? editingAlarmIndex : -1;
+
+            const payloadKey = `${editing ? `edit:${editIdx}` : 'add'}|${newAlarm}|${normalizedType}|${normalizedDays.join(',')}`;
+            if ((now - _lastAlarmCommitAt) < 800 && payloadKey === _lastAlarmCommitPayload) {
+                _setAlarmLocked = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                }
+                return;
             }
-            renderAlarms();
-            saveState();
-            triggerSetAlarmSuccessGlow();
-            
+            _lastAlarmCommitAt = now;
+            _lastAlarmCommitPayload = payloadKey;
+
+            try {
+                await queueAlarmMutation(() => {
+                    if (editing && editIdx >= 0 && editIdx < alarms.length) {
+                        alarms[editIdx] = newAlarm;
+                        alarmsRepeatDays[editIdx] = normalizedDays;
+                        alarmsMeta[editIdx] = _formatRepeatDays(normalizedDays);
+                        alarmTypes[editIdx] = normalizedType;
+                        alarmEnabled[editIdx] = alarmEnabled[editIdx] !== false;
+                    } else {
+                        alarms.push(newAlarm);
+                        alarmsRepeatDays.push(normalizedDays);
+                        alarmsMeta.push(_formatRepeatDays(normalizedDays));
+                        alarmTypes.push(normalizedType);
+                        alarmEnabled.push(true);
+                    }
+
+                    editingAlarmIndex = null;
+                    originalAlarmDraft = null;
+                    _closeRepeatPopover();
+                }, { render: true, save: true, renderReason: 'commitAlarmFromPicker' });
+            } finally {
+                _setAlarmLocked = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                }
+            }
+        }
+
+        function addAlarm() {
+            return commitAlarmFromPicker();
         }
 
         function deleteAlarm(index) {
             alarms.splice(index, 1);
-            if (alarmNames && alarmNames.length > index) alarmNames.splice(index, 1);
             if (alarmsMeta && alarmsMeta.length > index) alarmsMeta.splice(index, 1);
             if (alarmsRepeatDays && alarmsRepeatDays.length > index) alarmsRepeatDays.splice(index, 1);
             if (alarmTypes && alarmTypes.length > index) alarmTypes.splice(index, 1);
             if (alarmEnabled && alarmEnabled.length > index) alarmEnabled.splice(index, 1);
-            if (renamingAlarmIndex === index) renamingAlarmIndex = null;
-            if (renamingAlarmIndex !== null && index < renamingAlarmIndex) renamingAlarmIndex -= 1;
             if (editingAlarmIndex === index) {
                 editingAlarmIndex = null;
                 originalAlarmDraft = null;
@@ -3791,10 +3769,6 @@
                 title.style.fontWeight = '900';
                 title.style.marginBottom = '24px';
                 title.style.lineHeight = '1.2';
-                title.style.display = 'flex';
-                title.style.alignItems = 'center';
-                title.style.justifyContent = 'center';
-                title.style.gap = '12px';
 
                 const meta = document.createElement('div');
                 meta.id = 'alarm-meta';
@@ -3870,10 +3844,9 @@
             const titleEl = document.getElementById('alarm-title');
             const metaEl = document.getElementById('alarm-meta');
             const timeStr = alarms[index] || '';
-            const alarmName = _ensureAlarmName(index);
             const metaLabel = (alarmsMeta && alarmsMeta[index]) ? alarmsMeta[index] : 'Everyday';
-            if (titleEl) titleEl.innerHTML = `<span aria-hidden="true" style="width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" style="width:38px;height:38px;fill:#fff;"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2zm-2 .17.59.83H6.41l.59-.83V11a5 5 0 0 1 10 0v5.17z"></path></svg></span><span>${_escapeHtml(alarmName)}</span>`;
-            if (metaEl) metaEl.textContent = `${timeStr} • Repeats: ${metaLabel}`;
+            if (titleEl) titleEl.textContent = `Alarm — ${timeStr}`;
+            if (metaEl) metaEl.textContent = `Repeats: ${metaLabel}`;
 
             const stopBtnEl = document.getElementById('alarm-stop-btn');
             const snoozeBtnEl = document.getElementById('alarm-snooze-btn');
@@ -4070,9 +4043,7 @@
         function _renderTimers() {
             const el = document.getElementById('timers-list');
             if (!el) return;
-            const currentTimers = _timers.filter(t => t.active || t.remaining > 0);
-            const previousTimers = _timers.filter(t => !t.active && t.remaining === 0);
-            const renderTimerRow = (t) => {
+            el.innerHTML = _timers.map(t => {
                 const isCloseToRinging = t.remaining < 300000; // within 5 minutes
                 const highlightStyle = isCloseToRinging ? 'border:2px solid var(--accent-blue);background:rgba(0,122,255,0.15);box-shadow:0 0 20px rgba(0,122,255,0.3);' : 'border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.02);';
                 return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;${highlightStyle}" data-timer-row="${t.id}">
@@ -4086,13 +4057,7 @@
                         <button class="tab-btn timer-delete-btn" data-timer-id="${t.id}">Delete</button>
                     </div>
                 </div>`;
-            };
-            const currentMarkup = currentTimers.map(renderTimerRow).join('');
-            const previousMarkup = previousTimers.map(renderTimerRow).join('');
-            const previousSection = previousTimers.length
-                ? `<div style="margin-top:10px; font-size:11px; letter-spacing:1.1px; text-transform:uppercase; font-weight:800; opacity:0.66;">Previous Timers</div>${previousMarkup}`
-                : '';
-            el.innerHTML = `${currentMarkup}${previousSection}`;
+            }).join('');
             
             document.querySelectorAll('.timer-delete-btn').forEach(btn => {
                 const timerId = btn.dataset.timerId;
@@ -4125,7 +4090,6 @@
                     timer.active = false;
                     timer.endAt = null;
                     saveState();
-                    _renderTimers();
                     _timerDone(timer);
                     return;
                 }
