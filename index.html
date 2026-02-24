@@ -1118,27 +1118,57 @@
         
         .glass-card.aux { padding: 22px; max-width: 640px; }
 
-        /* ===== ALARM UI LAYOUT FIX START ===== */
-        #alarms-screen-layout {
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 250px);
-            min-height: 460px;
-            max-height: 760px;
-            border-radius: 22px;
+        /* ===== ALARM LAYOUT (SINGLE SCROLL) START ===== */
+        #next-alarm-summary {
+            margin-bottom: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        #next-alarm-summary .next-alarm-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        #next-alarm-summary .next-alarm-time {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        #next-alarm-summary .next-alarm-rail {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.12);
+        }
+        #next-alarm-summary .next-alarm-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #30d158, #0a84ff);
+            transition: width 0.3s ease;
         }
 
-        #alarm-create-panel {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            padding: 14px 14px 12px;
-            background: linear-gradient(180deg, rgba(17,18,20,0.98) 0%, rgba(17,18,20,0.9) 100%);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(8px);
+        #alarms-screen-layout {
+            display: block;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+            overflow: visible;
+        }
+
+#alarm-create-panel {
+    position: relative;
+    z-index: 50;
+    padding: 14px 14px 12px;
+    background: linear-gradient(180deg, rgba(17,18,20,0.98) 0%, rgba(17,18,20,0.9) 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
 
@@ -1146,28 +1176,15 @@
             margin: 14px 0;
         }
 
-        #alarm-list-panel {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            padding: 14px;
-            scrollbar-width: none;
-        }
-        #alarm-list-panel::-webkit-scrollbar { display: none; }
-
-        #alarm-list {
+        #alarms-screen-layout #alarm-list {
             position: relative;
             z-index: 12;
+            padding: 14px;
+            padding-top: 12px;
             padding-bottom: 8px;
+            overflow: visible;
         }
-
-        @media (max-width: 700px) {
-            #alarms-screen-layout {
-                height: calc(100vh - 230px);
-                min-height: 420px;
-            }
-        }
-        /* ===== ALARM UI LAYOUT FIX END ===== */
+        /* ===== ALARM LAYOUT (SINGLE SCROLL) END ===== */
     </style>
 </head>
 <body id="body">
@@ -1322,11 +1339,34 @@
         </div>
 
         <div id="screen-post" class="glass-card hidden">
-            <h2 style="color: var(--sun-main);">Day Activated.</h2>
+            <h2 aria-label="Sun and moon" style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:24px;">
+                <svg viewBox="0 0 24 24" width="38" height="38" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5" fill="#FFD34E"></circle>
+                    <g stroke="#FFD34E" stroke-width="2" stroke-linecap="round">
+                        <line x1="12" y1="1.5" x2="12" y2="4"></line>
+                        <line x1="12" y1="20" x2="12" y2="22.5"></line>
+                        <line x1="1.5" y1="12" x2="4" y2="12"></line>
+                        <line x1="20" y1="12" x2="22.5" y2="12"></line>
+                        <line x1="4.6" y1="4.6" x2="6.4" y2="6.4"></line>
+                        <line x1="17.6" y1="17.6" x2="19.4" y2="19.4"></line>
+                        <line x1="17.6" y1="6.4" x2="19.4" y2="4.6"></line>
+                        <line x1="4.6" y1="19.4" x2="6.4" y2="17.6"></line>
+                    </g>
+                </svg>
+                <span aria-hidden="true" style="width:2px; height:20px; border-radius:999px; background:rgba(255,255,255,0.55); display:inline-block;"></span>
+                <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+                    <path d="M14.2 2.5a9.3 9.3 0 1 0 7.3 14.9 8 8 0 1 1-7.3-14.9z" fill="#DDEBFF"></path>
+                </svg>
+            </h2>
             
             <section style="margin-bottom: 45px;">
                 <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Upcoming Alarms</p>
-                <!-- ===== ALARM UI LAYOUT FIX START ===== -->
+                <div id="next-alarm-summary">
+                    <div class="next-alarm-title">Next Alarm</div>
+                    <div id="next-alarm-remaining" class="next-alarm-time">No active alarms</div>
+                    <div class="next-alarm-rail"><div id="next-alarm-fill" class="next-alarm-fill"></div></div>
+                </div>
+                <!-- ===== ALARM LAYOUT (SINGLE SCROLL) START ===== -->
                 <div id="alarms-screen-layout">
                     <div id="alarm-create-panel">
                         <div style="margin-bottom: 20px; display: flex; gap: 12px;">
@@ -1345,12 +1385,9 @@
                         <button id="set-alarm-btn" class="btn-add" style="width:100%; height: 64px; font-size: 17px;" onclick="addAlarm()">Set New Alarm</button>
                         <button id="undo-edit-alarm-btn" class="btn-primary" style="display:none; width:100%; margin-top:10px; height:52px; font-size:15px; background: var(--accent-red); color: #fff;" onclick="undoAlarmEdits()">Undo Edits</button>
                     </div>
-
-                    <div id="alarm-list-panel">
-                        <div id="alarm-list"></div>
-                    </div>
+                    <div id="alarm-list"></div>
                 </div>
-                <!-- ===== ALARM UI LAYOUT FIX END ===== -->
+                <!-- ===== ALARM LAYOUT (SINGLE SCROLL) END ===== -->
             </section>
 
             <div class="divider-glass"></div>
@@ -1583,6 +1620,7 @@
         let _lastAlarmCommitAt = 0;
         let _lastAlarmCommitPayload = '';
         let _setAlarmLocked = false;
+        const MAX_ALARMS = 10;
 
         function _createTaskId() {
             _taskIdCounter += 1;
@@ -1656,6 +1694,30 @@
             btn.disabled = !!isBusy;
             btn.style.opacity = isBusy ? '0.6' : '1';
             btn.style.pointerEvents = isBusy ? 'none' : 'auto';
+            if (!isBusy) _syncAlarmCommitButtonLimitState();
+        }
+
+        function _syncAlarmCommitButtonLimitState() {
+            const btn = document.getElementById('set-alarm-btn') || document.getElementById('alarm-commit-btn');
+            if (!btn) return;
+            const isEditing = Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length;
+            const atLimit = Array.isArray(alarms) && alarms.length >= MAX_ALARMS;
+            const blockNewAlarm = atLimit && !isEditing;
+            if (blockNewAlarm) {
+                btn.disabled = true;
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.6';
+                btn.style.background = '#7a7f88';
+                btn.style.color = '#d9dde3';
+                btn.title = `Alarm limit reached (${MAX_ALARMS})`;
+            } else {
+                btn.disabled = false;
+                btn.style.pointerEvents = 'auto';
+                btn.style.opacity = '1';
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.title = '';
+            }
         }
 
         function _normalizeAlarmCollections() {
@@ -1678,6 +1740,84 @@
                 editingAlarmIndex = null;
                 originalAlarmDraft = null;
             }
+
+            _sortAlarmsChronologically();
+        }
+
+        function _alarmMinutesOfDay(alarmStr) {
+            const parsed = _parseAlarmString(alarmStr);
+            if (!parsed) return Number.MAX_SAFE_INTEGER;
+            return (parsed.hh * 60) + parsed.mm;
+        }
+
+        function _sortAlarmsChronologically() {
+            if (!Array.isArray(alarms) || alarms.length <= 1) return;
+            const combined = alarms.map((alarmStr, i) => ({
+                alarmStr: String(alarmStr || ''),
+                repeatDays: _normalizeRepeatDays(alarmsRepeatDays[i]),
+                meta: String(alarmsMeta[i] || ''),
+                type: alarmTypes[i] === 'regular' ? 'regular' : 'routine',
+                enabled: alarmEnabled[i] !== false,
+                originalIndex: i
+            }));
+
+            combined.sort((a, b) => {
+                const diff = _alarmMinutesOfDay(a.alarmStr) - _alarmMinutesOfDay(b.alarmStr);
+                if (diff !== 0) return diff;
+                return a.originalIndex - b.originalIndex;
+            });
+
+            alarms = combined.map(x => x.alarmStr);
+            alarmsRepeatDays = combined.map(x => x.repeatDays);
+            alarmsMeta = combined.map(x => _formatRepeatDays(x.repeatDays));
+            alarmTypes = combined.map(x => x.type);
+            alarmEnabled = combined.map(x => x.enabled);
+        }
+
+        function _formatNextAlarmRemaining(ms) {
+            const total = Math.max(0, Math.floor(ms / 1000));
+            const days = Math.floor(total / 86400);
+            const hours = Math.floor((total % 86400) / 3600);
+            const minutes = Math.floor((total % 3600) / 60);
+            const seconds = total % 60;
+            if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+            if (hours > 0) return `${hours}h ${minutes}m`;
+            if (minutes > 0) return `${minutes}m ${seconds}s`;
+            return `${seconds}s`;
+        }
+
+        function _updateNextAlarmSummary() {
+            const textEl = document.getElementById('next-alarm-remaining');
+            const fillEl = document.getElementById('next-alarm-fill');
+            if (!textEl || !fillEl) return;
+
+            if (!Array.isArray(alarms) || alarms.length === 0) {
+                textEl.textContent = 'No active alarms';
+                fillEl.style.width = '0%';
+                return;
+            }
+
+            let minMs = Number.POSITIVE_INFINITY;
+            let minIdx = -1;
+            for (let i = 0; i < alarms.length; i += 1) {
+                if (Array.isArray(alarmEnabled) && alarmEnabled[i] === false) continue;
+                const ms = _timeUntilAlarm(alarms[i], i);
+                if (Number.isFinite(ms) && ms < minMs) {
+                    minMs = ms;
+                    minIdx = i;
+                }
+            }
+
+            if (minIdx < 0 || !Number.isFinite(minMs)) {
+                textEl.textContent = 'No active alarms';
+                fillEl.style.width = '0%';
+                return;
+            }
+
+            const rangeMs = 24 * 60 * 60 * 1000;
+            const pct = Math.max(0, Math.min(100, ((rangeMs - Math.min(minMs, rangeMs)) / rangeMs) * 100));
+            fillEl.style.width = `${pct}%`;
+            textEl.textContent = `${_formatNextAlarmRemaining(minMs)} until ${alarms[minIdx]}`;
         }
 
         function queueAlarmMutation(mutator, opts = {}) {
@@ -1931,6 +2071,9 @@
                 alarmCommitBtn.onclick = null;
                 alarmCommitBtn.addEventListener('click', commitAlarmFromPicker);
             }
+            _syncAlarmCommitButtonLimitState();
+            _updateNextAlarmSummary();
+            setInterval(_updateNextAlarmSummary, 1000);
 
             try {
                 const wakeScreen = document.getElementById('screen-wake');
@@ -2537,7 +2680,7 @@
             handleWheelSnap(wheel);
         }
 
-        // ===== ALARM UI LAYOUT FIX START =====
+        /* ===== ALARM LAYOUT (SINGLE SCROLL) START ===== */
         function _scrollAlarmPickerIntoView() {
             const createPanel = document.getElementById('alarm-create-panel');
             if (createPanel) {
@@ -2549,7 +2692,7 @@
                 wheelContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
-        // ===== ALARM UI LAYOUT FIX END =====
+        /* ===== ALARM LAYOUT (SINGLE SCROLL) END ===== */
 
         function _updateAlarmEditActions() {
             const setBtn = document.getElementById('set-alarm-btn');
@@ -2561,6 +2704,7 @@
             if (undoBtn) {
                 undoBtn.style.display = isEditing ? 'block' : 'none';
             }
+            _syncAlarmCommitButtonLimitState();
         }
 
         function editAlarm(index) {
@@ -2593,9 +2737,9 @@
             selectedAlarmType = (alarmTypes && alarmTypes[index]) ? alarmTypes[index] : 'routine';
             setAlarmType(selectedAlarmType);
 
-            // ===== ALARM UI LAYOUT FIX START =====
+            /* ===== ALARM LAYOUT (SINGLE SCROLL) START ===== */
             _scrollAlarmPickerIntoView();
-            // ===== ALARM UI LAYOUT FIX END =====
+            /* ===== ALARM LAYOUT (SINGLE SCROLL) END ===== */
         }
 
         function saveAlarmEdits() { return commitAlarmFromPicker(); }
@@ -2784,6 +2928,7 @@
                 if (!activeTrigger) _closeRepeatPopover();
                 else if (_repeatPopover) _positionRepeatPopover(activeTrigger, _repeatPopover);
             }
+            _updateNextAlarmSummary();
         }
 
         function toggleAlarmEnabled(index) {
@@ -2837,15 +2982,16 @@
             const normalizedType = selectedAlarmType === 'regular' ? 'regular' : 'routine';
             const editing = Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length;
             const editIdx = editing ? editingAlarmIndex : -1;
+            if (!editing && Array.isArray(alarms) && alarms.length >= MAX_ALARMS) {
+                _setAlarmLocked = false;
+                _syncAlarmCommitButtonLimitState();
+                return;
+            }
 
             const payloadKey = `${editing ? `edit:${editIdx}` : 'add'}|${newAlarm}|${normalizedType}|${normalizedDays.join(',')}`;
             if ((now - _lastAlarmCommitAt) < 800 && payloadKey === _lastAlarmCommitPayload) {
                 _setAlarmLocked = false;
-                if (btn) {
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                    btn.style.pointerEvents = 'auto';
-                }
+                _syncAlarmCommitButtonLimitState();
                 return;
             }
             _lastAlarmCommitAt = now;
@@ -2873,11 +3019,7 @@
                 }, { render: true, save: true, renderReason: 'commitAlarmFromPicker' });
             } finally {
                 _setAlarmLocked = false;
-                if (btn) {
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                    btn.style.pointerEvents = 'auto';
-                }
+                _syncAlarmCommitButtonLimitState();
             }
         }
 
