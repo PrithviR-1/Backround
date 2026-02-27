@@ -1495,86 +1495,33 @@
         const APP_STATE_STORAGE_KEY = 'atmospherePro.appState.v1';
         const DEFAULT_SOUND_ID = 'sunrise-chimes';
         const BASE_SOUND_OPTIONS = [
-            { id: 'sunrise-chimes', name: 'Sunrise Chimes', description: 'Gentle layered bells with breathing pauses.' },
-            { id: 'soft-glass-bells', name: 'Soft Glass Bells', description: 'Clean glass-like tones with soft urgency.' },
-            { id: 'warm-marimba-steps', name: 'Warm Marimba Steps', description: 'Wooden, warm steps with a steady morning pulse.' },
-            { id: 'ambient-pulse', name: 'Ambient Pulse', description: 'Low, airy pulse designed to rise slowly.' },
-            { id: 'gentle-digital-bloom', name: 'Gentle Digital Bloom', description: 'Modern digital plucks that bloom instead of stab.' },
-            { id: 'temple-bell-calm', name: 'Temple Bell Calm', description: 'Grounded bell strikes with spacious rests.' },
-            { id: 'morning-piano-drops', name: 'Morning Piano Drops', description: 'Soft piano droplets with a reassuring cadence.' },
-            { id: 'breezy-wind-chime', name: 'Breezy Wind Chime', description: 'Airy chimes with subtle motion and lift.' }
+            { id: 'sunrise-chimes', name: 'Default', description: 'Fast wake groove with bright marimba lead and clean pulse.' },
+            { id: 'pop-bright', name: 'Pop Bright', description: 'Catchy pop groove — clean, upbeat, and distinct' },
+            { id: 'smooth-jazz', name: 'Smooth Jazz', description: 'Warm jazz groove — upright bass and soft electric piano' }
         ];
         const ALARM_SOUND_PROFILES = {
             'sunrise-chimes': {
-                cycleLength: 20.6,
-                rampSeconds: 10,
+                cycleLength: 20,
+                rampSeconds: 5,
+                level: 0.2,
+                motifs: [
+                    { length: 8, notes: [{ t: 0.0, d: 0.22, f: 329.63, g: 0.6, w: 'triangle', harmonic: 1.6, hg: 0.06, pan: -0.08 }, { t: 0.75, d: 0.18, f: 392.0, g: 0.56, w: 'triangle', harmonic: 1.5, hg: 0.05, pan: 0.08 }, { t: 1.5, d: 0.2, f: 493.88, g: 0.62, w: 'triangle', harmonic: 1.5, hg: 0.05, pan: -0.05 }, { t: 2.5, d: 0.18, f: 392.0, g: 0.55, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: 0.05 }, { t: 3.25, d: 0.22, f: 523.25, g: 0.64, w: 'triangle', harmonic: 1.6, hg: 0.06, pan: -0.04 }, { t: 4.0, d: 0.2, f: 493.88, g: 0.6, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: 0.04 }, { t: 5.0, d: 0.2, f: 392.0, g: 0.56, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: -0.03 }, { t: 6.0, d: 0.2, f: 440.0, g: 0.58, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: 0.03 }, { t: 7.0, d: 0.24, f: 369.99, g: 0.54, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: 0.0 }] }
+                ]
+            },
+            'pop-bright': {
+                cycleLength: 20,
+                rampSeconds: 4,
                 level: 0.21,
                 motifs: [
-                    { length: 10.4, notes: [{ t: 0.0, d: 0.52, f: 392, g: 0.22, w: 'sine', harmonic: 2, hg: 0.1, pan: -0.06 }, { t: 1.3, d: 0.5, f: 523.25, g: 0.23, w: 'triangle', harmonic: 1.5, hg: 0.08, pan: 0.06 }, { t: 2.7, d: 0.56, f: 659.25, g: 0.24, w: 'sine', harmonic: 2, hg: 0.1, pan: -0.03 }, { t: 4.5, d: 0.48, f: 523.25, g: 0.21, w: 'triangle', pan: 0.05 }, { t: 6.3, d: 0.5, f: 587.33, g: 0.22, w: 'sine', harmonic: 1.8, hg: 0.08, pan: -0.05 }, { t: 8.4, d: 0.62, f: 440, g: 0.2, w: 'triangle', pan: 0.04 }] },
-                    { length: 10.2, notes: [{ t: 0.2, d: 0.48, f: 523.25, g: 0.24, w: 'sine', harmonic: 2, hg: 0.1, pan: 0.05 }, { t: 1.4, d: 0.54, f: 659.25, g: 0.25, w: 'triangle', harmonic: 1.5, hg: 0.09, pan: -0.05 }, { t: 2.8, d: 0.6, f: 783.99, g: 0.26, w: 'sine', harmonic: 2, hg: 0.11, pan: 0.03 }, { t: 4.7, d: 0.48, f: 659.25, g: 0.23, w: 'triangle', pan: -0.04 }, { t: 6.6, d: 0.5, f: 587.33, g: 0.22, w: 'sine', harmonic: 1.8, hg: 0.08, pan: 0.04 }, { t: 8.5, d: 0.66, f: 523.25, g: 0.21, w: 'triangle', pan: -0.02 }] }
+                    { length: 4, notes: [{ t: 0.0, d: 0.16, f: 659.25, g: 0.64, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: -0.06 }, { t: 0.75, d: 0.16, f: 783.99, g: 0.62, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: 0.06 }, { t: 1.5, d: 0.18, f: 987.77, g: 0.66, w: 'triangle', harmonic: 1.5, hg: 0.05, pan: -0.04 }, { t: 2.25, d: 0.16, f: 880.0, g: 0.62, w: 'triangle', harmonic: 1.4, hg: 0.05, pan: 0.04 }, { t: 3.0, d: 0.18, f: 739.99, g: 0.6, w: 'triangle', harmonic: 1.3, hg: 0.04, pan: 0.0 }] }
                 ]
             },
-            'soft-glass-bells': {
-                cycleLength: 20.4,
-                rampSeconds: 9,
-                level: 0.2,
+            'smooth-jazz': {
+                cycleLength: 20,
+                rampSeconds: 6,
+                level: 0.19,
                 motifs: [
-                    { length: 10.0, notes: [{ t: 0.0, d: 0.36, f: 698.46, g: 0.22, w: 'triangle', harmonic: 2.6, hg: 0.08, pan: -0.08 }, { t: 0.7, d: 0.34, f: 880, g: 0.21, w: 'sine', harmonic: 2.2, hg: 0.08, pan: 0.08 }, { t: 2.2, d: 0.38, f: 783.99, g: 0.22, w: 'triangle', pan: -0.06 }, { t: 3.8, d: 0.46, f: 587.33, g: 0.24, w: 'sine', harmonic: 1.8, hg: 0.09, pan: 0.05 }, { t: 5.8, d: 0.4, f: 659.25, g: 0.22, w: 'triangle', pan: -0.05 }, { t: 7.9, d: 0.54, f: 523.25, g: 0.2, w: 'sine', pan: 0.04 }] },
-                    { length: 10.4, notes: [{ t: 0.3, d: 0.34, f: 783.99, g: 0.23, w: 'triangle', harmonic: 2.4, hg: 0.09, pan: 0.07 }, { t: 1.1, d: 0.34, f: 987.77, g: 0.22, w: 'sine', harmonic: 2, hg: 0.08, pan: -0.07 }, { t: 2.5, d: 0.42, f: 880, g: 0.23, w: 'triangle', pan: 0.05 }, { t: 4.2, d: 0.48, f: 659.25, g: 0.24, w: 'sine', harmonic: 1.8, hg: 0.09, pan: -0.05 }, { t: 6.3, d: 0.42, f: 783.99, g: 0.22, w: 'triangle', pan: 0.04 }, { t: 8.5, d: 0.6, f: 587.33, g: 0.21, w: 'sine', pan: -0.03 }] }
-                ]
-            },
-            'warm-marimba-steps': {
-                cycleLength: 20.8,
-                rampSeconds: 10,
-                level: 0.22,
-                motifs: [
-                    { length: 10.6, notes: [{ t: 0.0, d: 0.26, f: 293.66, g: 0.26, w: 'triangle', harmonic: 2, hg: 0.06, pan: -0.05 }, { t: 0.65, d: 0.24, f: 329.63, g: 0.27, w: 'triangle', pan: -0.03 }, { t: 1.3, d: 0.24, f: 392, g: 0.27, w: 'triangle', pan: 0.03 }, { t: 1.95, d: 0.24, f: 440, g: 0.28, w: 'triangle', pan: 0.05 }, { t: 3.4, d: 0.28, f: 329.63, g: 0.26, w: 'sine', harmonic: 1.7, hg: 0.06, pan: -0.04 }, { t: 4.3, d: 0.26, f: 392, g: 0.27, w: 'triangle', pan: 0.04 }, { t: 5.2, d: 0.28, f: 493.88, g: 0.28, w: 'sine', pan: -0.02 }, { t: 6.8, d: 0.3, f: 440, g: 0.29, w: 'triangle', pan: 0.03 }, { t: 8.8, d: 0.36, f: 349.23, g: 0.24, w: 'sine', pan: 0.0 }] },
-                    { length: 10.2, notes: [{ t: 0.2, d: 0.26, f: 329.63, g: 0.28, w: 'triangle', harmonic: 2, hg: 0.07, pan: 0.04 }, { t: 0.86, d: 0.24, f: 392, g: 0.29, w: 'triangle', pan: 0.02 }, { t: 1.52, d: 0.24, f: 440, g: 0.29, w: 'triangle', pan: -0.02 }, { t: 2.18, d: 0.24, f: 523.25, g: 0.3, w: 'triangle', pan: -0.04 }, { t: 3.7, d: 0.28, f: 392, g: 0.27, w: 'sine', harmonic: 1.6, hg: 0.06, pan: 0.04 }, { t: 4.7, d: 0.26, f: 493.88, g: 0.28, w: 'triangle', pan: -0.03 }, { t: 5.7, d: 0.28, f: 587.33, g: 0.29, w: 'sine', pan: 0.03 }, { t: 7.2, d: 0.3, f: 523.25, g: 0.3, w: 'triangle', pan: -0.02 }, { t: 8.8, d: 0.38, f: 392, g: 0.25, w: 'sine', pan: 0.0 }] }
-                ]
-            },
-            'ambient-pulse': {
-                cycleLength: 21.2,
-                rampSeconds: 11,
-                level: 0.2,
-                motifs: [
-                    { length: 10.8, notes: [{ t: 0.0, d: 1.4, f: 220, g: 0.15, w: 'sine', harmonic: 2, hg: 0.04, pan: -0.03 }, { t: 1.9, d: 1.3, f: 246.94, g: 0.16, w: 'triangle', harmonic: 1.5, hg: 0.04, pan: 0.03 }, { t: 3.9, d: 1.4, f: 261.63, g: 0.16, w: 'sine', pan: -0.02 }, { t: 6.1, d: 1.2, f: 293.66, g: 0.17, w: 'triangle', harmonic: 1.6, hg: 0.05, pan: 0.02 }, { t: 8.4, d: 1.2, f: 329.63, g: 0.16, w: 'sine', pan: 0.0 }] },
-                    { length: 10.4, notes: [{ t: 0.4, d: 1.3, f: 246.94, g: 0.17, w: 'sine', harmonic: 2, hg: 0.05, pan: 0.03 }, { t: 2.3, d: 1.2, f: 261.63, g: 0.18, w: 'triangle', harmonic: 1.5, hg: 0.05, pan: -0.03 }, { t: 4.2, d: 1.35, f: 293.66, g: 0.18, w: 'sine', pan: 0.02 }, { t: 6.2, d: 1.15, f: 349.23, g: 0.19, w: 'triangle', harmonic: 1.6, hg: 0.05, pan: -0.02 }, { t: 8.4, d: 1.2, f: 392, g: 0.17, w: 'sine', pan: 0.0 }] }
-                ]
-            },
-            'gentle-digital-bloom': {
-                cycleLength: 20.2,
-                rampSeconds: 9,
-                level: 0.22,
-                motifs: [
-                    { length: 10.0, notes: [{ t: 0.0, d: 0.28, f: 523.25, g: 0.2, w: 'triangle', harmonic: 2, hg: 0.07, pan: -0.06 }, { t: 0.45, d: 0.24, f: 659.25, g: 0.19, w: 'sine', harmonic: 2.3, hg: 0.06, pan: 0.06 }, { t: 0.9, d: 0.24, f: 783.99, g: 0.18, w: 'triangle', pan: -0.04 }, { t: 2.0, d: 0.32, f: 587.33, g: 0.21, w: 'triangle', pan: 0.05 }, { t: 2.7, d: 0.34, f: 659.25, g: 0.2, w: 'sine', pan: -0.03 }, { t: 4.3, d: 0.3, f: 523.25, g: 0.21, w: 'triangle', harmonic: 1.8, hg: 0.06, pan: 0.03 }, { t: 5.2, d: 0.3, f: 587.33, g: 0.2, w: 'sine', pan: -0.02 }, { t: 7.4, d: 0.42, f: 440, g: 0.18, w: 'triangle', pan: 0.01 }] },
-                    { length: 10.2, notes: [{ t: 0.3, d: 0.3, f: 587.33, g: 0.21, w: 'triangle', harmonic: 2, hg: 0.07, pan: 0.05 }, { t: 0.78, d: 0.25, f: 739.99, g: 0.2, w: 'sine', harmonic: 2.1, hg: 0.06, pan: -0.05 }, { t: 1.28, d: 0.25, f: 880, g: 0.19, w: 'triangle', pan: 0.04 }, { t: 2.4, d: 0.34, f: 659.25, g: 0.22, w: 'triangle', pan: -0.04 }, { t: 3.15, d: 0.35, f: 739.99, g: 0.21, w: 'sine', pan: 0.03 }, { t: 4.9, d: 0.32, f: 587.33, g: 0.22, w: 'triangle', harmonic: 1.8, hg: 0.06, pan: -0.02 }, { t: 5.9, d: 0.3, f: 659.25, g: 0.21, w: 'sine', pan: 0.02 }, { t: 8.1, d: 0.46, f: 493.88, g: 0.19, w: 'triangle', pan: 0.0 }] }
-                ]
-            },
-            'temple-bell-calm': {
-                cycleLength: 21.6,
-                rampSeconds: 10,
-                level: 0.23,
-                motifs: [
-                    { length: 11.0, notes: [{ t: 0.0, d: 0.82, f: 246.94, g: 0.2, w: 'sine', harmonic: 2, hg: 0.09, pan: -0.03 }, { t: 2.3, d: 0.78, f: 329.63, g: 0.2, w: 'triangle', harmonic: 1.5, hg: 0.09, pan: 0.03 }, { t: 4.9, d: 0.86, f: 392, g: 0.21, w: 'sine', harmonic: 2, hg: 0.09, pan: -0.02 }, { t: 7.6, d: 0.82, f: 329.63, g: 0.2, w: 'triangle', pan: 0.02 }, { t: 9.5, d: 0.92, f: 261.63, g: 0.19, w: 'sine', pan: 0.0 }] },
-                    { length: 10.6, notes: [{ t: 0.4, d: 0.8, f: 293.66, g: 0.21, w: 'sine', harmonic: 2, hg: 0.09, pan: 0.03 }, { t: 2.5, d: 0.78, f: 392, g: 0.21, w: 'triangle', harmonic: 1.5, hg: 0.09, pan: -0.03 }, { t: 5.0, d: 0.9, f: 440, g: 0.22, w: 'sine', harmonic: 2, hg: 0.1, pan: 0.02 }, { t: 7.4, d: 0.82, f: 349.23, g: 0.2, w: 'triangle', pan: -0.02 }, { t: 9.0, d: 0.96, f: 293.66, g: 0.19, w: 'sine', pan: 0.0 }] }
-                ]
-            },
-            'morning-piano-drops': {
-                cycleLength: 20.6,
-                rampSeconds: 10,
-                level: 0.22,
-                motifs: [
-                    { length: 10.2, notes: [{ t: 0.0, d: 0.34, f: 659.25, g: 0.2, w: 'triangle', harmonic: 2, hg: 0.06, pan: -0.05 }, { t: 0.8, d: 0.36, f: 587.33, g: 0.21, w: 'triangle', pan: 0.05 }, { t: 1.7, d: 0.38, f: 523.25, g: 0.22, w: 'sine', harmonic: 1.7, hg: 0.06, pan: -0.03 }, { t: 2.8, d: 0.44, f: 440, g: 0.23, w: 'sine', pan: 0.03 }, { t: 4.6, d: 0.36, f: 493.88, g: 0.21, w: 'triangle', pan: -0.03 }, { t: 5.5, d: 0.38, f: 523.25, g: 0.22, w: 'sine', pan: 0.03 }, { t: 7.2, d: 0.4, f: 392, g: 0.2, w: 'triangle', pan: -0.02 }, { t: 8.9, d: 0.52, f: 349.23, g: 0.19, w: 'sine', pan: 0.0 }] },
-                    { length: 10.4, notes: [{ t: 0.3, d: 0.34, f: 739.99, g: 0.21, w: 'triangle', harmonic: 2, hg: 0.07, pan: 0.05 }, { t: 1.1, d: 0.36, f: 659.25, g: 0.22, w: 'triangle', pan: -0.05 }, { t: 2.0, d: 0.38, f: 587.33, g: 0.23, w: 'sine', harmonic: 1.7, hg: 0.06, pan: 0.03 }, { t: 3.2, d: 0.44, f: 493.88, g: 0.24, w: 'sine', pan: -0.03 }, { t: 5.0, d: 0.36, f: 523.25, g: 0.22, w: 'triangle', pan: 0.02 }, { t: 5.9, d: 0.38, f: 587.33, g: 0.23, w: 'sine', pan: -0.02 }, { t: 7.6, d: 0.42, f: 440, g: 0.21, w: 'triangle', pan: 0.01 }, { t: 9.2, d: 0.56, f: 392, g: 0.19, w: 'sine', pan: 0.0 }] }
-                ]
-            },
-            'breezy-wind-chime': {
-                cycleLength: 21.2,
-                rampSeconds: 10,
-                level: 0.2,
-                motifs: [
-                    { length: 10.4, notes: [{ t: 0.0, d: 0.28, f: 523.25, g: 0.18, w: 'sine', harmonic: 2.2, hg: 0.06, pan: -0.08 }, { t: 0.38, d: 0.26, f: 659.25, g: 0.17, w: 'triangle', harmonic: 2, hg: 0.06, pan: 0.08 }, { t: 0.76, d: 0.3, f: 783.99, g: 0.16, w: 'sine', harmonic: 1.8, hg: 0.05, pan: -0.06 }, { t: 1.2, d: 0.34, f: 659.25, g: 0.17, w: 'triangle', pan: 0.06 }, { t: 2.6, d: 0.42, f: 587.33, g: 0.19, w: 'sine', pan: -0.04 }, { t: 4.5, d: 0.4, f: 523.25, g: 0.19, w: 'triangle', pan: 0.04 }, { t: 6.8, d: 0.44, f: 493.88, g: 0.18, w: 'sine', pan: -0.03 }, { t: 8.8, d: 0.54, f: 440, g: 0.17, w: 'triangle', pan: 0.02 }] },
-                    { length: 10.8, notes: [{ t: 0.3, d: 0.28, f: 587.33, g: 0.19, w: 'sine', harmonic: 2.1, hg: 0.06, pan: 0.08 }, { t: 0.66, d: 0.26, f: 739.99, g: 0.18, w: 'triangle', harmonic: 2, hg: 0.06, pan: -0.08 }, { t: 1.04, d: 0.3, f: 880, g: 0.17, w: 'sine', harmonic: 1.8, hg: 0.05, pan: 0.06 }, { t: 1.46, d: 0.34, f: 739.99, g: 0.18, w: 'triangle', pan: -0.06 }, { t: 2.9, d: 0.44, f: 659.25, g: 0.2, w: 'sine', pan: 0.04 }, { t: 4.9, d: 0.4, f: 587.33, g: 0.2, w: 'triangle', pan: -0.04 }, { t: 7.2, d: 0.46, f: 523.25, g: 0.19, w: 'sine', pan: 0.02 }, { t: 9.3, d: 0.6, f: 493.88, g: 0.18, w: 'triangle', pan: 0.0 }] }
+                    { length: 4, notes: [{ t: 0.5, d: 0.24, f: 392.0, g: 0.52, w: 'triangle', harmonic: 1.2, hg: 0.03, pan: -0.04 }, { t: 1.5, d: 0.24, f: 440.0, g: 0.5, w: 'triangle', harmonic: 1.2, hg: 0.03, pan: 0.04 }, { t: 2.5, d: 0.24, f: 392.0, g: 0.5, w: 'triangle', harmonic: 1.2, hg: 0.03, pan: -0.03 }, { t: 3.5, d: 0.24, f: 369.99, g: 0.48, w: 'triangle', harmonic: 1.2, hg: 0.03, pan: 0.03 }] }
                 ]
             }
         };
@@ -3059,12 +3006,13 @@
                 const highlightStyle = isCloseToRinging ? 'border:2px solid var(--accent-blue);background:rgba(0,122,255,0.15);box-shadow:0 0 20px rgba(0,122,255,0.3);' : '';
                 const rowDisabledStyle = !isEnabled ? 'background:rgba(130,130,130,0.12); border:1px solid rgba(180,180,180,0.2);' : '';
                 const contentDisabledStyle = !isEnabled ? 'opacity:0.46; filter:grayscale(1);' : '';
+                const nameTextDisabledStyle = !isEnabled ? 'opacity:0.46; filter:grayscale(1);' : '';
                 return `
                 <div class="alarm-row" data-alarm-idx="${i}" style="padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.1);${highlightStyle}${rowDisabledStyle}padding:20px;border-radius:12px;margin-bottom:8px;">
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px; ${contentDisabledStyle}">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
                         ${isRenaming
-                            ? `<input type="text" class="alarm-name-input" data-alarm-idx="${i}" value="${alarmName.replace(/"/g, '&quot;')}" maxlength="40" style="flex:1; min-width:0; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:#fff; padding:8px 10px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px;">`
-                            : `<div style="font-size:11px; text-transform:uppercase; letter-spacing:1.2px; font-weight:900; color:rgba(255,255,255,0.72);">${alarmName}</div>`
+                            ? `<input type="text" class="alarm-name-input" data-alarm-idx="${i}" value="${alarmName.replace(/"/g, '&quot;')}" maxlength="40" style="flex:1; min-width:0; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:#fff; padding:8px 10px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; ${nameTextDisabledStyle}">`
+                            : `<div style="font-size:11px; text-transform:uppercase; letter-spacing:1.2px; font-weight:900; color:rgba(255,255,255,0.72); ${nameTextDisabledStyle}">${alarmName}</div>`
                         }
                         <button class="alarm-rename-btn" data-alarm-idx="${i}" aria-label="Rename alarm" title="Rename alarm" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border:none; border-radius:8px; background:rgba(255,255,255,0.06); color:#dbe9ff; cursor:pointer;">
                             <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="display:block; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;">
@@ -3078,14 +3026,14 @@
                         <span style="font-size:14px; font-weight:900; opacity:0.5;">${a.split(' ')[1]}</span>
                         <span style="margin-left:auto; font-size:12px; font-weight:700; color:${typeColor}; opacity:0.9; white-space:nowrap;">${typeLabel}</span>
                     </div>
-                    <div class="alarm-controls-row" style="${contentDisabledStyle}">
+                    <div class="alarm-controls-row">
                         <button class="alarm-edit-btn" data-alarm-idx="${i}">Edit</button>
                         <button class="alarm-toggle-btn" data-alarm-idx="${i}" aria-label="${isEnabled ? 'Turn alarm off' : 'Turn alarm on'}" style="position:relative; width:56px; height:32px; border:none; border-radius:999px; cursor:pointer; background:${isEnabled ? '#10d176' : '#7a7f88'}; transition:background .2s ease;">
                             <span style="position:absolute; top:3px; left:${isEnabled ? '27px' : '3px'}; width:26px; height:26px; border-radius:50%; background:#fff; transition:left .2s ease;"></span>
                         </button>
                         <button class="alarm-delete-btn" data-alarm-idx="${i}" style="background:none; border:none; color:var(--accent-red); font-weight:900; font-size:11px; cursor:pointer; text-transform:uppercase; letter-spacing:1.5px;">Remove</button>
                     </div>
-                    <button type="button" class="alarm-repeat-trigger" data-alarm-idx="${i}" aria-label="Edit repeating days for ${a}" style="${contentDisabledStyle}">
+                    <button type="button" class="alarm-repeat-trigger" data-alarm-idx="${i}" aria-label="Edit repeating days for ${a}">
                         <span class="alarm-repeat-label">Repeating: ${repeatLabel}</span>
                     </button>
                 </div>
@@ -3784,135 +3732,223 @@
             });
         }
 
-        /*
-         * Alarm Sound Recipes:
-         * - Each sound id has its own layers, envelopes, filter/fx, harmony mode, and motif style.
-         * - Tweak character by changing:
-         *   - layers.* (what plays)
-         *   - env.* and instruments.* (attack/release and timbre)
-         *   - musical.* (bpm, mode, chord degrees, density, motifStyle)
-         *   - fx.* and mix.* (space/brightness/overall level)
-         */
-        const ALARM_SONG_LOOP_SECONDS = 20;
-
-        const ALARM_INSTRUMENT_VOICES = {
-            bell: { oscA: 'sine', oscB: 'triangle', dual: true, detuneCents: 7, gainMul: 1.0, attackMul: 0.9, decayMul: 0.9, sustainMul: 0.7, releaseMul: 1.25, noteFilterType: 'bandpass', noteFilterQ: 2.4, harmonic: 2, harmonicGain: 0.12 },
-            glass: { oscA: 'triangle', oscB: 'sine', dual: true, detuneCents: 9, gainMul: 0.92, attackMul: 0.85, decayMul: 0.8, sustainMul: 0.65, releaseMul: 1.15, noteFilterType: 'bandpass', noteFilterQ: 1.9, harmonic: 2.5, harmonicGain: 0.08 },
-            marimba: { oscA: 'triangle', oscB: 'square', dual: true, detuneCents: 4, gainMul: 0.95, attackMul: 0.4, decayMul: 0.45, sustainMul: 0.35, releaseMul: 0.55, noteFilterType: 'highpass', noteFilterQ: 0.8 },
-            ambientPad: { oscA: 'sine', oscB: 'triangle', dual: true, detuneCents: 6, gainMul: 0.88, attackMul: 2.4, decayMul: 1.8, sustainMul: 0.95, releaseMul: 2.1, noteFilterType: 'lowpass', noteFilterQ: 0.5 },
-            digital: { oscA: 'square', oscB: 'triangle', dual: true, detuneCents: 5, gainMul: 0.85, attackMul: 0.65, decayMul: 0.75, sustainMul: 0.45, releaseMul: 0.75, noteFilterType: 'bandpass', noteFilterQ: 1.6 },
-            temple: { oscA: 'sine', oscB: 'triangle', dual: false, detuneCents: 0, gainMul: 0.9, attackMul: 0.55, decayMul: 1.1, sustainMul: 0.28, releaseMul: 2.4, noteFilterType: 'bandpass', noteFilterQ: 2.8, harmonic: 1.5, harmonicGain: 0.07 },
-            softBass: { oscA: 'sine', oscB: 'triangle', dual: true, detuneCents: 3, gainMul: 0.92, attackMul: 0.8, decayMul: 0.85, sustainMul: 0.8, releaseMul: 1.0, noteFilterType: 'lowpass', noteFilterQ: 0.7 },
-            chime: { oscA: 'sine', oscB: 'sine', dual: true, detuneCents: 11, gainMul: 0.8, attackMul: 0.7, decayMul: 0.9, sustainMul: 0.58, releaseMul: 1.35, noteFilterType: 'highpass', noteFilterQ: 0.8, harmonic: 3, harmonicGain: 0.05 },
-            pianoish: { oscA: 'triangle', oscB: 'sine', dual: true, detuneCents: 4, gainMul: 0.9, attackMul: 0.35, decayMul: 0.7, sustainMul: 0.52, releaseMul: 0.85, noteFilterType: 'lowpass', noteFilterQ: 0.65 },
-            perc: { oscA: 'triangle', oscB: 'square', dual: false, detuneCents: 0, gainMul: 0.68, attackMul: 0.2, decayMul: 0.35, sustainMul: 0.1, releaseMul: 0.25, noteFilterType: 'highpass', noteFilterQ: 1.0 }
-        };
-
-        const ALARM_SOUND_RECIPES = {
+        const ALARM_SONG_LOOP_SECONDS = 20; // each alarm repeats after exactly 20s
+        const ALARM_GROOVE_CONFIG = {
             'sunrise-chimes': {
-                layers: { bass: true, pad: true, arp: true, melody: true, perc: false },
-                env: { attack: 0.02, decay: 0.24, sustain: 0.62, release: 0.75 },
-                filter: { type: 'lowpass', cutoff: 3600, Q: 0.55 },
-                fx: { delayMix: 0.1, delayTime: 0.24, feedback: 0.18, wetHighpassCutoff: 330 },
-                musical: { bpm: 96, scaleMode: 'ionian', root: 261.63, chords: [[0, 2, 4, 8], [4, 6, 8, 11], [3, 5, 7, 10], [4, 6, 8, 11]], motifStyle: 'sunrise', density: 1 },
-                mix: { masterLevel: 0.19, rampSeconds: 10, compressor: { threshold: -24, knee: 24, ratio: 2.4, attack: 0.015, release: 0.34 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'chime', melody: 'bell', perc: 'perc' }
+                swing: 0.03,
+                bpm: 124,
+                cycleBeats: 8,
+                bassFreq: 98,
+                bassPattern: [
+                    { beat: 0.0, vel: 0.86, len: 0.22 },
+                    { beat: 1.5, vel: 0.48, len: 0.18 },
+                    { beat: 2.0, vel: 0.74, len: 0.22 },
+                    { beat: 3.5, vel: 0.5, len: 0.18 },
+                    { beat: 4.0, vel: 0.82, len: 0.22 },
+                    { beat: 6.0, vel: 0.72, len: 0.22 },
+                    { beat: 7.5, vel: 0.54, len: 0.18 }
+                ],
+                percPattern: [
+                    { beat: 0.5, vel: 0.34, type: 'hat' },
+                    { beat: 1.0, vel: 0.3, type: 'hat' },
+                    { beat: 1.5, vel: 0.34, type: 'hat' },
+                    { beat: 2.5, vel: 0.36, type: 'hat' },
+                    { beat: 3.0, vel: 0.28, type: 'click' },
+                    { beat: 3.5, vel: 0.36, type: 'hat' },
+                    { beat: 4.5, vel: 0.34, type: 'hat' },
+                    { beat: 5.0, vel: 0.3, type: 'hat' },
+                    { beat: 5.5, vel: 0.34, type: 'hat' },
+                    { beat: 6.5, vel: 0.36, type: 'hat' },
+                    { beat: 7.0, vel: 0.3, type: 'click' },
+                    { beat: 7.5, vel: 0.36, type: 'hat' }
+                ]
             },
-            'soft-glass-bells': {
-                layers: { bass: false, pad: true, arp: true, melody: true, perc: false },
-                env: { attack: 0.018, decay: 0.22, sustain: 0.55, release: 1.0 },
-                filter: { type: 'lowpass', cutoff: 4000, Q: 0.7 },
-                fx: { delayMix: 0.15, delayTime: 0.28, feedback: 0.2, wetHighpassCutoff: 540 },
-                musical: { bpm: 90, scaleMode: 'lydian', root: 293.66, chords: [[0, 2, 4, 7], [1, 3, 5, 8], [2, 4, 6, 9], [1, 3, 5, 8]], motifStyle: 'glass', density: 1 },
-                mix: { masterLevel: 0.17, rampSeconds: 9, compressor: { threshold: -25, knee: 18, ratio: 2.2, attack: 0.018, release: 0.36 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'glass', melody: 'glass', perc: 'perc' }
+            'pop-bright': {
+                swing: 0,
+                bpm: 128,
+                cycleBeats: 4,
+                bassFreq: 110,
+                bassPattern: [
+                    { beat: 0.0, vel: 0.86, len: 0.16 },
+                    { beat: 1.0, vel: 0.78, len: 0.16 },
+                    { beat: 2.0, vel: 0.84, len: 0.16 },
+                    { beat: 3.0, vel: 0.8, len: 0.16 }
+                ],
+                percPattern: [
+                    { beat: 0.5, vel: 0.26, type: 'hat' },
+                    { beat: 1.0, vel: 0.42, type: 'snare' },
+                    { beat: 1.5, vel: 0.28, type: 'hat' },
+                    { beat: 2.5, vel: 0.26, type: 'hat' },
+                    { beat: 3.0, vel: 0.44, type: 'snare' },
+                    { beat: 3.5, vel: 0.28, type: 'hat' }
+                ]
             },
-            'warm-marimba-steps': {
-                layers: { bass: true, pad: false, arp: true, melody: true, perc: true },
-                env: { attack: 0.008, decay: 0.16, sustain: 0.34, release: 0.24 },
-                filter: { type: 'lowpass', cutoff: 3000, Q: 0.9 },
-                fx: { delayMix: 0.04, delayTime: 0.18, feedback: 0.08, wetHighpassCutoff: 420 },
-                musical: { bpm: 112, scaleMode: 'ionian', root: 246.94, chords: [[0, 2, 4], [3, 5, 7], [4, 6, 8], [3, 5, 7]], motifStyle: 'marimba', density: 1 },
-                mix: { masterLevel: 0.2, rampSeconds: 8, compressor: { threshold: -22, knee: 20, ratio: 2.8, attack: 0.008, release: 0.24 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'marimba', melody: 'marimba', perc: 'perc' }
-            },
-            'ambient-pulse': {
-                layers: { bass: true, pad: true, arp: false, melody: true, perc: false },
-                env: { attack: 0.14, decay: 0.35, sustain: 0.85, release: 1.8 },
-                filter: { type: 'lowpass', cutoff: 2400, Q: 0.45 },
-                fx: { delayMix: 0.13, delayTime: 0.34, feedback: 0.22, wetHighpassCutoff: 620 },
-                musical: { bpm: 74, scaleMode: 'dorian', root: 220, chords: [[0, 2, 4], [0, 3, 5], [0, 2, 5], [0, 3, 5]], motifStyle: 'ambient', density: 1 },
-                mix: { masterLevel: 0.16, rampSeconds: 12, compressor: { threshold: -27, knee: 26, ratio: 2.0, attack: 0.03, release: 0.45 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'chime', melody: 'ambientPad', perc: 'perc' }
-            },
-            'gentle-digital-bloom': {
-                layers: { bass: true, pad: false, arp: true, melody: true, perc: true },
-                env: { attack: 0.012, decay: 0.18, sustain: 0.45, release: 0.38 },
-                filter: { type: 'bandpass', cutoff: 2200, Q: 1.1 },
-                fx: { delayMix: 0.08, delayTime: 0.22, feedback: 0.16, wetHighpassCutoff: 700 },
-                musical: { bpm: 118, scaleMode: 'major-penta', root: 261.63, chords: [[0, 2, 4], [1, 3, 5], [2, 4, 6], [1, 3, 5]], motifStyle: 'digital', density: 2 },
-                mix: { masterLevel: 0.19, rampSeconds: 8, compressor: { threshold: -23, knee: 18, ratio: 2.7, attack: 0.006, release: 0.2 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'digital', melody: 'digital', perc: 'perc' }
-            },
-            'temple-bell-calm': {
-                layers: { bass: false, pad: false, arp: false, melody: true, perc: false },
-                env: { attack: 0.03, decay: 0.38, sustain: 0.28, release: 2.2 },
-                filter: { type: 'bandpass', cutoff: 1300, Q: 1.8 },
-                fx: { delayMix: 0.16, delayTime: 0.36, feedback: 0.19, wetHighpassCutoff: 760 },
-                musical: { bpm: 66, scaleMode: 'suspended', root: 196, chords: [[0, 1, 4], [0, 3, 4], [0, 1, 5], [0, 3, 4]], motifStyle: 'temple', density: 1 },
-                mix: { masterLevel: 0.15, rampSeconds: 11, compressor: { threshold: -29, knee: 20, ratio: 1.9, attack: 0.03, release: 0.5 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'chime', melody: 'temple', perc: 'perc' }
-            },
-            'morning-piano-drops': {
-                layers: { bass: true, pad: true, arp: false, melody: true, perc: false },
-                env: { attack: 0.01, decay: 0.22, sustain: 0.48, release: 0.58 },
-                filter: { type: 'lowpass', cutoff: 2850, Q: 0.7 },
-                fx: { delayMix: 0.07, delayTime: 0.25, feedback: 0.12, wetHighpassCutoff: 520 },
-                musical: { bpm: 92, scaleMode: 'ionian', root: 261.63, chords: [[0, 2, 4], [3, 5, 7], [4, 6, 8], [3, 5, 7]], motifStyle: 'piano', density: 1 },
-                mix: { masterLevel: 0.19, rampSeconds: 9, compressor: { threshold: -24, knee: 20, ratio: 2.5, attack: 0.01, release: 0.28 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'chime', melody: 'pianoish', perc: 'perc' }
-            },
-            'breezy-wind-chime': {
-                layers: { bass: false, pad: true, arp: true, melody: true, perc: false },
-                env: { attack: 0.022, decay: 0.24, sustain: 0.57, release: 1.05 },
-                filter: { type: 'highpass', cutoff: 220, Q: 0.65 },
-                fx: { delayMix: 0.14, delayTime: 0.32, feedback: 0.18, wetHighpassCutoff: 1050 },
-                musical: { bpm: 88, scaleMode: 'mixolydian', root: 277.18, chords: [[0, 2, 4], [1, 3, 5], [2, 4, 6], [1, 3, 5]], motifStyle: 'wind', density: 1 },
-                mix: { masterLevel: 0.17, rampSeconds: 10, compressor: { threshold: -26, knee: 22, ratio: 2.1, attack: 0.015, release: 0.34 } },
-                instruments: { bass: 'softBass', pad: 'ambientPad', arp: 'chime', melody: 'glass', perc: 'perc' }
+            'smooth-jazz': {
+                swing: 0.07,
+                bpm: 104,
+                cycleBeats: 4,
+                bassFreq: 110,
+                bassPattern: [
+                    { beat: 0.0, vel: 0.58, len: 0.2 },
+                    { beat: 1.0, vel: 0.54, len: 0.2 },
+                    { beat: 2.0, vel: 0.56, len: 0.2 },
+                    { beat: 3.0, vel: 0.52, len: 0.2 }
+                ],
+                percPattern: [
+                    { beat: 0.5, vel: 0.16, type: 'hat' },
+                    { beat: 1.5, vel: 0.18, type: 'hat' },
+                    { beat: 2.5, vel: 0.16, type: 'hat' },
+                    { beat: 3.5, vel: 0.18, type: 'hat' }
+                ]
             }
         };
-
-        function _alarmClamp(value, min, max) {
-            return Math.max(min, Math.min(max, value));
-        }
-
-        function _alarmGetModeIntervals(mode) {
-            switch (String(mode || '').toLowerCase()) {
-                case 'lydian': return [0, 2, 4, 6, 7, 9, 11];
-                case 'mixolydian': return [0, 2, 4, 5, 7, 9, 10];
-                case 'dorian': return [0, 2, 3, 5, 7, 9, 10];
-                case 'major-penta': return [0, 2, 4, 7, 9, 12, 14];
-                case 'suspended': return [0, 2, 5, 7, 9, 12, 14];
-                case 'ionian':
-                default: return [0, 2, 4, 5, 7, 9, 11];
+        const ALARM_BACKGROUND_ARRANGEMENTS = {
+            'sunrise-chimes': {
+                rootMidi: 60,
+                mode: 'major',
+                leadInstrument: 'marimba',
+                padInstrument: 'none',
+                melodyCycleBeats: 8,
+                chords: [[0, 2, 4], [5, 0, 2], [4, 6, 1], [3, 5, 0]],
+                melodyPattern: [
+                    { beat: 0.0, degree: 2, len: 0.2, vel: 0.72 },
+                    { beat: 0.75, degree: 4, len: 0.18, vel: 0.68 },
+                    { beat: 1.5, degree: 6, len: 0.2, vel: 0.74 },
+                    { beat: 2.5, degree: 4, len: 0.18, vel: 0.66 },
+                    { beat: 3.25, degree: 7, len: 0.22, vel: 0.76 },
+                    { beat: 4.0, degree: 6, len: 0.2, vel: 0.72 },
+                    { beat: 5.0, degree: 4, len: 0.2, vel: 0.68 },
+                    { beat: 6.0, degree: 5, len: 0.2, vel: 0.7 },
+                    { beat: 7.0, degree: 3, len: 0.24, vel: 0.66 }
+                ],
+                arpPattern: [
+                    { beat: 1.0, chordIdx: 0, toneIdx: 0, vel: 0.32 },
+                    { beat: 3.0, chordIdx: 1, toneIdx: 1, vel: 0.3 },
+                    { beat: 5.0, chordIdx: 2, toneIdx: 0, vel: 0.32 },
+                    { beat: 7.0, chordIdx: 3, toneIdx: 1, vel: 0.3 }
+                ]
+            },
+            'pop-bright': {
+                rootMidi: 60,
+                mode: 'major',
+                leadInstrument: 'piano',
+                padInstrument: 'none',
+                melodyCycleBeats: 4,
+                chords: [[0, 2, 4], [4, 6, 1], [5, 0, 2], [3, 5, 0]],
+                melodyPattern: [
+                    { beat: 0.0, degree: 9, len: 0.16, vel: 0.7 },
+                    { beat: 0.75, degree: 11, len: 0.16, vel: 0.68 },
+                    { beat: 1.5, degree: 12, len: 0.18, vel: 0.72 },
+                    { beat: 2.25, degree: 11, len: 0.16, vel: 0.68 },
+                    { beat: 3.0, degree: 9, len: 0.18, vel: 0.66 }
+                ],
+                arpPattern: [
+                    { beat: 0.5, chordIdx: 0, toneIdx: 1, vel: 0.22 },
+                    { beat: 2.5, chordIdx: 2, toneIdx: 0, vel: 0.2 }
+                ]
+            },
+            'smooth-jazz': {
+                rootMidi: 60,
+                mode: 'major',
+                leadInstrument: 'piano',
+                padInstrument: 'none',
+                melodyCycleBeats: 4,
+                chords: [[1, 3, 5, 0], [4, 6, 1, 3], [0, 2, 4, 6], [0, 2, 4, 6]],
+                melodyPattern: [
+                    { beat: 0.5, degree: 3, len: 0.26, vel: 0.44 },
+                    { beat: 0.5, degree: 6, len: 0.24, vel: 0.36 },
+                    { beat: 1.5, degree: 6, len: 0.24, vel: 0.42 },
+                    { beat: 1.5, degree: 1, len: 0.22, vel: 0.34 },
+                    { beat: 2.5, degree: 4, len: 0.28, vel: 0.44 },
+                    { beat: 2.5, degree: 6, len: 0.24, vel: 0.34 },
+                    { beat: 3.5, degree: 2, len: 0.28, vel: 0.4 },
+                    { beat: 3.5, degree: 4, len: 0.24, vel: 0.34 }
+                ],
+                arpPattern: [
+                    { beat: 0.75, chordIdx: 0, toneIdx: 2, vel: 0.14 },
+                    { beat: 2.75, chordIdx: 2, toneIdx: 1, vel: 0.13 }
+                ]
             }
+        };
+        const ALARM_SOUND_DESIGN_PROFILES = {
+            'sunrise-chimes': {
+                level: 0.22,
+                rampSeconds: 5,
+                mix: { bell: 0.18, pad: 0.05, bass: 0.36, perc: 0.32, lead: 0.72 },
+                fx: { delayTime: 0.18, feedback: 0.12, delaySend: 0.08, reverbSend: 0.1, chorusDepth: 0.0008, chorusRate: 0.2, chorusMix: 0.03 }
+            },
+            'pop-bright': {
+                level: 0.22,
+                rampSeconds: 4,
+                mix: { bell: 0.1, pad: 0.04, bass: 0.34, perc: 0.36, lead: 0.66 },
+                fx: { delayTime: 0.14, feedback: 0.08, delaySend: 0.04, reverbSend: 0.06, chorusDepth: 0.0006, chorusRate: 0.24, chorusMix: 0.02 }
+            },
+            'smooth-jazz': {
+                level: 0.19,
+                rampSeconds: 6,
+                mix: { bell: 0.06, pad: 0.03, bass: 0.3, perc: 0.16, lead: 0.5 },
+                fx: { delayTime: 0.2, feedback: 0.1, delaySend: 0.03, reverbSend: 0.07, chorusDepth: 0.0006, chorusRate: 0.16, chorusMix: 0.02 }
+            }
+        };
+        const _ALARM_NOISE_BUFFER_CACHE = new WeakMap();
+        const _ALARM_REVERB_BUFFER_CACHE = new WeakMap();
+        function _alarmMidiToFreq(midi) { return 440 * Math.pow(2, (midi - 69) / 12); }
+        function _alarmBuildScale(rootMidi, mode) {
+            const MODES = {
+                major: [0, 2, 4, 5, 7, 9, 11],
+                minor: [0, 2, 3, 5, 7, 8, 10],
+                dorian: [0, 2, 3, 5, 7, 9, 10],
+                lydian: [0, 2, 4, 6, 7, 9, 11],
+                'major-pentatonic': [0, 2, 4, 7, 9]
+            };
+            const intervals = MODES[mode] || MODES.major;
+            return intervals.map(i => _alarmMidiToFreq(rootMidi + i));
         }
-
-        function _alarmFreqFromDegree(rootFreq, mode, degree) {
-            const intervals = _alarmGetModeIntervals(mode);
-            const size = intervals.length;
-            const d = Number.isFinite(Number(degree)) ? Number(degree) : 0;
-            const octave = Math.floor(d / size);
-            const idx = ((d % size) + size) % size;
-            const semitones = intervals[idx] + (octave * 12);
-            return Number(rootFreq) * Math.pow(2, semitones / 12);
+        function _alarmDegreeToFreq(scaleFreqs, degree, octave = 0) {
+            const len = Array.isArray(scaleFreqs) && scaleFreqs.length ? scaleFreqs.length : 7;
+            const safeDegree = Number.isFinite(Number(degree)) ? Number(degree) : 0;
+            const idx = ((safeDegree % len) + len) % len;
+            const octShift = Math.floor((safeDegree - idx) / len) + octave;
+            const base = scaleFreqs[idx] || 440;
+            return base * Math.pow(2, octShift);
         }
-
-        function _alarmRecipeFor(soundType) {
-            return ALARM_SOUND_RECIPES[soundType] || ALARM_SOUND_RECIPES[DEFAULT_SOUND_ID] || ALARM_SOUND_RECIPES['sunrise-chimes'];
+        function _alarmSeeded(seed) {
+            const x = Math.sin((seed * 12.9898) + 78.233) * 43758.5453;
+            return x - Math.floor(x);
         }
-
+        function _alarmGetNoiseBuffer(ctx) {
+            if (_ALARM_NOISE_BUFFER_CACHE.has(ctx)) return _ALARM_NOISE_BUFFER_CACHE.get(ctx);
+            const length = Math.floor(ctx.sampleRate * 2.0);
+            const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < length; i += 1) data[i] = (Math.random() * 2) - 1;
+            _ALARM_NOISE_BUFFER_CACHE.set(ctx, buffer);
+            return buffer;
+        }
+        function _alarmGetReverbImpulse(ctx) {
+            if (_ALARM_REVERB_BUFFER_CACHE.has(ctx)) return _ALARM_REVERB_BUFFER_CACHE.get(ctx);
+            const duration = 1.8;
+            const length = Math.floor(ctx.sampleRate * duration);
+            const ir = ctx.createBuffer(2, length, ctx.sampleRate);
+            for (let c = 0; c < ir.numberOfChannels; c += 1) {
+                const data = ir.getChannelData(c);
+                for (let i = 0; i < length; i += 1) {
+                    const t = i / length;
+                    data[i] = ((Math.random() * 2) - 1) * Math.pow(1 - t, 2.8);
+                }
+            }
+            _ALARM_REVERB_BUFFER_CACHE.set(ctx, ir);
+            return ir;
+        }
+        function _alarmSoftClipCurve(amount = 2.1) {
+            const n = 512;
+            const curve = new Float32Array(n);
+            for (let i = 0; i < n; i += 1) {
+                const x = (i / (n - 1)) * 2 - 1;
+                curve[i] = Math.tanh(x * amount);
+            }
+            return curve;
+        }
         function _startBeep(soundType = selectedSound) {
             _stopAllBeeps(true);
             try {
@@ -3964,280 +4000,487 @@
                     }
                 }
 
-                const recipe = _alarmRecipeFor(soundType);
+                const legacyProfile = ALARM_SOUND_PROFILES[soundType] || ALARM_SOUND_PROFILES[DEFAULT_SOUND_ID] || {};
+                const design = ALARM_SOUND_DESIGN_PROFILES[soundType] || ALARM_SOUND_DESIGN_PROFILES[DEFAULT_SOUND_ID];
+                const groove = ALARM_GROOVE_CONFIG[soundType] || ALARM_GROOVE_CONFIG[DEFAULT_SOUND_ID];
+                const arrangement = ALARM_BACKGROUND_ARRANGEMENTS[soundType] || ALARM_BACKGROUND_ARRANGEMENTS[DEFAULT_SOUND_ID];
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const now = ctx.currentTime;
+                if (ctx.state === 'suspended') {
+                    try { ctx.resume(); } catch (e) {}
+                }
+
+                const activeSources = [];
+                const registerSource = (src) => { activeSources.push(src); return src; };
 
                 const master = ctx.createGain();
                 master.gain.setValueAtTime(0.0001, now);
                 master.connect(ctx.destination);
 
+                const softClip = ctx.createWaveShaper();
+                softClip.curve = _alarmSoftClipCurve(2.2);
+                softClip.oversample = '2x';
+                softClip.connect(master);
+
                 const comp = ctx.createDynamicsCompressor();
-                const c = recipe.mix && recipe.mix.compressor ? recipe.mix.compressor : {};
-                comp.threshold.value = Number.isFinite(c.threshold) ? c.threshold : -24;
-                comp.knee.value = Number.isFinite(c.knee) ? c.knee : 22;
-                comp.ratio.value = Number.isFinite(c.ratio) ? c.ratio : 2.5;
-                comp.attack.value = Number.isFinite(c.attack) ? c.attack : 0.012;
-                comp.release.value = Number.isFinite(c.release) ? c.release : 0.3;
-                comp.connect(master);
+                comp.threshold.value = -24;
+                comp.knee.value = 18;
+                comp.ratio.value = 3.6;
+                comp.attack.value = 0.006;
+                comp.release.value = 0.26;
+                comp.connect(softClip);
 
-                const toneBus = ctx.createGain();
-                toneBus.gain.value = 1;
+                const premaster = ctx.createGain();
+                premaster.gain.value = 0.88;
+                premaster.connect(comp);
 
-                const toneFilter = ctx.createBiquadFilter();
-                toneFilter.type = recipe.filter && recipe.filter.type ? recipe.filter.type : 'lowpass';
-                toneFilter.frequency.value = _alarmClamp(Number(recipe.filter && recipe.filter.cutoff) || 3200, 180, 9000);
-                toneFilter.Q.value = _alarmClamp(Number(recipe.filter && recipe.filter.Q) || 0.7, 0.1, 8);
+                const limiterFilter = ctx.createBiquadFilter();
+                limiterFilter.type = 'lowpass';
+                limiterFilter.frequency.value = 6200;
+                limiterFilter.Q.value = 0.58;
+                limiterFilter.connect(premaster);
 
-                toneBus.connect(toneFilter);
-                toneFilter.connect(comp);
+                const fxDelay = ctx.createDelay(0.8);
+                fxDelay.delayTime.value = Math.max(0.08, Math.min(0.45, Number(design.fx.delayTime) || 0.22));
+                const fxFeedback = ctx.createGain();
+                fxFeedback.gain.value = Math.max(0.05, Math.min(0.35, Number(design.fx.feedback) || 0.16));
+                const fxDelayTone = ctx.createBiquadFilter();
+                fxDelayTone.type = 'lowpass';
+                fxDelayTone.frequency.value = 4200;
+                fxDelayTone.Q.value = 0.4;
+                fxDelay.connect(fxFeedback);
+                fxFeedback.connect(fxDelay);
+                fxDelay.connect(fxDelayTone);
+                fxDelayTone.connect(limiterFilter);
 
-                const wetSend = ctx.createGain();
-                wetSend.gain.value = _alarmClamp(Number(recipe.fx && recipe.fx.delayMix) || 0.1, 0, 0.35);
-                toneFilter.connect(wetSend);
+                const reverb = ctx.createConvolver();
+                reverb.buffer = _alarmGetReverbImpulse(ctx);
+                const reverbTone = ctx.createBiquadFilter();
+                reverbTone.type = 'lowpass';
+                reverbTone.frequency.value = 5000;
+                reverbTone.Q.value = 0.4;
+                reverb.connect(reverbTone);
+                reverbTone.connect(limiterFilter);
 
-                const wetHP = ctx.createBiquadFilter();
-                wetHP.type = 'highpass';
-                wetHP.frequency.value = _alarmClamp(Number(recipe.fx && recipe.fx.wetHighpassCutoff) || 500, 120, 2000);
-                wetHP.Q.value = 0.6;
-                wetSend.connect(wetHP);
+                const chorusDelay = ctx.createDelay(0.06);
+                chorusDelay.delayTime.value = 0.017;
+                const chorusMix = ctx.createGain();
+                chorusMix.gain.value = Math.max(0, Math.min(0.2, Number(design.fx.chorusMix) || 0.06));
+                chorusDelay.connect(chorusMix);
+                chorusMix.connect(limiterFilter);
 
-                const delay = ctx.createDelay(0.9);
-                delay.delayTime.value = _alarmClamp(Number(recipe.fx && recipe.fx.delayTime) || 0.24, 0.08, 0.7);
-                const feedback = ctx.createGain();
-                feedback.gain.value = _alarmClamp(Number(recipe.fx && recipe.fx.feedback) || 0.16, 0, 0.45);
-                wetHP.connect(delay);
-                delay.connect(feedback);
-                feedback.connect(delay);
-                const wetOut = ctx.createGain();
-                wetOut.gain.value = 1;
-                delay.connect(wetOut);
-                wetOut.connect(comp);
+                const chorusLfo = registerSource(ctx.createOscillator());
+                const chorusDepth = ctx.createGain();
+                chorusDepth.gain.value = Math.max(0.0001, Math.min(0.006, Number(design.fx.chorusDepth) || 0.001));
+                chorusLfo.frequency.value = Math.max(0.06, Math.min(0.45, Number(design.fx.chorusRate) || 0.18));
+                chorusLfo.connect(chorusDepth);
+                chorusDepth.connect(chorusDelay.delayTime);
+                chorusLfo.start(now);
 
-                const targetLevel = _alarmClamp(Number(recipe.mix && recipe.mix.masterLevel) || 0.18, 0.1, 0.28);
-                const rampSeconds = _alarmClamp(Number(recipe.mix && recipe.mix.rampSeconds) || 9, 4, 14);
-                master.gain.linearRampToValueAtTime(targetLevel, now + rampSeconds);
+                function createLayerBus(level, highpass = 0, lowpass = 20000) {
+                    const input = ctx.createGain();
+                    input.gain.value = Math.max(0.0001, Math.min(1.2, Number(level) || 0.45));
+                    let outlet = input;
+                    if (highpass > 0) {
+                        const hp = ctx.createBiquadFilter();
+                        hp.type = 'highpass';
+                        hp.frequency.value = highpass;
+                        hp.Q.value = 0.55;
+                        outlet.connect(hp);
+                        outlet = hp;
+                    }
+                    if (lowpass < 20000) {
+                        const lp = ctx.createBiquadFilter();
+                        lp.type = 'lowpass';
+                        lp.frequency.value = lowpass;
+                        lp.Q.value = 0.65;
+                        outlet.connect(lp);
+                        outlet = lp;
+                    }
+                    outlet.connect(limiterFilter);
+                    return { input, output: outlet };
+                }
 
-                const activeOsc = [];
+                const buses = {
+                    bell: createLayerBus(design.mix.bell, 400, 7600),
+                    pad: createLayerBus(design.mix.pad, 140, 3600),
+                    bass: createLayerBus(design.mix.bass, 25, 340),
+                    perc: createLayerBus(design.mix.perc, 900, 9000),
+                    lead: createLayerBus(design.mix.lead, 180, 5600)
+                };
+
+                function addFxSends(bus, delayAmt, reverbAmt, chorusAmt) {
+                    if (delayAmt > 0) {
+                        const g = ctx.createGain();
+                        g.gain.value = Math.min(0.5, delayAmt);
+                        bus.output.connect(g);
+                        g.connect(fxDelay);
+                    }
+                    if (reverbAmt > 0) {
+                        const g = ctx.createGain();
+                        g.gain.value = Math.min(0.6, reverbAmt);
+                        bus.output.connect(g);
+                        g.connect(reverb);
+                    }
+                    if (chorusAmt > 0) {
+                        const g = ctx.createGain();
+                        g.gain.value = Math.min(0.5, chorusAmt);
+                        bus.output.connect(g);
+                        g.connect(chorusDelay);
+                    }
+                }
+
+                const dSend = Math.max(0, Math.min(0.4, Number(design.fx.delaySend) || 0.12));
+                const rSend = Math.max(0, Math.min(0.5, Number(design.fx.reverbSend) || 0.14));
+                addFxSends(buses.bell, dSend + 0.05, rSend + 0.08, 0.04);
+                addFxSends(buses.pad, dSend * 0.8, rSend, 0.09);
+                addFxSends(buses.bass, dSend * 0.2, rSend * 0.1, 0);
+                addFxSends(buses.perc, dSend * 0.5, rSend * 0.25, 0.02);
+                addFxSends(buses.lead, dSend, rSend * 0.7, 0.05);
+
+                const safeLevel = Math.max(0.11, Math.min(0.26, Number(design.level) || Number(legacyProfile.level) || 0.2));
+                const rampSeconds = Math.max(4, Math.min(13, Number(design.rampSeconds) || Number(legacyProfile.rampSeconds) || 9));
+                master.gain.linearRampToValueAtTime(safeLevel, now + rampSeconds);
+
+                const beatSeconds = 60 / Math.max(68, Math.min(132, Number(groove.bpm) || 100));
+                const swing = Math.max(0, Math.min(0.2, Number(groove.swing) || 0));
                 let scheduler = null;
                 let stopped = false;
-                let nextLoopAt = now + 0.05;
-                let loopIndex = 0;
+                let nextSongAt = now + 0.06;
+                let songIndex = 0;
 
-                const bpm = _alarmClamp(Number(recipe.musical && recipe.musical.bpm) || 96, 52, 136);
-                const beatSeconds = 60 / bpm;
-                const loopSeconds = ALARM_SONG_LOOP_SECONDS;
-                const root = Number(recipe.musical && recipe.musical.root) || 261.63;
-                const mode = recipe.musical && recipe.musical.scaleMode ? recipe.musical.scaleMode : 'ionian';
-                const chordDefs = Array.isArray(recipe.musical && recipe.musical.chords) && recipe.musical.chords.length
-                    ? recipe.musical.chords
-                    : [[0, 2, 4], [3, 5, 7], [4, 6, 8], [3, 5, 7]];
-                const chords = chordDefs.map(ch => ch.map(deg => _alarmFreqFromDegree(root, mode, deg)));
-                const sectionSeconds = loopSeconds / chords.length;
-                const motifStyle = String(recipe.musical && recipe.musical.motifStyle || 'sunrise');
-                const density = _alarmClamp(Number(recipe.musical && recipe.musical.density) || 1, 1, 2);
+                function beatToOffset(beat) {
+                    const b = Math.max(0, Number(beat) || 0);
+                    const isOffbeat = Math.round(b * 2) % 2 === 1;
+                    return (b * beatSeconds) + (isOffbeat ? (beatSeconds * swing * 0.5) : 0);
+                }
 
-                function scheduleVoice(at, freq, dur, gain, instrument, pan, overrideEnv) {
-                    const voice = ALARM_INSTRUMENT_VOICES[instrument] || ALARM_INSTRUMENT_VOICES.bell;
-                    const minFreq = 70;
-                    const maxFreq = 4200;
-                    const f = _alarmClamp(Number(freq) || 440, minFreq, maxFreq);
-                    const noteDur = Math.max(0.06, Number(dur) || 0.2);
-                    const level = _alarmClamp((Number(gain) || 0.1) * (voice.gainMul || 1), 0.005, 0.45);
-
-                    const attack = _alarmClamp((Number(overrideEnv && overrideEnv.attack) || Number(recipe.env && recipe.env.attack) || 0.01) * (voice.attackMul || 1), 0.002, 0.35);
-                    const decay = _alarmClamp((Number(overrideEnv && overrideEnv.decay) || Number(recipe.env && recipe.env.decay) || 0.18) * (voice.decayMul || 1), 0.03, 1.6);
-                    const sustain = _alarmClamp((Number(overrideEnv && overrideEnv.sustain) || Number(recipe.env && recipe.env.sustain) || 0.55) * (voice.sustainMul || 1), 0.05, 1);
-                    const release = _alarmClamp((Number(overrideEnv && overrideEnv.release) || Number(recipe.env && recipe.env.release) || 0.45) * (voice.releaseMul || 1), 0.04, 3.2);
-
-                    const panner = ctx.createStereoPanner();
-                    panner.pan.value = _alarmClamp(Number(pan) || 0, -0.75, 0.75);
-
+                function scheduleEnv(at, hold, attack, release, peak) {
                     const env = ctx.createGain();
+                    const a = Math.max(0.001, attack);
+                    const h = Math.max(0.01, hold);
+                    const r = Math.max(0.02, release);
+                    const p = Math.max(0.0002, peak);
                     env.gain.setValueAtTime(0.0001, at);
-                    env.gain.linearRampToValueAtTime(level, at + attack);
-                    env.gain.exponentialRampToValueAtTime(Math.max(0.0001, level * sustain), at + attack + decay);
-                    env.gain.setValueAtTime(Math.max(0.0001, level * sustain), at + Math.max(attack + decay + 0.01, noteDur));
-                    env.gain.exponentialRampToValueAtTime(0.0001, at + noteDur + release);
+                    env.gain.linearRampToValueAtTime(p, at + a);
+                    env.gain.exponentialRampToValueAtTime(Math.max(0.0002, p * 0.58), at + a + h);
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + a + h + r);
+                    return { env, stopAt: at + a + h + r + 0.03 };
+                }
 
-                    let noteOut = env;
-                    if (voice.noteFilterType) {
-                        const noteFilter = ctx.createBiquadFilter();
-                        noteFilter.type = voice.noteFilterType;
-                        const center = voice.noteFilterType === 'highpass'
-                            ? Math.max(120, f * 0.35)
-                            : (voice.noteFilterType === 'lowpass' ? Math.min(3500, f * 2.1) : Math.max(320, f * 1.8));
-                        noteFilter.frequency.value = center;
-                        noteFilter.Q.value = _alarmClamp(Number(voice.noteFilterQ) || 0.8, 0.2, 8);
-                        env.connect(noteFilter);
-                        noteOut = noteFilter;
+                function scheduleBassPulse(at, freq, vel, holdSeconds) {
+                    const f = Math.max(45, Math.min(220, Number(freq) || 90));
+                    const { env, stopAt } = scheduleEnv(at, holdSeconds || 0.2, 0.008, 0.22, 0.12 * Math.max(0.15, Math.min(1.2, vel)));
+                    env.connect(buses.bass.input);
+                    const osc = registerSource(ctx.createOscillator());
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f * 1.01, at);
+                    osc.frequency.exponentialRampToValueAtTime(f, at + 0.045);
+                    osc.connect(env);
+                    osc.start(at);
+                    osc.stop(stopAt);
+                    const osc2 = registerSource(ctx.createOscillator());
+                    osc2.type = 'triangle';
+                    osc2.frequency.setValueAtTime(f * 2, at);
+                    const env2 = ctx.createGain();
+                    env2.gain.setValueAtTime(0.0001, at);
+                    env2.gain.linearRampToValueAtTime(0.022 * Math.max(0.2, vel), at + 0.005);
+                    env2.gain.exponentialRampToValueAtTime(0.0001, at + 0.16);
+                    osc2.connect(env2);
+                    env2.connect(buses.bass.input);
+                    osc2.start(at);
+                    osc2.stop(Math.min(stopAt, at + 0.18));
+                }
+
+                function scheduleNoiseHat(at, vel, style = 'hat') {
+                    const mode = (style === true) ? 'air' : (style === false ? 'hat' : style);
+                    const isAir = mode === 'air';
+                    const isSnare = mode === 'snare';
+                    const src = registerSource(ctx.createBufferSource());
+                    src.buffer = _alarmGetNoiseBuffer(ctx);
+                    const hp = ctx.createBiquadFilter();
+                    hp.type = 'highpass';
+                    hp.frequency.value = isSnare ? 2600 : (isAir ? 4200 : 6200);
+                    const lp = ctx.createBiquadFilter();
+                    lp.type = 'lowpass';
+                    lp.frequency.value = isSnare ? 6200 : (isAir ? 7600 : 9800);
+                    const env = ctx.createGain();
+                    const peak = (isSnare ? 0.062 : (isAir ? 0.038 : 0.055)) * Math.max(0.1, Math.min(1.2, vel));
+                    env.gain.setValueAtTime(0.0001, at);
+                    env.gain.linearRampToValueAtTime(peak, at + 0.004);
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + (isSnare ? 0.14 : (isAir ? 0.22 : 0.09)));
+                    src.connect(hp);
+                    hp.connect(lp);
+                    lp.connect(env);
+                    env.connect(buses.perc.input);
+                    src.start(at);
+                    src.stop(at + (isSnare ? 0.16 : (isAir ? 0.25 : 0.11)));
+                }
+
+                function scheduleBell(at, freq, vel, options = {}) {
+                    const f = Math.max(170, Math.min(1900, Number(freq) || 660));
+                    const pan = Math.max(-0.85, Math.min(0.85, Number(options.pan) || 0));
+                    const panner = ctx.createStereoPanner();
+                    panner.pan.value = pan;
+                    panner.connect(buses.bell.input);
+                    const decay = Math.max(0.25, Math.min(2.8, Number(options.decay) || 1.2));
+                    const partials = options.partials || [1, 1.98, 3.05];
+                    const partialLevels = options.partialLevels || [1.0, 0.2, 0.1];
+                    for (let i = 0; i < partials.length; i += 1) {
+                        const ratio = partials[i];
+                        const lvl = partialLevels[i] || 0.18;
+                        const o = registerSource(ctx.createOscillator());
+                        o.type = i === 0 ? ((options.wave) || 'sine') : 'sine';
+                        o.frequency.setValueAtTime(f * ratio, at);
+                        const env = ctx.createGain();
+                        const peak = (0.115 * Math.max(0.12, Math.min(1.4, vel)) * lvl);
+                        env.gain.setValueAtTime(0.0001, at);
+                        env.gain.linearRampToValueAtTime(peak, at + 0.006);
+                        env.gain.exponentialRampToValueAtTime(0.0001, at + (decay * (1 + (i * 0.22))));
+                        o.connect(env);
+                        env.connect(panner);
+                        o.start(at);
+                        o.stop(at + (decay * (1.1 + (i * 0.25))) + 0.04);
                     }
-                    noteOut.connect(panner);
-                    panner.connect(toneBus);
+                }
 
-                    const oscA = ctx.createOscillator();
-                    oscA.type = voice.oscA || 'sine';
-                    oscA.frequency.setValueAtTime(f, at);
+                function schedulePad(at, freq, dur, vel, airy = false) {
+                    const f = Math.max(70, Math.min(980, Number(freq) || 220));
+                    const panner = ctx.createStereoPanner();
+                    panner.pan.value = (airy ? 0.25 : 0.1) * Math.sin(f * 0.0037);
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = airy ? 2100 : 1400;
+                    filter.Q.value = airy ? 0.46 : 0.62;
+                    const env = ctx.createGain();
+                    const peak = (airy ? 0.08 : 0.1) * Math.max(0.1, Math.min(1.2, vel));
+                    env.gain.setValueAtTime(0.0001, at);
+                    env.gain.linearRampToValueAtTime(peak, at + (airy ? 0.42 : 0.28));
+                    env.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak * 0.52), at + Math.max(0.4, dur * 0.65));
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + dur + (airy ? 0.9 : 0.6));
+                    panner.connect(filter);
+                    filter.connect(env);
+                    env.connect(buses.pad.input);
+                    const o1 = registerSource(ctx.createOscillator());
+                    o1.type = airy ? 'sine' : 'triangle';
+                    o1.frequency.setValueAtTime(f * 0.998, at);
+                    o1.connect(panner);
+                    o1.start(at);
+                    o1.stop(at + dur + 1.0);
+                    const o2 = registerSource(ctx.createOscillator());
+                    o2.type = 'sine';
+                    o2.frequency.setValueAtTime(f * 1.004, at);
+                    o2.connect(panner);
+                    o2.start(at);
+                    o2.stop(at + dur + 1.0);
+                }
+
+                function scheduleMarimba(at, freq, vel, pan = 0) {
+                    const f = Math.max(140, Math.min(1300, Number(freq) || 440));
+                    const panner = ctx.createStereoPanner();
+                    panner.pan.value = Math.max(-0.7, Math.min(0.7, pan));
+                    panner.connect(buses.lead.input);
+                    const bp = ctx.createBiquadFilter();
+                    bp.type = 'bandpass';
+                    bp.frequency.value = Math.min(2200, f * 2.2);
+                    bp.Q.value = 2.2;
+                    bp.connect(panner);
+                    const env = ctx.createGain();
+                    const peak = 0.16 * Math.max(0.12, Math.min(1.2, vel));
+                    env.gain.setValueAtTime(0.0001, at);
+                    env.gain.linearRampToValueAtTime(peak, at + 0.003);
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + 0.34);
+                    env.connect(bp);
+                    const osc = registerSource(ctx.createOscillator());
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(f * 1.06, at);
+                    osc.frequency.exponentialRampToValueAtTime(f, at + 0.05);
+                    osc.connect(env);
+                    osc.start(at);
+                    osc.stop(at + 0.38);
+                }
+
+                function scheduleFmPluck(at, freq, vel, pan = 0) {
+                    const f = Math.max(180, Math.min(1800, Number(freq) || 660));
+                    const panner = ctx.createStereoPanner();
+                    panner.pan.value = Math.max(-0.7, Math.min(0.7, pan));
+                    panner.connect(buses.lead.input);
+                    const env = ctx.createGain();
+                    const peak = 0.14 * Math.max(0.1, Math.min(1.3, vel));
+                    env.gain.setValueAtTime(0.0001, at);
+                    env.gain.linearRampToValueAtTime(peak, at + 0.002);
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+                    env.connect(panner);
+                    const carrier = registerSource(ctx.createOscillator());
+                    carrier.type = 'triangle';
+                    carrier.frequency.setValueAtTime(f, at);
+                    const mod = registerSource(ctx.createOscillator());
+                    mod.type = 'sine';
+                    mod.frequency.setValueAtTime(f * 1.75, at);
+                    const modGain = ctx.createGain();
+                    modGain.gain.setValueAtTime(90 * vel, at);
+                    modGain.gain.exponentialRampToValueAtTime(0.1, at + 0.2);
+                    mod.connect(modGain);
+                    modGain.connect(carrier.frequency);
+                    carrier.connect(env);
+                    carrier.start(at);
+                    mod.start(at);
+                    carrier.stop(at + 0.28);
+                    mod.stop(at + 0.28);
+                }
+
+                function schedulePianoDrop(at, freq, vel, pan = 0) {
+                    const f = Math.max(130, Math.min(1600, Number(freq) || 440));
+                    const panner = ctx.createStereoPanner();
+                    panner.pan.value = Math.max(-0.7, Math.min(0.7, pan));
+                    panner.connect(buses.lead.input);
+                    const env = ctx.createGain();
+                    const peak = 0.16 * Math.max(0.1, Math.min(1.2, vel));
+                    env.gain.setValueAtTime(0.0001, at);
+                    env.gain.linearRampToValueAtTime(peak, at + 0.004);
+                    env.gain.exponentialRampToValueAtTime(0.0001, at + 0.5);
+                    env.connect(panner);
+                    const oscA = registerSource(ctx.createOscillator());
+                    oscA.type = 'triangle';
+                    oscA.frequency.setValueAtTime(f * 1.01, at);
                     oscA.connect(env);
                     oscA.start(at);
-                    oscA.stop(at + noteDur + release + 0.08);
-                    activeOsc.push(oscA);
+                    oscA.stop(at + 0.56);
+                    const oscB = registerSource(ctx.createOscillator());
+                    oscB.type = 'sine';
+                    oscB.frequency.setValueAtTime(f * 2, at);
+                    const envB = ctx.createGain();
+                    envB.gain.setValueAtTime(0.0001, at);
+                    envB.gain.linearRampToValueAtTime(0.055 * vel, at + 0.003);
+                    envB.gain.exponentialRampToValueAtTime(0.0001, at + 0.18);
+                    oscB.connect(envB);
+                    envB.connect(panner);
+                    oscB.start(at);
+                    oscB.stop(at + 0.22);
+                }
 
-                    if (voice.dual) {
-                        const oscB = ctx.createOscillator();
-                        oscB.type = voice.oscB || voice.oscA || 'sine';
-                        const cents = _alarmClamp(Number(voice.detuneCents) || 0, -20, 20);
-                        oscB.detune.setValueAtTime(cents, at);
-                        oscB.frequency.setValueAtTime(f, at);
-                        const bGain = ctx.createGain();
-                        bGain.gain.value = 0.72;
-                        oscB.connect(bGain);
-                        bGain.connect(env);
-                        oscB.start(at);
-                        oscB.stop(at + noteDur + release + 0.08);
-                        activeOsc.push(oscB);
-                    }
+                function scheduleLeadHit(kind, at, freq, vel, pan = 0) {
+                    if (kind === 'none') return;
+                    if (kind === 'marimba') return scheduleMarimba(at, freq, vel, pan);
+                    if (kind === 'fm') return scheduleFmPluck(at, freq, vel, pan);
+                    if (kind === 'piano') return schedulePianoDrop(at, freq, vel, pan);
+                    if (kind === 'temple') return scheduleBell(at, freq * 0.5, vel * 1.02, { pan, decay: 2.2, partials: [1, 2.01, 2.98], partialLevels: [1, 0.27, 0.15], wave: 'sine' });
+                    if (kind === 'glass') return scheduleBell(at, freq * 1.22, vel, { pan, decay: 1.7, partials: [1, 2.8, 4.6], partialLevels: [1, 0.32, 0.18], wave: 'triangle' });
+                    return scheduleBell(at, freq, vel, { pan, decay: 1.35, partials: [1, 1.98, 3.05], partialLevels: [1, 0.22, 0.11], wave: 'sine' });
+                }
 
-                    if (voice.harmonic) {
-                        const harm = ctx.createOscillator();
-                        harm.type = 'sine';
-                        harm.frequency.setValueAtTime(Math.min(maxFreq, f * Number(voice.harmonic)), at);
-                        const hGain = ctx.createGain();
-                        hGain.gain.setValueAtTime(_alarmClamp(Number(voice.harmonicGain) || 0.06, 0.01, 0.2), at);
-                        harm.connect(hGain);
-                        hGain.connect(env);
-                        harm.start(at);
-                        harm.stop(at + noteDur + (release * 0.8) + 0.06);
-                        activeOsc.push(harm);
+                function scheduleBeatBackbone(baseTime, loopLen) {
+                    const loopBeats = loopLen / beatSeconds;
+                    const cycleBeats = Math.max(4, Number(groove.cycleBeats) || 8);
+                    const bassFreq = Math.max(48, Math.min(220, Number(groove.bassFreq) || 90));
+                    for (let startBeat = 0; startBeat < loopBeats; startBeat += cycleBeats) {
+                        (groove.bassPattern || []).forEach(hit => {
+                            const beat = startBeat + (Number(hit.beat) || 0);
+                            if (beat >= loopBeats) return;
+                            const at = baseTime + beatToOffset(beat);
+                            scheduleBassPulse(at, bassFreq, Number(hit.vel) || 0.55, ((Number(hit.len) || 0.3) * beatSeconds));
+                        });
+                        (groove.percPattern || []).forEach(hit => {
+                            const beat = startBeat + (Number(hit.beat) || 0);
+                            if (beat >= loopBeats) return;
+                            const at = baseTime + beatToOffset(beat);
+                            if (hit.type === 'hat') scheduleNoiseHat(at, Number(hit.vel) || 0.45, 'hat');
+                            else if (hit.type === 'snare') scheduleNoiseHat(at, Number(hit.vel) || 0.42, 'snare');
+                            else if (hit.type === 'click') scheduleFmPluck(at, 920 + (80 * ((songIndex + Math.floor(beat)) % 3)), 0.4 * (Number(hit.vel) || 0.45), -0.1 + (0.2 * _alarmSeeded(songIndex + beat)));
+                            else scheduleNoiseHat(at, Number(hit.vel) || 0.3, 'air');
+                        });
                     }
                 }
 
-                function scheduleMelodyForSection(sectionStart, chord, sectionIdx) {
-                    const top = chord[chord.length - 1];
-                    const mid = chord[Math.floor(chord.length / 2)];
-                    const low = chord[0] * 2;
-                    const stylePatterns = {
-                        sunrise: [
-                            { t: 0.04, f: top * 1.02, d: 0.34, g: 0.11, pan: -0.06 },
-                            { t: 0.64, f: mid * 1.04, d: 0.32, g: 0.1, pan: 0.06 },
-                            { t: 1.26, f: top * 1.12, d: 0.38, g: 0.11, pan: -0.03 }
-                        ],
-                        glass: [
-                            { t: 0.08, f: top * 1.18, d: 0.3, g: 0.1, pan: -0.05 },
-                            { t: 0.76, f: top * 1.33, d: 0.28, g: 0.095, pan: 0.05 }
-                        ],
-                        marimba: [
-                            { t: 0.02, f: low, d: 0.14, g: 0.12, pan: -0.04 },
-                            { t: 0.34, f: mid, d: 0.15, g: 0.11, pan: 0.04 },
-                            { t: 0.68, f: top, d: 0.15, g: 0.12, pan: -0.02 },
-                            { t: 1.02, f: mid * 1.06, d: 0.16, g: 0.11, pan: 0.02 }
-                        ],
-                        ambient: [
-                            { t: 0.0, f: low * 0.5, d: sectionSeconds * 0.76, g: 0.06, pan: 0.0 }
-                        ],
-                        digital: [
-                            { t: 0.04, f: top * 1.25, d: 0.2, g: 0.11, pan: 0.05 },
-                            { t: 0.38, f: mid * 1.3, d: 0.16, g: 0.09, pan: -0.05 },
-                            { t: 0.74, f: top * 1.5, d: 0.16, g: 0.1, pan: 0.04 }
-                        ],
-                        temple: [
-                            { t: 0.0, f: low * 0.5, d: 0.8, g: 0.11, pan: 0.0 }
-                        ],
-                        piano: [
-                            { t: 0.02, f: mid, d: 0.24, g: 0.11, pan: -0.03 },
-                            { t: 0.52, f: top, d: 0.24, g: 0.11, pan: 0.03 },
-                            { t: 1.06, f: mid * 1.06, d: 0.26, g: 0.1, pan: 0.0 }
-                        ],
-                        wind: [
-                            { t: 0.12, f: top * 1.38, d: 0.26, g: 0.09, pan: -0.06 },
-                            { t: 0.78, f: top * 1.62, d: 0.24, g: 0.085, pan: 0.06 }
-                        ]
-                    };
-                    const pattern = stylePatterns[motifStyle] || stylePatterns.sunrise;
-                    const melodyInst = recipe.instruments && recipe.instruments.melody ? recipe.instruments.melody : 'bell';
-                    pattern.forEach(ev => {
-                        const at = sectionStart + ev.t;
-                        if (at >= sectionStart + sectionSeconds - 0.05) return;
-                        scheduleVoice(at, ev.f, ev.d, ev.g, melodyInst, ev.pan);
-                        if (density > 1 && motifStyle === 'digital') {
-                            scheduleVoice(at + (beatSeconds * 0.25), ev.f * 0.99, Math.max(0.12, ev.d * 0.75), ev.g * 0.58, melodyInst, -ev.pan);
-                        }
-                    });
-                    if (motifStyle === 'temple' && sectionIdx % 2 === 0 && recipe.layers && recipe.layers.bass) {
-                        scheduleVoice(sectionStart + 1.6, chord[0] * 0.5, 0.8, 0.055, 'softBass', 0);
-                    }
-                }
-
-                function scheduleLoop(baseTime) {
-                    for (let sectionIdx = 0; sectionIdx < chords.length; sectionIdx += 1) {
-                        const chord = chords[sectionIdx];
-                        const sectionStart = baseTime + (sectionIdx * sectionSeconds);
-
-                        if (recipe.layers && recipe.layers.pad) {
-                            const padInst = recipe.instruments && recipe.instruments.pad ? recipe.instruments.pad : 'ambientPad';
-                            chord.forEach((freq, i) => {
-                                scheduleVoice(sectionStart + (i * 0.05), freq, sectionSeconds * 0.86, 0.05, padInst, (i - ((chord.length - 1) / 2)) * 0.12);
+                function scheduleBackgroundArrangement(baseTime, loopLen) {
+                    const chords = Array.isArray(arrangement.chords) && arrangement.chords.length ? arrangement.chords : [[0, 2, 4]];
+                    const scale = _alarmBuildScale(Number(arrangement.rootMidi) || 60, arrangement.mode || 'major');
+                    const loopBeats = loopLen / beatSeconds;
+                    const sectionBeats = loopBeats / chords.length;
+                    chords.forEach((chord, chordIdx) => {
+                        const startBeat = chordIdx * sectionBeats;
+                        const sectionStart = baseTime + beatToOffset(startBeat);
+                        const sectionDur = Math.max(0.8, (sectionBeats * beatSeconds) - 0.08);
+                        if (arrangement.padInstrument && arrangement.padInstrument !== 'none') {
+                            chord.forEach((deg, i) => {
+                                const freq = _alarmDegreeToFreq(scale, deg, i === 0 ? -1 : 0);
+                                const airy = arrangement.padInstrument === 'airpad' || arrangement.padInstrument === 'windpad' || arrangement.padInstrument === 'ambientpad';
+                                schedulePad(sectionStart + (i * 0.04), freq, sectionDur, (i === 0 ? 0.54 : 0.42), airy);
                             });
                         }
+                    });
 
-                        if (recipe.layers && recipe.layers.arp) {
-                            const arpInst = recipe.instruments && recipe.instruments.arp ? recipe.instruments.arp : 'chime';
-                            const arpStep = motifStyle === 'marimba' ? beatSeconds * 0.5 : beatSeconds * 0.75;
-                            const arpCount = Math.max(2, Math.floor(sectionSeconds / arpStep));
-                            for (let i = 0; i < arpCount; i += 1) {
-                                const f = chord[i % chord.length] * (i % 3 === 2 ? 2 : 1);
-                                scheduleVoice(sectionStart + (i * arpStep), f, Math.max(0.1, arpStep * 0.58), 0.055, arpInst, ((i % 3) - 1) * 0.07);
-                            }
-                        }
+                    (arrangement.arpPattern || []).forEach((ev, idx) => {
+                        const beat = Number(ev.beat) || 0;
+                        if (beat >= loopBeats) return;
+                        const chordIdx = Math.max(0, Math.min(chords.length - 1, Number(ev.chordIdx) || 0));
+                        const chord = chords[chordIdx];
+                        if (!Array.isArray(chord) || chord.length === 0) return;
+                        const toneIdx = ((Number(ev.toneIdx) || 0) % chord.length + chord.length) % chord.length;
+                        const freq = _alarmDegreeToFreq(scale, chord[toneIdx], 1);
+                        const at = baseTime + beatToOffset(beat);
+                        const pan = ((idx % 2 === 0) ? -0.18 : 0.18);
+                        if (arrangement.leadInstrument === 'marimba') scheduleMarimba(at, freq, Number(ev.vel) || 0.4, pan);
+                        else scheduleBell(at, freq, Number(ev.vel) || 0.35, { pan, decay: 0.9 });
+                    });
+                }
 
-                        if (recipe.layers && recipe.layers.melody) {
-                            scheduleMelodyForSection(sectionStart, chord, sectionIdx);
-                        }
+                function scheduleMelodySong(baseTime, loopLen) {
+                    const scale = _alarmBuildScale(Number(arrangement.rootMidi) || 60, arrangement.mode || 'major');
+                    const pattern = Array.isArray(arrangement.melodyPattern) ? arrangement.melodyPattern : [];
+                    const cycleBeats = Math.max(4, Number(arrangement.melodyCycleBeats) || 8);
+                    const loopBeats = loopLen / beatSeconds;
+                    let cycle = 0;
+                    for (let cycleStart = 0; cycleStart < loopBeats; cycleStart += cycleBeats) {
+                        pattern.forEach((ev, idx) => {
+                            const beat = cycleStart + (Number(ev.beat) || 0);
+                            if (beat >= loopBeats) return;
+                            const degreeShift = 0;
+                            const octave = arrangement.leadInstrument === 'temple' ? -1 : (arrangement.leadInstrument === 'glass' ? 1 : 0);
+                            const freq = _alarmDegreeToFreq(scale, (Number(ev.degree) || 0) + degreeShift, octave);
+                            const at = baseTime + beatToOffset(beat);
+                            const vel = Number(ev.vel) || 0.6;
+                            const leadKind = arrangement.leadInstrument || 'bell';
+                            const pan = (idx % 2 === 0 ? -0.08 : 0.08);
+                            scheduleLeadHit(leadKind, at, freq, vel, pan);
+                            if (leadKind === 'fm' && idx % 3 === 1) scheduleNoiseHat(at + 0.02, 0.2 + (vel * 0.2), true);
+                        });
+                        cycle += 1;
                     }
 
-                    if (recipe.layers && recipe.layers.bass) {
-                        const bassInst = recipe.instruments && recipe.instruments.bass ? recipe.instruments.bass : 'softBass';
-                        const bassStep = beatSeconds;
-                        const bassCount = Math.floor(loopSeconds / bassStep);
-                        for (let i = 0; i < bassCount; i += 1) {
-                            const at = baseTime + (i * bassStep);
-                            const sectionIdx = Math.min(chords.length - 1, Math.floor((i * bassStep) / sectionSeconds));
-                            const rootFreq = chords[sectionIdx][0] * 0.5;
-                            scheduleVoice(at, rootFreq, Math.max(0.12, bassStep * 0.7), 0.08, bassInst, 0);
-                        }
-                    }
-
-                    if (recipe.layers && recipe.layers.perc) {
-                        const percInst = recipe.instruments && recipe.instruments.perc ? recipe.instruments.perc : 'perc';
-                        const hitStep = beatSeconds * 0.5;
-                        const hits = Math.floor(loopSeconds / hitStep);
-                        for (let i = 0; i < hits; i += 1) {
-                            if (i % 2 !== 0) continue;
-                            const at = baseTime + (i * hitStep);
-                            const pitch = 950 + ((i % 4) * 60);
-                            scheduleVoice(at, pitch, 0.06, 0.038, percInst, 0);
+                    if (arrangement.leadInstrument === 'chime-cluster') {
+                        const clusterCount = 8;
+                        for (let i = 0; i < clusterCount; i += 1) {
+                            const randBeat = (_alarmSeeded((songIndex + 1) * 73 + (i * 19)) * loopBeats);
+                            const degree = Math.floor(_alarmSeeded((songIndex + 3) * 97 + (i * 11)) * 7);
+                            const freq = _alarmDegreeToFreq(scale, degree + (i % 2 ? 7 : 0), 1);
+                            const at = baseTime + beatToOffset(randBeat);
+                            const pan = -0.6 + (1.2 * _alarmSeeded((songIndex + 5) * 53 + i));
+                            scheduleBell(at, freq, 0.44, { pan, decay: 1.6, partials: [1, 2.2, 3.7], partialLevels: [1, 0.28, 0.16], wave: 'sine' });
                         }
                     }
                 }
 
-                function scheduleAhead() {
+                function scheduleSongs() {
                     if (stopped) return;
-                    while (nextLoopAt < (ctx.currentTime + 2.6)) {
-                        scheduleLoop(nextLoopAt);
-                        nextLoopAt += loopSeconds;
-                        loopIndex += 1;
+                    while (nextSongAt < (ctx.currentTime + 2.6)) {
+                        scheduleBeatBackbone(nextSongAt, ALARM_SONG_LOOP_SECONDS);
+                        scheduleBackgroundArrangement(nextSongAt, ALARM_SONG_LOOP_SECONDS);
+                        scheduleMelodySong(nextSongAt, ALARM_SONG_LOOP_SECONDS);
+                        nextSongAt += ALARM_SONG_LOOP_SECONDS;
+                        songIndex += 1;
                     }
                 }
 
-                scheduleAhead();
-                scheduler = setInterval(scheduleAhead, 200);
+                scheduleSongs();
+                scheduler = setInterval(scheduleSongs, 220);
 
                 const stop = (immediate = false) => {
                     if (stopped) return;
                     stopped = true;
                     if (scheduler) clearInterval(scheduler);
                     if (immediate) {
-                        activeOsc.forEach(o => { try { o.stop(); } catch (e) {} });
+                        activeSources.forEach(s => { try { s.stop(); } catch (e) {} });
                         try { ctx.close(); } catch (e) {}
                         return;
                     }
@@ -4245,12 +4488,12 @@
                         const t = ctx.currentTime;
                         master.gain.cancelScheduledValues(t);
                         master.gain.setValueAtTime(Math.max(0.0001, master.gain.value), t);
-                        master.gain.linearRampToValueAtTime(0.0001, t + 0.42);
+                        master.gain.linearRampToValueAtTime(0.0001, t + 0.48);
                     } catch (e) {}
                     setTimeout(() => {
-                        activeOsc.forEach(o => { try { o.stop(); } catch (e) {} });
+                        activeSources.forEach(s => { try { s.stop(); } catch (e) {} });
                         try { ctx.close(); } catch (e) {}
-                    }, 520);
+                    }, 620);
                 };
 
                 _activeOscillators.push({ ctx, master, stop, scheduler });
@@ -4260,7 +4503,6 @@
                 return () => {};
             }
         }
-
         function _stopAllBeeps(immediate = false) {
             while (_activeOscillators.length) {
                 const node = _activeOscillators.pop();
