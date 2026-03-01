@@ -1496,10 +1496,10 @@
         const DEFAULT_SOUND_ID = 'sunrise-chimes';
         const BASE_SOUND_OPTIONS = [
             { id: 'sunrise-chimes', name: 'Default', description: 'Fast wake groove with bright marimba lead and clean pulse.' },
-            { id: 'pop-bright', name: 'Pop', description: 'Catchy pop groove — clean, upbeat, and distinct' },
+            { id: 'pop-bright', name: 'Pop', description: 'Catchy pop groove — clean, upbeat, and distinct', audioUrl: 'sounds/pop-bright.m4r' },
             { id: 'smooth-jazz', name: 'Jazz', description: 'Warm jazz groove — upright bass and soft electric piano', audioUrl: 'sounds/smooth-jazz.m4r' },
-            { id: 'electric-drive', name: 'Electric', description: 'Energetic electronic pulse with sharp synth hits' },
-            { id: 'lofi-sunrise', name: 'Lo-Fi', description: 'Warm lo-fi chords, soft vinyl texture, gentle beat' }
+            { id: 'electric-drive', name: 'Classical', description: 'Energetic electronic pulse with sharp synth hits', audioUrl: 'sounds/electric-drive.m4r' },
+            { id: 'lofi-sunrise', name: 'Lo-Fi', description: 'Warm lo-fi chords, soft vinyl texture, gentle beat', audioUrl: 'sounds/lofi-sunrise.m4r' }
         ];
         const ALARM_SOUND_PROFILES = {
             'sunrise-chimes': {
@@ -1965,10 +1965,6 @@
                 });
 
             return _alarmMutationQueue;
-        }
-
-        function _enqueueAlarmMutation(mutator, opts = {}) {
-            return queueAlarmMutation(mutator, opts);
         }
 
         function _getRepeatDaysForAlarm(index) {
@@ -2892,8 +2888,6 @@
             /* ===== ALARM LAYOUT (SINGLE SCROLL) END ===== */
         }
 
-        function saveAlarmEdits() { return commitAlarmFromPicker(); }
-
         function undoAlarmEdits() {
             if (!(Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length)) return;
             const idx = editingAlarmIndex;
@@ -3263,66 +3257,6 @@
             renderAlarms();
             saveState();
         }
-
-        function initHoldToDelete(btn, deleteCallback) {
-            let holdTimer = null;
-            let isHolding = false;
-            const holdDuration = 1000; // 1 second
-            
-            const progressBar = document.createElement('div');
-            progressBar.style.position = 'absolute';
-            progressBar.style.top = '0';
-            progressBar.style.left = '0';
-            progressBar.style.height = '100%';
-            progressBar.style.backgroundColor = 'rgba(255, 69, 58, 0.3)';
-            progressBar.style.borderRadius = '3px';
-            progressBar.style.width = '0%';
-            progressBar.style.transition = 'none';
-            progressBar.style.zIndex = '9999';
-            progressBar.style.boxShadow = 'inset 0 0 12px rgba(255, 69, 58, 0.6)';
-            
-            btn.style.position = 'relative';
-            btn.style.overflow = 'hidden';
-            btn.insertBefore(progressBar, btn.firstChild);
-            
-            function startHold(evt) {
-                evt.preventDefault();
-                if (isHolding) return;
-                isHolding = true;
-                window._holdToDeleteInProgress = true;
-                const startTime = Date.now();
-                
-                holdTimer = setInterval(() => {
-                    const elapsed = Date.now() - startTime;
-                    const progress = Math.min(100, (elapsed / holdDuration) * 100);
-                    progressBar.style.width = progress + '%';
-                    
-                    if (elapsed >= holdDuration) {
-                        clearInterval(holdTimer);
-                        window._holdToDeleteInProgress = false;
-                        deleteCallback();
-                    }
-                }, 10);
-            }
-            
-            function endHold(evt) {
-                evt.preventDefault();
-                isHolding = false;
-                window._holdToDeleteInProgress = false;
-                if (holdTimer) {
-                    clearInterval(holdTimer);
-                    holdTimer = null;
-                }
-                progressBar.style.width = '0%';
-            }
-            
-            btn.addEventListener('mousedown', startHold);
-            btn.addEventListener('mouseup', endHold);
-            btn.addEventListener('mouseleave', endHold);
-            btn.addEventListener('touchstart', startHold, { passive: false });
-            btn.addEventListener('touchend', endHold, { passive: false });
-        }
-
         function renderRoutineEditor() {
             if (_isRenderingRoutineEditor) return;
             _isRenderingRoutineEditor = true;
@@ -3526,33 +3460,6 @@
             }
         }
 
-        function restart() {
-            _isRoutineTransitioning = false;
-            _inRoutineSession = false;
-            tasks.forEach(t => t.done = false);
-            
-            document.getElementById('body').classList.remove('day-active');
-            document.getElementById('sun-system').classList.remove('sun-on-top');
-            
-            const post = document.getElementById('screen-post');
-            const wake = document.getElementById('screen-wake');
-            
-            post.style.opacity = '0';
-            post.style.transform = 'translateY(50px)';
-            
-            setTimeout(() => {
-                post.classList.add('hidden');
-                wake.classList.remove('hidden');
-                renderApplication();
-                
-                setTimeout(() => {
-                    wake.style.opacity = '1';
-                    wake.style.transform = 'translateY(0) scale(1)';
-                }, 150);
-            }, 900);
-            saveState();
-        }
-
         function forceStopRoutine() {
             try {
                 _isRoutineTransitioning = false;
@@ -3714,18 +3621,9 @@
             return { hh, mm };
         }
 
-        function _nowHM() {
-            const d = new Date();
-            return { hh: d.getHours(), mm: d.getMinutes() };
-        }
-
         function _todayKey() {
             const d = new Date();
             return `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
-        }
-
-        function _metaToDays(meta) {
-            return _legacyMetaToRepeatDays(meta);
         }
 
         function _checkAlarms() {
@@ -3974,7 +3872,8 @@
         };
         const ALARM_SOUND_DESIGN_PROFILES = {
             'sunrise-chimes': {
-                level: 0.22,
+                level: 1,
+                loudnessMultiplier: 5,
                 rampSeconds: 5,
                 mix: { bell: 0.18, pad: 0.05, bass: 0.36, perc: 0.32, lead: 0.72 },
                 fx: { delayTime: 0.18, feedback: 0.12, delaySend: 0.08, reverbSend: 0.1, chorusDepth: 0.0008, chorusRate: 0.2, chorusMix: 0.03 }
@@ -4253,7 +4152,9 @@
                 addFxSends(buses.perc, dSend * 0.5, rSend * 0.25, 0.02);
                 addFxSends(buses.lead, dSend, rSend * 0.7, 0.05);
 
-                const safeLevel = Math.max(0.11, Math.min(0.26, Number(design.level) || Number(legacyProfile.level) || 0.2));
+                const baseLevel = Math.max(0.11, Math.min(0.26, Number(design.level) || Number(legacyProfile.level) || 0.2));
+                const loudnessMultiplier = Math.max(0.1, Math.min(10, Number(design.loudnessMultiplier) || 1));
+                const safeLevel = baseLevel * loudnessMultiplier;
                 const rampSeconds = Math.max(4, Math.min(13, Number(design.rampSeconds) || Number(legacyProfile.rampSeconds) || 9));
                 const loopSeconds = Math.max(6, Math.min(30, Number(design.loopSeconds) || Number(legacyProfile.cycleLength) || ALARM_SONG_LOOP_SECONDS));
                 master.gain.linearRampToValueAtTime(safeLevel, now + rampSeconds);
@@ -4598,7 +4499,6 @@
                     const pattern = Array.isArray(arrangement.melodyPattern) ? arrangement.melodyPattern : [];
                     const cycleBeats = Math.max(4, Number(arrangement.melodyCycleBeats) || 8);
                     const loopBeats = loopLen / beatSeconds;
-                    let cycle = 0;
                     for (let cycleStart = 0; cycleStart < loopBeats; cycleStart += cycleBeats) {
                         pattern.forEach((ev, idx) => {
                             const beat = cycleStart + (Number(ev.beat) || 0);
@@ -4613,7 +4513,6 @@
                             scheduleLeadHit(leadKind, at, freq, vel, pan);
                             if (leadKind === 'fm' && idx % 3 === 1) scheduleNoiseHat(at + 0.02, 0.2 + (vel * 0.2), true);
                         });
-                        cycle += 1;
                     }
 
                     if (arrangement.leadInstrument === 'chime-cluster') {
@@ -4949,15 +4848,6 @@
         }
  
         
-        function _hideAllMainScreens() {
-            const ids = ['screen-wake','screen-post','screen-timers','screen-stopwatch'];
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                if (id !== 'screen-post') el.classList.add('hidden'); // default keep post visible on load
-            });
-        }
-
         function switchTab(name, opts = {}) {
             if (_inRoutineSession && name === 'post' && !opts.forceRoutineExit) return;
             const mappings = {
