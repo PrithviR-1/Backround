@@ -29,6 +29,10 @@
             --accent-green: #30d158;
             --accent-red: #ff453a;
             --accent-gold: #ffd700;
+            --action-grad-start: #95c0ea;
+            --action-grad-end: #c4e7c7;
+            --action-border: #7f9bb5;
+            --action-text: #6f7c8a;
             
             
             --glass-bg: #111214;
@@ -52,14 +56,26 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
         body { 
             height: 100vh; 
+            min-height: 100dvh;
+            max-height: 100dvh;
             width: 100vw;
             overflow: hidden; 
             background: #000; 
             color: var(--text-primary); 
             display: flex;
             justify-content: center;
+            position: fixed;
+            inset: 0;
+            overscroll-behavior: none;
         }
 
         
@@ -467,14 +483,19 @@
         #app-ui {
             position: relative;
             height: 100vh;
+            min-height: 100dvh;
+            max-height: 100dvh;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 60px 24px;
+            padding: 60px 24px calc(140px + env(safe-area-inset-bottom));
             overflow-y: auto;
+            overflow-x: hidden;
             z-index: 100; 
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
         }
 
         #app-ui::-webkit-scrollbar { display: none; }
@@ -550,10 +571,10 @@
         #progress-fill {
             width: 0%;
             height: 100%;
-            background: #30d158;
+            background: linear-gradient(135deg, var(--action-grad-start) 0%, var(--action-grad-end) 100%);
             border-radius: 20px;
             transition: width 1.2s cubic-bezier(0.65, 0, 0.35, 1);
-            box-shadow: 0 0 25px rgba(52, 199, 89, 0.5);
+            box-shadow: 0 0 18px rgba(149, 192, 234, 0.45);
         }
 
         
@@ -577,6 +598,25 @@
         .item.checked { 
             background: rgba(48, 209, 88, 0.15); 
             border-color: rgba(48, 209, 88, 0.3);
+        }
+        .item.completing {
+            pointer-events: none;
+            animation: routine-item-fade-out 560ms ease forwards;
+        }
+        .item.completing::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(48, 209, 88, 0.95), rgba(101, 230, 136, 0.95));
+            transform: translateY(-50%) scaleX(0);
+            transform-origin: left center;
+            animation: routine-item-strike 560ms cubic-bezier(0.22, 0.8, 0.3, 1) forwards;
+            box-shadow: 0 0 10px rgba(48, 209, 88, 0.45);
+            pointer-events: none;
         }
         .item span { font-size: 18px; font-weight: 700; color: #fff; }
 
@@ -641,10 +681,12 @@
             transition: all 0.4s ease;
             font-weight: 400;
         }
-        .wheel div.active { 
-            color: var(--accent-blue); 
-            font-weight: 600; 
-            transform: scale(1.4); 
+        .wheel div.active {
+            color: var(--action-grad-start);
+            font-weight: 600;
+            transform: scale(1.4);
+            text-shadow: 0 0 8px rgba(149, 192, 234, 0.9), 0 0 18px rgba(196, 231, 199, 0.75);
+            filter: drop-shadow(0 0 6px rgba(149, 192, 234, 0.45));
         }
 
         
@@ -664,16 +706,39 @@
         .btn-primary:active { transform: scale(0.95); }
 
         .btn-add {
-            background: var(--accent-blue);
-            color: #fff;
-            border: none;
+            background: linear-gradient(135deg, var(--action-grad-start) 0%, var(--action-grad-end) 100%);
+            color: var(--action-text);
+            border: 1px solid var(--action-border);
             padding: 18px 30px;
             border-radius: 22px;
             font-weight: 800;
             cursor: pointer;
-            transition: 0.3s;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), 0 10px 18px rgba(111, 132, 157, 0.22);
+            transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
         }
-        .btn-add:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .btn-add:hover {
+            filter: brightness(1.03);
+            transform: translateY(-1px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.72), 0 12px 22px rgba(111, 132, 157, 0.28);
+        }
+
+        .input-action-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+        }
+        .input-action-row input[type="text"] {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .input-action-row .btn-add {
+            flex: 0 0 auto;
+            min-width: 78px;
+            padding: 16px 20px;
+            white-space: nowrap;
+        }
 
         .alarm-row {
             position: relative;
@@ -693,6 +758,26 @@
             align-items: center;
             gap: 10px;
             min-width: 0;
+        }
+        .alarm-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            min-width: 0;
+        }
+        .alarm-name-main {
+            flex: 1;
+            min-width: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .alarm-name-main .alarm-name-text {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .alarm-time-main {
             display: inline-flex;
@@ -984,6 +1069,17 @@
             100% { opacity: 0; transform: translate3d(var(--ex, 120vw), var(--ey, 60vh), 0) rotate(var(--shoot-angle, -26deg)); }
         }
 
+        @keyframes routine-item-strike {
+            0% { transform: translateY(-50%) scaleX(0); opacity: 0.95; }
+            70% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+            100% { transform: translateY(-50%) scaleX(1); opacity: 0.92; }
+        }
+
+        @keyframes routine-item-fade-out {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-8px); }
+        }
+
         @keyframes bird-fly {
             0% {
                 transform: translate3d(var(--sx, -16vw), 0, 0) rotate(var(--tilt, 0deg)) scale(var(--scale, 0.8)) scaleX(var(--flip, 1));
@@ -1133,6 +1229,9 @@
         #body.bg-animations-paused .cloud-container {
             display: none !important;
         }
+        #body.bg-animations-paused #stage {
+            display: none !important;
+        }
 
         #body.bg-animations-paused .star,
         #body.bg-animations-paused .diamond,
@@ -1163,6 +1262,13 @@
             .moon-system { width: 100px; height: 100px; top: 4%; left: 50%; }
             .moon-body { width: 64px; height: 64px; }
             .moon-shadow { width: 64px; height: 64px; }
+            #app-ui { padding: 50px 16px calc(130px + env(safe-area-inset-bottom)); }
+            .input-action-row { gap: 10px; }
+            .input-action-row .btn-add { min-width: 72px; padding: 14px 16px; }
+            .bottom-nav .nav-inner { padding: 7px; gap: 4px; border-radius: 22px; }
+            .tab-btn { padding: 7px 4px; font-size: 9px; gap: 4px; }
+            .tab-label { font-size: 8px; letter-spacing: 0.35px; }
+            .tab-icon { width: 17px; height: 17px; }
         }
 
         
@@ -1173,9 +1279,9 @@
         
         .bottom-nav {
             position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 18px;
+            left: max(8px, env(safe-area-inset-left));
+            right: max(8px, env(safe-area-inset-right));
+            bottom: calc(10px + env(safe-area-inset-bottom));
             display: flex;
             justify-content: center;
             z-index: 200;
@@ -1183,10 +1289,12 @@
         }
         .bottom-nav .nav-inner {
             display: flex;
-            gap: 10px;
+            width: min(100%, 540px);
+            max-width: 100%;
+            gap: 6px;
             background: #111214;
             border: 1px solid rgba(255,255,255,0.06);
-            padding: 10px;
+            padding: 8px;
             border-radius: 28px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             backdrop-filter: none;
@@ -1194,22 +1302,23 @@
         .tab-btn {
             background: transparent;
             color: var(--text-primary);
-            padding: 8px 12px;
+            padding: 8px 6px;
             border-radius: 14px;
             font-weight: 800;
             cursor: pointer;
             border: none;
-            font-size: 11px;
+            font-size: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 5px;
-            min-width: 72px;
+            min-width: 0;
+            flex: 1 1 0;
         }
         .tab-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -1217,13 +1326,25 @@
             stroke-linejoin: round;
         }
         .tab-label {
+            font-size: 10px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
         .tab-btn.active {
-            background: linear-gradient(90deg, rgba(0,122,255,0.18), rgba(48,209,88,0.08));
-            color: #fff;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, var(--action-grad-start) 0%, var(--action-grad-end) 100%);
+            color: var(--action-text);
+            border: 1px solid var(--action-border);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), 0 8px 20px rgba(111, 132, 157, 0.22);
+        }
+
+        .alarm-repeat-popover-done,
+        button[style*="background:var(--accent-blue)"],
+        button[style*="background: var(--accent-blue)"] {
+            background: linear-gradient(135deg, var(--action-grad-start) 0%, var(--action-grad-end) 100%) !important;
+            color: var(--action-text) !important;
+            border: 1px solid var(--action-border) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), 0 8px 18px rgba(111, 132, 157, 0.22);
         }
         .click-radar {
             position: fixed;
@@ -1296,12 +1417,6 @@
         #body.theme-light .background-option {
             border: 1px solid rgba(16, 20, 24, 0.2) !important;
         }
-        #body.theme-light .btn-add {
-            color: #ffffff !important;
-        }
-        #body.theme-light .tab-btn.active {
-            color: #ffffff !important;
-        }
 
         #body.theme-light .glass-card {
             background: rgba(255, 255, 255, 0.92);
@@ -1350,7 +1465,9 @@
             color: #5f6c7c;
         }
         #body.theme-light .wheel div.active {
-            color: #0a66ff;
+            color: var(--action-grad-start);
+            text-shadow: 0 0 8px rgba(149, 192, 234, 0.85), 0 0 14px rgba(196, 231, 199, 0.6);
+            filter: drop-shadow(0 0 5px rgba(149, 192, 234, 0.35));
         }
 
         #body.theme-light input[type="text"],
@@ -1432,8 +1549,13 @@
             color: #3f4b5a;
         }
         #body.theme-light .tab-btn.active {
-            color: #ffffff;
+            color: var(--action-text);
             box-shadow: 0 8px 20px rgba(10, 102, 255, 0.26);
+        }
+
+        #body.theme-light button[style*="background:var(--accent-blue)"],
+        #body.theme-light button[style*="background: var(--accent-blue)"] {
+            color: var(--action-text) !important;
         }
 
         #body.theme-light #previous-timers-list * {
@@ -1489,7 +1611,7 @@
         #next-alarm-summary .next-alarm-fill {
             height: 100%;
             width: 0%;
-            background: #0a84ff;
+            background: linear-gradient(135deg, var(--action-grad-start) 0%, var(--action-grad-end) 100%);
             transition: width 0.3s ease;
         }
 
@@ -1545,16 +1667,6 @@
             <div class="sun-glow" aria-hidden="true"></div>
             <div class="sun-spin" aria-hidden="true">
                 <svg class="sun-icon" viewBox="0 0 200 200">
-                    <defs>
-                        <radialGradient id="sun-core-shade" cx="34%" cy="30%" r="78%">
-                            <stop offset="0%" stop-color="#f8de84" stop-opacity="0.52"></stop>
-                            <stop offset="62%" stop-color="#f2cf66" stop-opacity="0.16"></stop>
-                            <stop offset="100%" stop-color="#e7b74e" stop-opacity="0.3"></stop>
-                        </radialGradient>
-                        <clipPath id="sun-core-clip">
-                            <circle cx="100" cy="100" r="56"></circle>
-                        </clipPath>
-                    </defs>
                     <g class="sun-rotor" fill="#f0d26b">
                         <rect x="95" y="8" width="10" height="38" rx="5"></rect>
                         <rect x="96.5" y="14" width="7" height="32" rx="3.5" transform="rotate(22.5 100 100)"></rect>
@@ -1575,11 +1687,6 @@
                     </g>
                     <g class="sun-core">
                         <circle cx="100" cy="100" r="56" fill="#f0d26b"></circle>
-                        <g clip-path="url(#sun-core-clip)">
-                            <circle cx="100" cy="100" r="56" fill="url(#sun-core-shade)"></circle>
-                            <ellipse cx="78" cy="76" rx="23" ry="16" fill="rgba(255, 241, 178, 0.36)"></ellipse>
-                            <path d="M132 72 l7 -4 M140 80 l5 -3 M122 142 l7 -4 M130 150 l7 -4" stroke="#f6bc5f" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
-                        </g>
                         <circle cx="100" cy="100" r="56" fill="none" stroke="rgba(255, 241, 178, 0.45)" stroke-width="1.5"></circle>
                     </g>
                 </svg>
@@ -1734,7 +1841,7 @@
             <section style="margin-bottom: 45px;">
                 <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Modify Routine</p>
                 <div id="edit-list"></div>
-                <div style="display: flex; gap: 14px; margin-top: 25px;">
+                <div class="input-action-row" style="margin-top: 25px;">
                     <input type="text" id="task-in" placeholder="Add new morning habit...">
                     <button class="btn-add" onclick="addTask()">Add</button>
                 </div>
@@ -1746,7 +1853,7 @@
         
         <div id="screen-timers" class="glass-card hidden aux" style="max-width:480px;">
             <h2 style="font-size:28px; margin-bottom:18px;">Timers</h2>
-            <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <div class="input-action-row" style="margin-bottom:12px;">
                 <input id="timer-label" type="text" placeholder="Label" style="flex:1; padding:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); color:#fff;">
                 <button class="btn-add" id="create-timer-btn">Create</button>
             </div>
@@ -3131,7 +3238,16 @@
                 tasks.forEach(t => {
                     const item = document.createElement('div');
                     item.className = `item ${t.done ? 'checked' : ''}`;
-                    item.onclick = () => toggleTaskCompletion(t.id);
+                    item.dataset.taskId = String(t.id);
+                    item.onclick = () => {
+                        if (t.done) {
+                            toggleTaskCompletion(t.id);
+                            return;
+                        }
+                        if (item.classList.contains('completing')) return;
+                        item.classList.add('completing');
+                        setTimeout(() => toggleTaskCompletion(t.id), 560);
+                    };
 
                     const check = document.createElement('div');
                     check.className = 'check-circle';
@@ -3449,11 +3565,14 @@
                 const isExpanded = _expandedAlarmIndex === i;
                 return `
                 <div class="alarm-row" data-alarm-idx="${i}" style="padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.1);${highlightStyle}${rowDisabledStyle}padding:20px;border-radius:12px;margin-bottom:8px;">
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
-                        ${isRenaming
-                            ? `<input type="text" class="alarm-name-input" data-alarm-idx="${i}" value="${alarmName.replace(/"/g, '&quot;')}" maxlength="40" style="flex:1; min-width:0; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:#fff; padding:8px 10px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; ${nameTextDisabledStyle}">`
-                            : `<div class="alarm-name-text" style="font-size:11px; text-transform:uppercase; letter-spacing:1.2px; font-weight:900; color:rgba(255,255,255,0.72); ${nameTextDisabledStyle}">${alarmName}</div>`
-                        }
+                    <div class="alarm-name-row" style="${contentDisabledStyle}">
+                        <span class="alarm-name-main">
+                            ${isRenaming
+                                ? `<input type="text" class="alarm-name-input" data-alarm-idx="${i}" value="${alarmName.replace(/"/g, '&quot;')}" maxlength="40" style="flex:1; min-width:0; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:#fff; padding:8px 10px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; ${nameTextDisabledStyle}">`
+                                : `<div class="alarm-name-text" style="font-size:11px; text-transform:uppercase; letter-spacing:1.2px; font-weight:900; color:rgba(255,255,255,0.72); ${nameTextDisabledStyle}">${alarmName}</div>`
+                            }
+                            <button class="alarm-type-toggle" data-alarm-idx="${i}" style="color:${typeColor}; opacity:0.95;">${typeLabel}</button>
+                        </span>
                         <button class="alarm-rename-btn" data-alarm-idx="${i}" aria-label="Rename alarm" title="Rename alarm" style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border:none; border-radius:8px; background:rgba(255,255,255,0.06); color:#dbe9ff; cursor:pointer;">
                             <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="display:block; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;">
                                 <path d="M12 20h9"></path>
@@ -3467,7 +3586,6 @@
                             <span style="font-size:14px; font-weight:900; opacity:0.5;">${a.split(' ')[1]}</span>
                         </span>
                         <span class="alarm-time-right">
-                            <button class="alarm-type-toggle" data-alarm-idx="${i}" style="color:${typeColor}; opacity:0.95;">${typeLabel}</button>
                             <button class="alarm-toggle-btn" data-alarm-idx="${i}" aria-label="${isEnabled ? 'Turn alarm off' : 'Turn alarm on'}" style="position:relative; width:56px; height:32px; border:none; border-radius:999px; cursor:pointer; background:${isEnabled ? '#10d176' : '#7a7f88'}; transition:background .2s ease;">
                                 <span style="position:absolute; top:3px; left:${isEnabled ? '27px' : '3px'}; width:26px; height:26px; border-radius:50%; background:#fff; transition:left .2s ease;"></span>
                             </button>
@@ -3850,14 +3968,24 @@
             app.style.backgroundPosition = '';
             app.style.backgroundRepeat = '';
             app.style.backgroundColor = '';
+            bodyEl.style.backgroundImage = '';
+            bodyEl.style.backgroundSize = '';
+            bodyEl.style.backgroundPosition = '';
+            bodyEl.style.backgroundRepeat = '';
+            bodyEl.style.backgroundColor = '';
 
             if (opt.type === 'image') {
                 app.style.backgroundImage = `url('${opt.value}')`;
                 app.style.backgroundSize = 'cover';
                 app.style.backgroundPosition = 'center';
                 app.style.backgroundRepeat = 'no-repeat';
+                bodyEl.style.backgroundImage = `url('${opt.value}')`;
+                bodyEl.style.backgroundSize = 'cover';
+                bodyEl.style.backgroundPosition = 'center';
+                bodyEl.style.backgroundRepeat = 'no-repeat';
             } else if (opt.type === 'color') {
                 app.style.backgroundColor = opt.value;
+                bodyEl.style.backgroundColor = opt.value;
             }
 
             bodyEl.classList.remove('theme-dark', 'theme-light');
@@ -5834,7 +5962,7 @@
                     pickerContainer.appendChild(label);
                     extendContainer.appendChild(extendBtn);
                     extendContainer.appendChild(pickerContainer);
-
+ 
                     btnRow.appendChild(stopBtn);
                     btnRow.appendChild(extendContainer);
 
