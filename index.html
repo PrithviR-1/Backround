@@ -35,7 +35,7 @@
             --action-text: #6f7c8a;
             
             
-            --glass-bg: #111214;
+            --glass-bg: #000000;
             --glass-stroke: rgba(255, 255, 255, 0.08);
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
@@ -523,6 +523,24 @@
             display: none;
         }
 
+        #body.no-background-mode #stage {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #body.no-background-mode #app-ui {
+            align-items: center;
+            padding: 0 24px calc(140px + env(safe-area-inset-bottom));
+            background: #000000;
+        }
+
+        #body.no-background-mode .glass-card {
+            max-width: 480px !important;
+            width: 100%;
+            border-radius: 0;
+            margin-bottom: 40px;
+        }
+
         h2 { 
             font-size: 42px; 
             font-weight: 900; 
@@ -666,7 +684,7 @@
             flex: 1;
             overflow-y: scroll;
             scrollbar-width: none;
-            scroll-snap-type: y mandatory;
+            scroll-snap-type: none;
             padding: 90px 0;
             z-index: 2;
             user-select: none;
@@ -674,17 +692,22 @@
             touch-action: pan-y;
             overscroll-behavior-y: contain;
             cursor: ns-resize;
+            -webkit-overflow-scrolling: touch;
+            will-change: scroll-position;
         }
         .wheel::-webkit-scrollbar { display: none; }
         .wheel div { 
             height: 40px; 
             line-height: 40px; 
             text-align: center; 
-            scroll-snap-align: center;
             font-size: 24px;
             color: var(--text-secondary);
-            transition: all 0.4s ease;
+            transition: color 0.12s ease, transform 0.12s ease;
             font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 4px;
         }
         .wheel div.active {
             color: transparent;
@@ -692,7 +715,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             font-weight: 600;
-            transform: scale(1.4);
+            transform: scale(1.22);
         }
 
         
@@ -1335,7 +1358,7 @@
             width: min(100%, 540px);
             max-width: 100%;
             gap: 6px;
-            background: #111214;
+            background: #000000;
             border: 1px solid rgba(255,255,255,0.06);
             padding: 8px;
             border-radius: 28px;
@@ -1610,7 +1633,7 @@
         #body.theme-dark {
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
-            --glass-bg: #111214;
+            --glass-bg: #000000;
             --glass-stroke: rgba(255, 255, 255, 0.08);
         }
 
@@ -1619,7 +1642,7 @@
             margin-bottom: 12px;
             padding: 12px 14px;
             border-radius: 12px;
-            background: rgba(255,255,255,0.04);
+            background: rgba(0,0,0,0.65);
             border: 1px solid rgba(255,255,255,0.08);
         }
         #next-alarm-summary .next-alarm-title {
@@ -1654,7 +1677,7 @@
             display: block;
             border-radius: 22px;
             border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.02);
+            background: rgba(0,0,0,0.72);
             overflow: visible;
         }
 
@@ -1662,7 +1685,7 @@
     position: relative;
     z-index: 50;
     padding: 14px 14px 12px;
-    background: linear-gradient(180deg, rgba(17,18,20,0.98) 0%, rgba(17,18,20,0.9) 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.9) 100%);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -1871,8 +1894,10 @@
                 <!-- ===== ALARM LAYOUT (SINGLE SCROLL) END ===== -->
             </section>
 
-            <div class="divider-glass"></div>
+        </div>
 
+        <div id="screen-routine" class="glass-card hidden aux" style="max-width:480px;">
+            <h2 style="font-size:28px; margin-bottom:18px;">Routine</h2>
             <section style="margin-bottom: 45px;">
                 <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Modify Routine</p>
                 <div id="edit-list"></div>
@@ -1881,8 +1906,6 @@
                     <button class="btn-add" onclick="addTask()">Add</button>
                 </div>
             </section>
-
-            
         </div>
 
         
@@ -1907,10 +1930,8 @@
                 <p style="text-transform: uppercase; font-size: 10px; font-weight: 900; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 1.5px;">Previous Timers</p>
                 <div id="previous-timers-list" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
-        </div>
-        
-        <div id="screen-stopwatch" class="glass-card hidden aux" style="max-width:480px;">
-            <h2 style="font-size:28px; margin-bottom:18px;">Stopwatch</h2>
+            <div class="divider-glass"></div>
+            <p style="text-transform: uppercase; font-size: 10px; font-weight: 900; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 1.5px;">Stopwatch</p>
             <div style="font-weight:900; font-size:36px; text-align:center; margin-bottom:12px;" id="sw-display">00:00.00</div>
             <div style="display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
                 <button class="btn-add" id="sw-start">Start</button>
@@ -1936,31 +1957,32 @@
     
     <div class="bottom-nav" aria-hidden="false">
         <div class="nav-inner">
-            <button class="tab-btn" id="tab-alarms" onclick="switchTab('post')" aria-label="Home">
+            <button class="tab-btn" id="tab-alarms" onclick="switchTab('post')" aria-label="Alarms">
                 <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3 10.5 12 3l9 7.5"></path>
-                    <path d="M5 9.5V21h14V9.5"></path>
-                    <path d="M10 21v-6h4v6"></path>
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="M12 12V8.5"></path>
+                    <path d="M12 12L15 14"></path>
+                    <path d="M8.8 3.6h6.4"></path>
+                    <path d="M17.3 6.3 19 4.6"></path>
+                    <path d="M6.7 6.3 5 4.6"></path>
                 </svg>
-                <span class="tab-label">Home</span>
+                <span class="tab-label">Alarms</span>
             </button>
-            <button class="tab-btn" id="tab-timers" onclick="switchTab('timers')" aria-label="Timers">
+            <button class="tab-btn" id="tab-routine" onclick="switchTab('routine')" aria-label="Routine">
+                <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="m9.2 12.1 2 2 3.6-3.6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span class="tab-label">Routine</span>
+            </button>
+            <button class="tab-btn" id="tab-timers" onclick="switchTab('timers')" aria-label="Timing">
                 <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M14 21a2 2 0 0 1-4 0"></path>
                     <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16z"></path>
                     <path d="M7.5 5 5 3"></path>
                     <path d="m16.5 5 2.5-2"></path>
                 </svg>
-                <span class="tab-label">Timers</span>
-            </button>
-            <button class="tab-btn" id="tab-stopwatch" onclick="switchTab('stopwatch')" aria-label="Stopwatch">
-                <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="13" r="8"></circle>
-                    <path d="M12 13 15 10"></path>
-                    <path d="M9 2h6"></path>
-                    <path d="M15.5 5.5 17 4"></path>
-                </svg>
-                <span class="tab-label">Stopwatch</span>
+                <span class="tab-label">Timing</span>
             </button>
             <button class="tab-btn" id="tab-sounds" onclick="switchTab('sounds')" aria-label="Sounds">
                 <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -2049,6 +2071,8 @@
         let alarmNames = [];
 
         const DAY_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const DAY_WHEEL_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        const EVERY_DAY_LABEL = 'All';
         const ALL_DAY_INDICES = [0,1,2,3,4,5,6];
         let alarmsMeta = alarms.map(() => 'Everyday');
         let alarmsRepeatDays = alarms.map(() => [...ALL_DAY_INDICES]);
@@ -2064,14 +2088,11 @@
         let _repeatPopover = null;
 
         let selectedSound = DEFAULT_SOUND_ID; // default sound
-        const DEFAULT_BACKGROUND_ID = 'none';
+        const DEFAULT_BACKGROUND_ID = 'black-bg';
         const BACKGROUND_OPTIONS = [
-            { id: 'day', name: 'White With Background', type: 'image', value: 'images/day.jpg', theme: 'light' },
-            { id: 'white', name: 'All White', type: 'color', value: '#ffffff', theme: 'light' },
-            { id: 'lightgrey', name: 'All Light Grey', type: 'color', value: '#e0e0e0', theme: 'light' },
-            { id: 'black', name: 'All Black', type: 'color', value: '#000000', theme: 'dark' },
-            { id: 'darkgrey', name: 'All Dark Grey', type: 'color', value: '#333333', theme: 'dark' },
-            { id: 'none', name: 'Black With Background', type: 'none', theme: 'dark' }
+            { id: 'black-bg', name: 'Black With Background', type: 'stage-night', theme: 'dark' },
+            { id: 'white-bg', name: 'White With Background', type: 'stage-day', theme: 'light' },
+            { id: 'no-bg', name: 'No Background', type: 'fullscreen-none', theme: 'dark' }
         ];
         let selectedBackground = DEFAULT_BACKGROUND_ID;
         let _backgroundAnimationsEnabled = true;
@@ -2743,7 +2764,7 @@
         });
 
         function _shouldEnableBackgroundAnimations(backgroundId) {
-            return !['white', 'lightgrey', 'darkgrey', 'black'].includes(String(backgroundId || ''));
+            return String(backgroundId || '') !== 'no-bg';
         }
 
         function _setBackgroundAnimationMode(enabled) {
@@ -2825,6 +2846,175 @@
             }
         }
 
+        function _renderInfiniteWheel(wheel, values, opts = {}) {
+            if (!wheel) return;
+            const copyCount = Math.max(9, Number(opts.copyCount) || 15);
+            const normalizedValues = Array.isArray(values) ? values.map(v => String(v)) : [];
+            const valueCount = normalizedValues.length;
+            if (valueCount === 0) {
+                wheel.innerHTML = '';
+                return;
+            }
+            let markup = '';
+            for (let copy = 0; copy < copyCount; copy += 1) {
+                for (let idx = 0; idx < valueCount; idx += 1) {
+                    const value = normalizedValues[idx];
+                    markup += `<div class="wheel-item" data-wheel-value="${value}" data-wheel-index="${idx}">${value}</div>`;
+                }
+            }
+            wheel.innerHTML = markup;
+            wheel.dataset.infinite = 'true';
+            wheel.dataset.wheelValueCount = String(valueCount);
+            wheel.dataset.wheelCopyCount = String(copyCount);
+            wheel.dataset.wheelMiddleStart = String(Math.floor(copyCount / 2) * valueCount);
+            wheel._wheelItems = Array.from(wheel.querySelectorAll('.wheel-item'));
+            wheel._wheelRafId = null;
+            wheel._wheelIdleTimeout = null;
+            wheel._wheelActiveItem = null;
+        }
+
+        function _renderFiniteWheel(wheel, values) {
+            if (!wheel) return;
+            const normalizedValues = Array.isArray(values) ? values.map(v => String(v)) : [];
+            let markup = '<div class="wheel-spacer" aria-hidden="true"></div>';
+            normalizedValues.forEach((value, idx) => {
+                markup += `<div class="wheel-item" data-wheel-value="${value}" data-wheel-index="${idx}">${value}</div>`;
+            });
+            markup += '<div class="wheel-spacer" aria-hidden="true"></div>';
+            wheel.innerHTML = markup;
+            delete wheel.dataset.infinite;
+            delete wheel.dataset.wheelValueCount;
+            delete wheel.dataset.wheelCopyCount;
+            delete wheel.dataset.wheelMiddleStart;
+            wheel._wheelItems = Array.from(wheel.querySelectorAll('.wheel-item'));
+            wheel._wheelRafId = null;
+            wheel._wheelIdleTimeout = null;
+            wheel._wheelActiveItem = null;
+        }
+
+        function _getWheelItems(wheel) {
+            if (!wheel) return [];
+            if (Array.isArray(wheel._wheelItems) && wheel._wheelItems.length) return wheel._wheelItems;
+            wheel._wheelItems = Array.from(wheel.querySelectorAll('.wheel-item'));
+            return wheel._wheelItems;
+        }
+
+        function _getWheelGeometry(wheel) {
+            const items = _getWheelItems(wheel);
+            if (!items.length) return null;
+            const first = items[0];
+            const itemHeight = first.offsetHeight || 40;
+            const firstCenter = first.offsetTop + (itemHeight / 2);
+            return { items, itemHeight, firstCenter };
+        }
+
+        function _getWheelCenteredAbsoluteIndex(wheel) {
+            const geometry = _getWheelGeometry(wheel);
+            if (!geometry) return -1;
+            const centerPoint = wheel.scrollTop + (wheel.clientHeight / 2);
+            const raw = Math.round((centerPoint - geometry.firstCenter) / geometry.itemHeight);
+            return Math.max(0, Math.min(geometry.items.length - 1, raw));
+        }
+
+        function _getWheelCenteredItem(wheel) {
+            const items = _getWheelItems(wheel);
+            if (!items.length) return null;
+            const centeredIdx = _getWheelCenteredAbsoluteIndex(wheel);
+            return centeredIdx >= 0 ? items[centeredIdx] : null;
+        }
+
+        function _setWheelActiveItem(wheel, item) {
+            if (!wheel || !item) return;
+            if (wheel._wheelActiveItem === item) return;
+            if (wheel._wheelActiveItem) wheel._wheelActiveItem.classList.remove('active');
+            item.classList.add('active');
+            wheel._wheelActiveItem = item;
+        }
+
+        function _centerWheelOnItem(wheel, item, behavior = 'auto') {
+            if (!wheel || !item) return;
+            const targetTop = item.offsetTop - ((wheel.clientHeight - item.offsetHeight) / 2);
+            const finalTop = Math.max(0, targetTop);
+            if (Math.abs(wheel.scrollTop - finalTop) < 0.5) return;
+            if (behavior === 'smooth') {
+                wheel.scrollTo({ top: finalTop, behavior: 'smooth' });
+                return;
+            }
+            wheel.scrollTop = finalTop;
+        }
+
+        function _recenterInfiniteWheel(wheel) {
+            if (!wheel || wheel.dataset.infinite !== 'true') return;
+            const valueCount = Number(wheel.dataset.wheelValueCount) || 0;
+            const copyCount = Number(wheel.dataset.wheelCopyCount) || 0;
+            if (!valueCount || copyCount < 3) return;
+            const geometry = _getWheelGeometry(wheel);
+            if (!geometry) return;
+            const sourceIdx = _getWheelCenteredAbsoluteIndex(wheel);
+            if (sourceIdx < 0) return;
+            const baseIndex = sourceIdx % valueCount;
+            const cycle = Math.floor(sourceIdx / valueCount);
+            const middleCycle = Math.floor(copyCount / 2);
+            if (Math.abs(cycle - middleCycle) <= 1) return;
+            const targetAbsoluteIdx = (middleCycle * valueCount) + baseIndex;
+            const deltaItems = targetAbsoluteIdx - sourceIdx;
+            wheel.scrollTop += (deltaItems * geometry.itemHeight);
+        }
+
+        function _maintainInfiniteWheelLoop(wheel) {
+            if (!wheel || wheel.dataset.infinite !== 'true') return;
+            const valueCount = Number(wheel.dataset.wheelValueCount) || 0;
+            const copyCount = Number(wheel.dataset.wheelCopyCount) || 0;
+            if (!valueCount || copyCount < 5) return;
+            const geometry = _getWheelGeometry(wheel);
+            if (!geometry) return;
+            const sourceIdx = _getWheelCenteredAbsoluteIndex(wheel);
+            if (sourceIdx < 0) return;
+            const cycle = Math.floor(sourceIdx / valueCount);
+            const middleCycle = Math.floor(copyCount / 2);
+            const minSafeCycle = 2;
+            const maxSafeCycle = copyCount - 3;
+            if (cycle >= minSafeCycle && cycle <= maxSafeCycle) return;
+            const baseIndex = sourceIdx % valueCount;
+            const targetAbsoluteIdx = (middleCycle * valueCount) + baseIndex;
+            const deltaItems = targetAbsoluteIdx - sourceIdx;
+            wheel.scrollTop += (deltaItems * geometry.itemHeight);
+        }
+
+        function _updateWheelVisualOnFrame(wheel) {
+            if (!wheel) return;
+            const centered = _getWheelCenteredItem(wheel);
+            if (centered) _setWheelActiveItem(wheel, centered);
+        }
+
+        function _queueWheelVisualUpdate(wheel) {
+            if (!wheel) return;
+            if (wheel._wheelRafId) return;
+            wheel._wheelRafId = requestAnimationFrame(() => {
+                wheel._wheelRafId = null;
+                _updateWheelVisualOnFrame(wheel);
+            });
+        }
+
+        function _finalizeWheelAfterScroll(wheel) {
+            if (!wheel) return;
+            if (wheel.dataset.infinite === 'true') _recenterInfiniteWheel(wheel);
+            const centered = _getWheelCenteredItem(wheel);
+            if (centered) {
+                _centerWheelOnItem(wheel, centered, 'smooth');
+                _setWheelActiveItem(wheel, centered);
+            }
+        }
+
+        function _refreshAllPickerWheels() {
+            const wheelIds = ['h-wheel', 'm-wheel', 'd-wheel', 'p-wheel', 'timer-hour-wheel', 'timer-min-wheel', 'timer-sec-wheel'];
+            wheelIds.forEach(id => {
+                const wheel = document.getElementById(id);
+                if (!wheel || wheel.clientHeight <= 0 || wheel.offsetHeight <= 0) return;
+                _finalizeWheelAfterScroll(wheel);
+            });
+        }
+
         function initPickerWheels() {
             const wheels = {
                 h: document.getElementById('h-wheel'),
@@ -2836,87 +3026,54 @@
                 timerSec: document.getElementById('timer-sec-wheel')
             };
 
-            let hMarkup = "<div></div>";
-            for(let i=1; i<=12; i++) hMarkup += `<div>${i}</div>`;
-            wheels.h.innerHTML = hMarkup + "<div></div>";
-
-            let mMarkup = "<div></div>";
-            for (let i = 0; i < 60; i++) {
-                mMarkup += `<div>${i.toString().padStart(2,'0')}</div>`;
-            }
-            wheels.m.innerHTML = mMarkup + "<div></div>";
-
-            let dMarkup = "<div></div>";
-            DAY_LABELS.forEach(d => { dMarkup += `<div>${d}</div>`; });
-            wheels.d.innerHTML = dMarkup + "<div></div>";
-
-            let timerHourMarkup = "<div></div>";
-            for (let i = 0; i <= 23; i++) {
-                timerHourMarkup += `<div>${i}</div>`;
-            }
-            wheels.timerHour.innerHTML = timerHourMarkup + "<div></div>";
-
-            let timerMinMarkup = "<div></div>";
-            for (let i = 0; i < 60; i++) {
-                timerMinMarkup += `<div>${i}</div>`;
-            }
-            wheels.timerMin.innerHTML = timerMinMarkup + "<div></div>";
-
-            let timerSecMarkup = "<div></div>";
-            for (let i = 0; i < 60; i++) {
-                timerSecMarkup += `<div>${i.toString().padStart(2,'0')}</div>`;
-            }
-            wheels.timerSec.innerHTML = timerSecMarkup + "<div></div>";
+            _renderInfiniteWheel(wheels.h, Array.from({ length: 12 }, (_, i) => String(i + 1)));
+            _renderInfiniteWheel(wheels.m, Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')));
+            _renderFiniteWheel(wheels.d, [EVERY_DAY_LABEL, ...DAY_WHEEL_LABELS]);
+            _renderFiniteWheel(wheels.p, ['AM', 'PM']);
+            _renderInfiniteWheel(wheels.timerHour, Array.from({ length: 24 }, (_, i) => String(i)));
+            _renderInfiniteWheel(wheels.timerMin, Array.from({ length: 60 }, (_, i) => String(i)));
+            _renderInfiniteWheel(wheels.timerSec, Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')));
 
             Object.values(wheels).forEach(wheel => {
                 if (wheel) {
                     wheel.addEventListener('dragstart', (evt) => {
                         evt.preventDefault();
                     });
-                    wheel.addEventListener('pointerdown', (evt) => {
-                        if (evt.pointerType === 'mouse') evt.preventDefault();
-                    });
                     wheel.addEventListener('scroll', () => {
-                        clearTimeout(wheel.snapTimeout);
-                        wheel.snapTimeout = setTimeout(() => handleWheelSnap(wheel), 150);
+                        _maintainInfiniteWheelLoop(wheel);
+                        _queueWheelVisualUpdate(wheel);
+                        clearTimeout(wheel._wheelIdleTimeout);
+                        wheel._wheelIdleTimeout = setTimeout(() => _finalizeWheelAfterScroll(wheel), 140);
                     });
                 }
             });
 
             setTimeout(() => {
+                _scrollWheelToValue('h-wheel', '12');
+                _scrollWheelToValue('m-wheel', '00');
+                _scrollWheelToValue('d-wheel', EVERY_DAY_LABEL);
+                _scrollWheelToValue('p-wheel', 'AM');
+                _scrollWheelToValue('timer-hour-wheel', '0');
+                _scrollWheelToValue('timer-min-wheel', '0');
+                _scrollWheelToValue('timer-sec-wheel', '00');
                 Object.values(wheels).forEach(w => {
-                    if (w) handleWheelSnap(w);
+                    if (w) _finalizeWheelAfterScroll(w);
                 });
-                const timerHourWheel = document.getElementById('timer-hour-wheel');
-                const timerMinWheel = document.getElementById('timer-min-wheel');
-                const timerSecWheel = document.getElementById('timer-sec-wheel');
-                if (timerHourWheel) timerHourWheel.scrollTop = 40 * 0; // 0 hours
-                if (timerMinWheel) timerMinWheel.scrollTop = 40 * 0; // 0 minutes
-                if (timerSecWheel) timerSecWheel.scrollTop = 40 * 30; // 30 seconds
+                requestAnimationFrame(() => requestAnimationFrame(_refreshAllPickerWheels));
             }, 120);
         }
 
         function handleWheelSnap(wheel) {
-            const children = wheel.querySelectorAll('div');
-            const centerPoint = wheel.scrollTop + (wheel.clientHeight / 2);
-            
-            children.forEach(child => {
-                const childCenter = child.offsetTop + (child.clientHeight / 2);
-                const isSelected = Math.abs(centerPoint - childCenter) < 25;
-                
-                if (isSelected) {
-                    child.classList.add('active');
-                } else {
-                    child.classList.remove('active');
-                }
-            });
+            const items = _getWheelItems(wheel);
+            if (!items.length) return;
+            _finalizeWheelAfterScroll(wheel);
         }
 
         function attachScrollSnapping() {
             const wheels = ['h-wheel', 'm-wheel', 'd-wheel', 'p-wheel', 'timer-hour-wheel', 'timer-min-wheel', 'timer-sec-wheel'];
             wheels.forEach(id => {
                 const w = document.getElementById(id);
-                if (w) w.scrollTop = 1; // Trigger initial calculation
+                if (w) handleWheelSnap(w);
             });
         }
 
@@ -3369,11 +3526,22 @@
         function _scrollWheelToValue(wheelId, value) {
             const wheel = document.getElementById(wheelId);
             if (!wheel) return;
-            const target = Array.from(wheel.querySelectorAll('div')).find(el => el.textContent.trim() === String(value));
-            if (!target) return;
-            const offset = target.offsetTop - ((wheel.clientHeight - target.clientHeight) / 2);
-            wheel.scrollTop = Math.max(0, offset);
-            handleWheelSnap(wheel);
+            const items = _getWheelItems(wheel);
+            const allMatches = items.filter(el => String(el.dataset.wheelValue || el.textContent || '').trim() === String(value));
+            if (!allMatches.length) return;
+            const middleStart = Number(wheel.dataset.wheelMiddleStart);
+            let target = allMatches[0];
+            if (Number.isFinite(middleStart)) {
+                target = allMatches.reduce((best, current) => {
+                    const bestIdx = items.indexOf(best);
+                    const curIdx = items.indexOf(current);
+                    if (bestIdx < 0) return current;
+                    if (curIdx < 0) return best;
+                    return Math.abs(curIdx - middleStart) < Math.abs(bestIdx - middleStart) ? current : best;
+                }, allMatches[0]);
+            }
+            _centerWheelOnItem(wheel, target, 'auto');
+            _setWheelActiveItem(wheel, target);
         }
 
         function _resetTimerPickerToZero() {
@@ -3436,8 +3604,10 @@
 
             const selectedDays = _getRepeatDaysForAlarm(index);
             if (Array.isArray(selectedDays) && selectedDays.length > 0) {
-                const firstDay = DAY_LABELS[selectedDays[0]];
-                _scrollWheelToValue('d-wheel', firstDay);
+                const dayLabel = selectedDays.length === 7
+                    ? EVERY_DAY_LABEL
+                    : DAY_LABELS[selectedDays[0]];
+                _scrollWheelToValue('d-wheel', dayLabel);
             }
             selectedAlarmType = (alarmTypes && alarmTypes[index]) ? alarmTypes[index] : 'routine';
             setAlarmType(selectedAlarmType);
@@ -3469,7 +3639,10 @@
                 _scrollWheelToValue('p-wheel', restored.hh >= 12 ? 'PM' : 'AM');
             }
             const restoredDays = _getRepeatDaysForAlarm(idx);
-            _scrollWheelToValue('d-wheel', DAY_LABELS[restoredDays[0] ?? 0]);
+            const restoredDayLabel = Array.isArray(restoredDays) && restoredDays.length === 7
+                ? EVERY_DAY_LABEL
+                : DAY_LABELS[restoredDays[0] ?? 0];
+            _scrollWheelToValue('d-wheel', restoredDayLabel);
             selectedAlarmType = (alarmTypes && alarmTypes[idx]) ? alarmTypes[idx] : 'routine';
             setAlarmType(selectedAlarmType);
 
@@ -3786,14 +3959,18 @@
             }
 
             const now = Date.now();
-            const h = document.querySelector('#h-wheel .active')?.innerText || "6";
+            const h = document.querySelector('#h-wheel .active')?.innerText || "12";
             const m = document.querySelector('#m-wheel .active')?.innerText || "00";
             const p = document.querySelector('#p-wheel .active')?.innerText || "AM";
-            const d = document.querySelector('#d-wheel .active')?.innerText || "Everyday";
+            const d = document.querySelector('#d-wheel .active')?.dataset.wheelValue
+                || document.querySelector('#d-wheel .active')?.innerText
+                || EVERY_DAY_LABEL;
             
             const newAlarm = `${h}:${m} ${p}`;
             const parsedDay = DAY_LABELS.findIndex(label => label === d);
-            const selectedDaysForCreate = parsedDay >= 0 ? [parsedDay] : [...ALL_DAY_INDICES];
+            const selectedDaysForCreate = (d === EVERY_DAY_LABEL || d === 'Everyday' || parsedDay < 0)
+                ? [...ALL_DAY_INDICES]
+                : [parsedDay];
             const normalizedDays = _normalizeRepeatDays(selectedDaysForCreate);
             const normalizedType = selectedAlarmType === 'regular' ? 'regular' : 'routine';
             const editing = Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length;
@@ -3996,20 +4173,13 @@
             bodyEl.style.backgroundPosition = '';
             bodyEl.style.backgroundRepeat = '';
             bodyEl.style.backgroundColor = '';
+            bodyEl.classList.toggle('no-background-mode', opt.id === 'no-bg');
 
-            if (opt.type === 'image') {
-                app.style.backgroundImage = `url('${opt.value}')`;
-                app.style.backgroundSize = 'cover';
-                app.style.backgroundPosition = 'center';
-                app.style.backgroundRepeat = 'no-repeat';
-                bodyEl.style.backgroundImage = `url('${opt.value}')`;
-                bodyEl.style.backgroundSize = 'cover';
-                bodyEl.style.backgroundPosition = 'center';
-                bodyEl.style.backgroundRepeat = 'no-repeat';
-            } else if (opt.type === 'color') {
-                app.style.backgroundColor = opt.value;
-                bodyEl.style.backgroundColor = opt.value;
+            if (opt.type === 'fullscreen-none') {
+                app.style.backgroundColor = '#000000';
+                bodyEl.style.backgroundColor = '#000000';
             }
+            setSunUp({ force: true });
 
             bodyEl.classList.remove('theme-dark', 'theme-light');
             bodyEl.classList.add(opt.theme === 'light' ? 'theme-light' : 'theme-dark');
@@ -5547,14 +5717,14 @@
             if (_inRoutineSession && name === 'post' && !opts.forceRoutineExit) return;
             const mappings = {
                 'post': 'screen-post',
+                'routine': 'screen-routine',
                 'wake': 'screen-wake',
                 'timers': 'screen-timers',
-                'stopwatch': 'screen-stopwatch',
                 'sounds': 'screen-sounds',
                 'background': 'screen-background'
             };
             const targetId = mappings[name] || 'screen-post';
-            ['screen-wake','screen-post','screen-timers','screen-stopwatch','screen-sounds','screen-background'].forEach(id => {
+            ['screen-wake','screen-post','screen-routine','screen-timers','screen-sounds','screen-background'].forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
                 if (id === targetId) {
@@ -5566,7 +5736,7 @@
                 }
             });
 
-            if (targetId === 'screen-wake') {
+            if (targetId === 'screen-wake' && _inRoutineSession) {
                 setSunDown();
             } else {
                 setSunUp();
@@ -5574,10 +5744,11 @@
 
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if (name === 'post') document.getElementById('tab-alarms')?.classList.add('active');
+            if (name === 'routine') document.getElementById('tab-routine')?.classList.add('active');
             if (name === 'timers') document.getElementById('tab-timers')?.classList.add('active');
-            if (name === 'stopwatch') document.getElementById('tab-stopwatch')?.classList.add('active');
             if (name === 'sounds') document.getElementById('tab-sounds')?.classList.add('active');
             if (name === 'background') document.getElementById('tab-background')?.classList.add('active');
+            requestAnimationFrame(() => requestAnimationFrame(_refreshAllPickerWheels));
         }
 
         (function initTabs(){
@@ -5707,17 +5878,10 @@
         function getWheelValue(wheelId) {
             const wheel = document.getElementById(wheelId);
             if (!wheel) return 0;
-            const children = wheel.querySelectorAll('div');
-            const centerPoint = wheel.scrollTop + (wheel.clientHeight / 2);
-            
-            for (let i = 0; i < children.length; i++) {
-                const child = children[i];
-                const childCenter = child.offsetTop + (child.clientHeight / 2);
-                if (Math.abs(centerPoint - childCenter) < 25) {
-                    return child.textContent ? parseInt(child.textContent) || 0 : 0;
-                }
-            }
-            return 0;
+            const activeItem = wheel.querySelector('.wheel-item.active') || _getWheelCenteredItem(wheel);
+            if (!activeItem) return 0;
+            const rawValue = String(activeItem.dataset.wheelValue || activeItem.textContent || '').trim();
+            return Number.parseInt(rawValue, 10) || 0;
         }
 
         function createTimer() {
