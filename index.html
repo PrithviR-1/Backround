@@ -977,6 +977,46 @@
             -webkit-text-fill-color: transparent;
             color: transparent;
         }
+        .routine-limit-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .routine-limit-label {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .routine-limit-options {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+        }
+        .routine-limit-btn {
+            flex: 1;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 8px 0;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: background .2s ease, border-color .2s ease, color .2s ease;
+        }
+        .routine-limit-btn:hover {
+            background: rgba(255,255,255,0.11);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .routine-limit-btn.active {
+            background: rgba(255,211,78,0.22);
+            border-color: var(--sun-main);
+            color: var(--sun-main);
+        }
         .alarm-row .alarm-toggle-btn {
             --toggle-track-height: 32px;
             --toggle-track-padding: 4px;
@@ -1082,6 +1122,59 @@
         .routine-edit-row {
             position: relative;
             overflow: hidden;
+        }
+        .routine-overview {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .routine-stat {
+            border-radius: 14px;
+            padding: 12px 10px;
+            background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+            border: 1px solid rgba(255,255,255,0.12);
+            text-align: center;
+        }
+        .routine-stat-value {
+            display: block;
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.1;
+        }
+        .routine-stat-label {
+            display: block;
+            margin-top: 4px;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 800;
+        }
+        .routine-edit-shell {
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+            padding: 12px;
+        }
+        .routine-empty {
+            text-align: center;
+            padding: 24px 14px;
+            border-radius: 14px;
+            border: 1px dashed rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.03);
+            color: var(--text-secondary);
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        #stopwatch-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+            text-transform: none;
         }
         .routine-edit-row.routine-delete-anim {
             pointer-events: none;
@@ -1603,6 +1696,33 @@
             border-color: rgba(16, 20, 24, 0.16);
             color: #101418;
         }
+        #body.theme-light .routine-stat {
+            background: linear-gradient(160deg, rgba(16,20,24,0.08), rgba(16,20,24,0.03));
+            border-color: rgba(16,20,24,0.16);
+        }
+        #body.theme-light .routine-stat-value,
+        #body.theme-light #stopwatch-title {
+            color: #101418;
+        }
+        #body.theme-light .routine-edit-shell {
+            border-color: rgba(16,20,24,0.14);
+            background: linear-gradient(180deg, rgba(16,20,24,0.05), rgba(16,20,24,0.02));
+        }
+        #body.theme-light .routine-empty {
+            border-color: rgba(16,20,24,0.2);
+            background: rgba(16,20,24,0.04);
+            color: rgba(16,20,24,0.65);
+        }
+        #body.theme-light .routine-limit-btn {
+            background: rgba(16,20,24,0.06);
+            border-color: rgba(16,20,24,0.16);
+            color: #101418;
+        }
+        #body.theme-light .routine-limit-btn.active {
+            background: rgba(10,132,255,0.18);
+            border-color: rgba(10,132,255,0.5);
+            color: #0a66ff;
+        }
 
         #body.theme-light .bottom-nav .nav-inner {
             background: rgba(255, 255, 255, 0.96);
@@ -1873,6 +1993,14 @@
                 <!-- ===== ALARM LAYOUT (SINGLE SCROLL) START ===== -->
                 <div id="alarms-screen-layout">
                     <div id="alarm-create-panel">
+                        <div class="routine-limit-row">
+                            <span class="routine-limit-label">Max Routine Alarms:</span>
+                            <div class="routine-limit-options">
+                                <button class="routine-limit-btn" id="routine-limit-1" type="button" onclick="setRoutineAlarmLimit(1)">1</button>
+                                <button class="routine-limit-btn" id="routine-limit-2" type="button" onclick="setRoutineAlarmLimit(2)">2</button>
+                                <button class="routine-limit-btn" id="routine-limit-3" type="button" onclick="setRoutineAlarmLimit(3)">3</button>
+                            </div>
+                        </div>
                         <div style="margin-bottom: 20px; display: flex; gap: 12px;">
                             <button class="alarm-type-btn" id="btn-routine" onclick="setAlarmType('routine')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,211,78,0.25); color: var(--sun-main); cursor: pointer; transition: all 0.3s; border-color: var(--sun-main);">Routine</button>
                             <button class="alarm-type-btn" id="btn-regular" onclick="setAlarmType('regular')" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--text-primary); cursor: pointer; transition: all 0.3s;">Regular Alarm</button>
@@ -1900,7 +2028,19 @@
             <h2 style="font-size:28px; margin-bottom:18px;">Routine</h2>
             <section style="margin-bottom: 45px;">
                 <p style="text-transform: uppercase; font-size: 11px; font-weight: 900; color: var(--text-secondary); margin-bottom: 20px; letter-spacing: 2px;">Modify Routine</p>
-                <div id="edit-list"></div>
+                <div class="routine-overview">
+                    <div class="routine-stat">
+                        <span class="routine-stat-value" id="routine-count">0</span>
+                        <span class="routine-stat-label">Habits</span>
+                    </div>
+                    <div class="routine-stat">
+                        <span class="routine-stat-value" id="routine-complete">0%</span>
+                        <span class="routine-stat-label">Completed</span>
+                    </div>
+                </div>
+                <div class="routine-edit-shell">
+                    <div id="edit-list"></div>
+                </div>
                 <div class="input-action-row" style="margin-top: 25px;">
                     <input type="text" id="task-in" placeholder="Add new morning habit...">
                     <button class="btn-add" onclick="addTask()">Add</button>
@@ -1931,7 +2071,7 @@
                 <div id="previous-timers-list" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
             <div class="divider-glass"></div>
-            <p style="text-transform: uppercase; font-size: 10px; font-weight: 900; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 1.5px;">Stopwatch</p>
+            <p id="stopwatch-title">Stopwatch</p>
             <div style="font-weight:900; font-size:36px; text-align:center; margin-bottom:12px;" id="sw-display">00:00.00</div>
             <div style="display:flex; gap:10px; justify-content:center; margin-bottom:12px;">
                 <button class="btn-add" id="sw-start">Start</button>
@@ -2080,6 +2220,7 @@
         let alarmTypes = alarms.map(() => 'routine'); // default to routine
         let alarmEnabled = alarms.map(() => true); // per-alarm on/off state
         let selectedAlarmType = 'routine'; // currently selected type for new alarms
+        let maxRoutineAlarms = 1; // configurable max routine alarms (1..3)
         let editingAlarmIndex = null;
         let _renamingAlarmIndex = null;
         let originalAlarmDraft = null;
@@ -2247,7 +2388,15 @@
             alarmNames = alarms.map((_, i) => _normalizeAlarmName(alarmNames[i], i));
             alarmsRepeatDays = alarms.map((_, i) => _normalizeRepeatDays(alarmsRepeatDays[i]));
             alarmsMeta = alarms.map((_, i) => _formatRepeatDays(alarmsRepeatDays[i]));
-            alarmTypes = alarms.map((_, i) => (alarmTypes[i] === 'regular' ? 'regular' : 'routine'));
+            let routineCount = 0;
+            alarmTypes = alarms.map((_, i) => {
+                const normalized = alarmTypes[i] === 'regular' ? 'regular' : 'routine';
+                if (normalized === 'routine') {
+                    routineCount += 1;
+                    if (routineCount > maxRoutineAlarms) return 'regular';
+                }
+                return normalized;
+            });
             alarmEnabled = alarms.map((_, i) => alarmEnabled[i] !== false);
 
             if (targetLen !== len && Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= targetLen) {
@@ -2501,6 +2650,38 @@
             const meta = (alarmsMeta && alarmsMeta[index]) ? alarmsMeta[index] : 'Everyday';
             return _legacyMetaToRepeatDays(meta);
         }
+        function _normalizeRoutineAlarmLimit(value) {
+            const n = Number(value);
+            if (!Number.isInteger(n)) return 1;
+            return Math.max(1, Math.min(3, n));
+        }
+        function _countRoutineAlarms(excludeIndex = null) {
+            if (!Array.isArray(alarmTypes)) return 0;
+            return alarmTypes.reduce((count, t, idx) => (
+                (idx !== excludeIndex && t === 'routine') ? (count + 1) : count
+            ), 0);
+        }
+        function _canSelectRoutineType(excludeIndex = null) {
+            return _countRoutineAlarms(excludeIndex) < maxRoutineAlarms;
+        }
+        function _updateRoutineLimitControls() {
+            [1, 2, 3].forEach(n => {
+                const btn = document.getElementById(`routine-limit-${n}`);
+                if (!btn) return;
+                btn.classList.toggle('active', maxRoutineAlarms === n);
+            });
+        }
+        function setRoutineAlarmLimit(limit) {
+            maxRoutineAlarms = _normalizeRoutineAlarmLimit(limit);
+            _normalizeAlarmCollections();
+            _updateRoutineLimitControls();
+            if (selectedAlarmType === 'routine' && !_canSelectRoutineType(Number.isInteger(editingAlarmIndex) ? editingAlarmIndex : null)) {
+                selectedAlarmType = 'regular';
+            }
+            setAlarmType(selectedAlarmType);
+            renderAlarms();
+            saveState();
+        }
 
         function _serializeTimersForState() {
             if (!Array.isArray(_timers)) return [];
@@ -2546,6 +2727,7 @@
                     alarmTypes: Array.isArray(alarmTypes) ? alarmTypes.map(t => (t === 'regular' ? 'regular' : 'routine')) : [],
                     alarmEnabled: Array.isArray(alarmEnabled) ? alarmEnabled.map(v => !!v) : [],
                     selectedAlarmType: selectedAlarmType === 'regular' ? 'regular' : 'routine',
+                    maxRoutineAlarms: _normalizeRoutineAlarmLimit(maxRoutineAlarms),
                     selectedSound: String(selectedSound || DEFAULT_SOUND_ID),
                     selectedBackground: String(selectedBackground || DEFAULT_BACKGROUND_ID),
                     customSounds,
@@ -2589,6 +2771,7 @@
                 alarmEnabled = [];
                 previousTimerHistory = [];
                 selectedAlarmType = 'routine';
+                maxRoutineAlarms = 1;
                 selectedSound = DEFAULT_SOUND_ID;
                 _timers.splice(0, _timers.length);
                 _sw_running = false;
@@ -2611,6 +2794,9 @@
                 : alarms.map((_, idx) => _legacyMetaToRepeatDays(alarmsMeta[idx]));
             alarmTypes = Array.isArray(state.alarmTypes) ? state.alarmTypes.map(v => (v === 'regular' ? 'regular' : 'routine')) : [];
             alarmEnabled = Array.isArray(state.alarmEnabled) ? state.alarmEnabled.map(v => !!v) : [];
+            maxRoutineAlarms = _normalizeRoutineAlarmLimit(
+                state.maxRoutineAlarms !== undefined ? state.maxRoutineAlarms : state.dailyAlarmLimit
+            );
             previousTimerHistory = Array.isArray(state.previousTimerHistory)
                 ? state.previousTimerHistory.map(_normalizeTimerHistoryEntry).filter(Boolean).slice(0, MAX_TIMER_HISTORY)
                 : [];
@@ -2628,6 +2814,7 @@
             alarmNames = alarmNames.map((n, i) => _normalizeAlarmName(n, i));
             alarmsRepeatDays = alarmsRepeatDays.map(_normalizeRepeatDays);
             alarmsMeta = alarmsRepeatDays.map(days => _formatRepeatDays(days));
+            _normalizeAlarmCollections();
 
             selectedAlarmType = state.selectedAlarmType === 'regular' ? 'regular' : 'routine';
 
@@ -2708,9 +2895,11 @@
         window.onload = () => {
             setupCamera();
             initializeState();
+            _updateRoutineLimitControls();
             initPickerWheels();
             renderApplication();
             renderAlarms();
+            setAlarmType(selectedAlarmType);
             renderSoundOptions();
             renderBackgroundOptions();
             _renderTimers();
@@ -3881,6 +4070,7 @@
                 if (!activeTrigger) _closeRepeatPopover();
                 else if (_repeatPopover) _positionRepeatPopover(activeTrigger, _repeatPopover);
             }
+            setAlarmType(selectedAlarmType, { save: false });
             _updateNextAlarmSummary();
         }
 
@@ -3902,7 +4092,16 @@
         function toggleAlarmType(index) {
             if (!Array.isArray(alarmTypes) || index < 0 || index >= alarms.length) return;
             const current = alarmTypes[index] === 'regular' ? 'regular' : 'routine';
-            alarmTypes[index] = current === 'routine' ? 'regular' : 'routine';
+            const next = current === 'routine' ? 'regular' : 'routine';
+            if (next === 'routine' && !_canSelectRoutineType(index)) {
+                window.alert(`Max routine alarms reached (${maxRoutineAlarms}).`);
+                return;
+            }
+            alarmTypes[index] = next;
+            if (selectedAlarmType === 'routine' && !_canSelectRoutineType(Number.isInteger(editingAlarmIndex) ? editingAlarmIndex : null)) {
+                selectedAlarmType = 'regular';
+            }
+            _updateRoutineLimitControls();
             renderAlarms();
             saveState();
         }
@@ -3927,24 +4126,42 @@
             }, { render: true, save: true, renderReason: 'renameAlarm' });
         }
 
-        function setAlarmType(type) {
+        function setAlarmType(type, opts = {}) {
+            const excludeIndex = Number.isInteger(editingAlarmIndex) ? editingAlarmIndex : null;
+            const routineAllowed = _canSelectRoutineType(excludeIndex);
+            if (type === 'routine') {
+                if (!routineAllowed) type = 'regular';
+            }
             selectedAlarmType = type;
             const btnRoutine = document.getElementById('btn-routine');
             const btnRegular = document.getElementById('btn-regular');
             if (btnRoutine && btnRegular) {
+                const routineDisabled = !routineAllowed && selectedAlarmType !== 'routine';
+                btnRoutine.disabled = routineDisabled;
+                btnRoutine.style.pointerEvents = routineDisabled ? 'none' : 'auto';
+                btnRoutine.style.cursor = routineDisabled ? 'not-allowed' : 'pointer';
                 if (type === 'routine') {
                     btnRoutine.style.background = 'rgba(255,211,78,0.25)';
                     btnRoutine.style.borderColor = 'var(--sun-main)';
+                    btnRoutine.style.color = 'var(--sun-main)';
                     btnRegular.style.background = 'rgba(255,255,255,0.06)';
                     btnRegular.style.borderColor = 'rgba(255,255,255,0.2)';
                 } else {
-                    btnRoutine.style.background = 'rgba(255,211,78,0.15)';
-                    btnRoutine.style.borderColor = 'rgba(255,255,255,0.2)';
+                    if (routineDisabled) {
+                        btnRoutine.style.background = 'rgba(130,130,130,0.22)';
+                        btnRoutine.style.borderColor = 'rgba(130,130,130,0.4)';
+                        btnRoutine.style.color = '#b8bec6';
+                    } else {
+                        btnRoutine.style.background = 'rgba(255,211,78,0.15)';
+                        btnRoutine.style.borderColor = 'rgba(255,255,255,0.2)';
+                        btnRoutine.style.color = 'var(--sun-main)';
+                    }
                     btnRegular.style.background = 'rgba(0,122,255,0.2)';
                     btnRegular.style.borderColor = 'var(--accent-blue)';
                 }
             }
-            saveState();
+            _updateRoutineLimitControls();
+            if (opts.save !== false) saveState();
         }
 
         async function commitAlarmFromPicker() {
@@ -3975,6 +4192,12 @@
             const normalizedType = selectedAlarmType === 'regular' ? 'regular' : 'routine';
             const editing = Number.isInteger(editingAlarmIndex) && editingAlarmIndex >= 0 && editingAlarmIndex < alarms.length;
             const editIdx = editing ? editingAlarmIndex : -1;
+            if (normalizedType === 'routine' && !_canSelectRoutineType(editing ? editIdx : null)) {
+                _setAlarmLocked = false;
+                _syncAlarmCommitButtonLimitState();
+                window.alert(`Max routine alarms reached (${maxRoutineAlarms}).`);
+                return;
+            }
             if (!editing && Array.isArray(alarms) && alarms.length >= MAX_ALARMS) {
                 _setAlarmLocked = false;
                 _syncAlarmCommitButtonLimitState();
@@ -4053,7 +4276,18 @@
             try {
             const list = document.getElementById('edit-list');
             if (!list) return;
+            const totalHabits = Array.isArray(tasks) ? tasks.length : 0;
+            const completedHabits = Array.isArray(tasks) ? tasks.filter(t => t && t.done).length : 0;
+            const completionPercent = totalHabits > 0 ? Math.round((completedHabits / totalHabits) * 100) : 0;
+            const countEl = document.getElementById('routine-count');
+            const completeEl = document.getElementById('routine-complete');
+            if (countEl) countEl.textContent = String(totalHabits);
+            if (completeEl) completeEl.textContent = `${completionPercent}%`;
             list.innerHTML = '';
+            if (totalHabits === 0) {
+                list.innerHTML = `<div class="routine-empty">No routine habits yet. Add one below to start your stack.</div>`;
+                return;
+            }
             tasks.forEach(t => {
                 const row = document.createElement('div');
                 row.className = 'routine-edit-row';
